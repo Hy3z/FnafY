@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Nekotine</groupId>
+  <artifactId>FnafY</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>FnafY</name>
+  <description>FnafY__yay</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.comphenix.protocol</groupId>
+  		<artifactId>ProtocolLib</artifactId>
+  		<version>4.5.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>dev.jorel</groupId>
+  		<artifactId>commandapi-core</artifactId>
+  		<version>4.0</version>
+  	</dependency>
+  	<dependency>
+           <groupId>org.spigotmc</groupId>
+           <artifactId>spigot-api</artifactId>
+           <version>1.16.3-R0.1-SNAPSHOT</version>
+           <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+        <id>commandapi</id>
+        <url>https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/</url>
+    </repository>
+    <repository>
+        <id>spigot-repo</id>
+        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+  	<repository>
+    	<id>codemc-repo</id>
+    	<url>https://repo.codemc.io/repository/maven-public/</url>
+	</repository>
+</repositories>
+</project>

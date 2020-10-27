@@ -1,0 +1,25 @@
+porte1:
+   doorType: #String
+   doorLoc: #Location
+   length:
+      x: #int
+      y: #int
+      z: #int
+   room1Name: #String
+   room2Name: #String
+   animPose:
+      room1:
+         Bonnie: #[[Location,Rotation,EulerAngle*5]]
+         Freddy:
+         Chica:
+         Foxy:
+         Mangle:
+         Springtrap:
+      room2:
+         Bonnie:
+         Freddy:
+         Chica:
+         Foxy:
+         Mangle:
+         Springtrap:
+         

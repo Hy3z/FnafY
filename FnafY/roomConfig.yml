@@ -1,0 +1,13 @@
+salle1:
+   roomType: #String
+   camera:
+      location: #Location
+      rotation: #Rotation
+   animPose:
+      Bonnie: #[[Location,Rotation,EulerAngle*5]]
+      Freddy:
+      Chica:
+      Foxy:
+      Mangle:
+      Springtrap:
+      

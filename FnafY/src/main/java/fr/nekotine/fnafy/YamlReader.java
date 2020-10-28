@@ -2,12 +2,18 @@ package fr.nekotine.fnafy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import fr.nekotine.fnafy.enums.Animatronic;
+import fr.nekotine.fnafy.enums.RoomType;
+import fr.nekotine.fnafy.objets.Position;
 
 public class YamlReader {
 	String PATH_TO_DOOR = "doorConfig.yml";
@@ -40,6 +46,22 @@ public class YamlReader {
 	public List<Float> getCameraRotation(String roomName) {
 		if (roomConfig != null) {
 			return roomConfig.getFloatList(roomName+".camera.rotation");
+		}
+		return null;
+	}
+	public RoomType getRoomType(String roomName) {
+		if (roomConfig != null) {
+			return RoomType.valueOf(roomConfig.getString(roomName+".roomType"));
+		}
+		return null;
+	}
+	public WeakHashMap<Animatronic, ArrayList<Position>> getPositions(String roomName){
+		if (roomConfig != null) {
+			WeakHashMap<Animatronic, ArrayList<Position>> positions = new WeakHashMap<>();
+			for (String animatronic : roomConfig.getStringList(roomName+".animPose")) {
+				/*positions.put(Animatronic.valueOf(animatronic),);*/
+			}
+			
 		}
 		return null;
 	}

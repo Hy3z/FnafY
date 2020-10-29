@@ -10,6 +10,7 @@ import java.util.WeakHashMap;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.EulerAngle;
 
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.enums.RoomType;
@@ -20,6 +21,7 @@ public class YamlReader {
 	String PATH_TO_ROOM = "roomConfig.yml";
 	YamlConfiguration doorConfig;
 	YamlConfiguration roomConfig;
+	String[] poseTokens = {"head","leftArm","rightArm","body","leftLeg","rightLeg"};
 	public YamlReader() {
 		doorConfig = getConfig(PATH_TO_DOOR);
 		roomConfig = getConfig(PATH_TO_ROOM);
@@ -58,10 +60,17 @@ public class YamlReader {
 	public WeakHashMap<Animatronic, ArrayList<Position>> getPositions(String roomName){
 		if (roomConfig != null) {
 			WeakHashMap<Animatronic, ArrayList<Position>> positions = new WeakHashMap<>();
-			for (String animatronic : roomConfig.getStringList(roomName+".animPose")) {
-				/*positions.put(Animatronic.valueOf(animatronic),);*/
+			for(String animatronic : roomConfig.getConfigurationSection(roomName+".animPose").getKeys(false)) {
+				ArrayList<Position> poseList = new ArrayList<>();
+				for(String nbPose : roomConfig.getConfigurationSection(roomName+".animPose."+animatronic).getKeys(false)) {
+					Location posLoc =  roomConfig.getLocation(roomName+".animPose."+animatronic+"."+nbPose+".location");
+					List<Float> posRot =  roomConfig.getFloatList(roomName+".animPose."+animatronic+"."+nbPose+".rotation");
+					List<EulerAngle> posAngle = getAngleList(roomName, animatronic, nbPose, poseTokens);
+					poseList.add(new Position(posLoc, posRot, posAngle));
+				}
+				positions.put(Animatronic.valueOf(animatronic), poseList);
 			}
-			
+			return positions;
 		}
 		return null;
 	}
@@ -70,5 +79,13 @@ public class YamlReader {
 			return roomConfig.getKeys(false);
 		}
 		return null;
+	}
+	private List<EulerAngle> getAngleList(String roomName, String animatronic, String nbPose, String[] tokens){
+		List<EulerAngle> posAngle = new ArrayList<>();
+		for(String token : tokens) {
+			List<Double> pose = roomConfig.getDoubleList(roomName+".animPose."+animatronic+"."+nbPose+"."+token);
+			posAngle.add(new EulerAngle(pose.get(0), pose.get(1), pose.get(2)));
+		}
+		return posAngle;
 	}
 }

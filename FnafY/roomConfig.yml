@@ -4,7 +4,16 @@ salle1:
       location: #Location
       rotation: #Rotation
    animPose:
-      Bonnie: #[[Location,Rotation,EulerAngle*5]]
+      Bonnie: 
+         pos1:
+            location:
+            rotation:
+            head:
+            leftArm:
+            rightArm:
+            body:
+            leftLeg:
+            rightLeg:
       Freddy:
       Chica:
       Foxy:

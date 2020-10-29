@@ -1,7 +1,6 @@
 package fr.nekotine.fnafy.animation;
 
 import java.util.HashMap;
-
 import org.bukkit.entity.ArmorStand;
 
 import java.util.ArrayList;
@@ -26,5 +25,4 @@ public class ASAnimation {
 	public int getAnimSize() {
 		return animSize;
 	}
-	
 }

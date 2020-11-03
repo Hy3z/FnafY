@@ -45,12 +45,6 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public List<Float> getCameraRotation(String roomName) {
-		if (roomConfig != null) {
-			return roomConfig.getFloatList(roomName+".camera.rotation");
-		}
-		return null;
-	}
 	public RoomType getRoomType(String roomName) {
 		if (roomConfig != null) {
 			return RoomType.valueOf(roomConfig.getString(roomName+".roomType"));

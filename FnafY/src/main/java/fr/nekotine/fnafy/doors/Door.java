@@ -1,6 +1,4 @@
-package fr.nekotine.fnafy;
-
-import fr.nekotine.fnafy.enums.DoorType;
+package fr.nekotine.fnafy.doors;
 
 public class Door {
 	private DoorType doorType;

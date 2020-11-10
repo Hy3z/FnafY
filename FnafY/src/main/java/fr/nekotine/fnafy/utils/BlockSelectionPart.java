@@ -1,14 +1,14 @@
-package fr.nekotine.fnafy.room;
+package fr.nekotine.fnafy.utils;
 
 import org.bukkit.Location;
 
-public class RoomOutlinePart {
+public class BlockSelectionPart {
 	
 	private final int x;
 	private final int y;
 	private final int z;
 	
-	public RoomOutlinePart(int x,int y,int z) {
+	public BlockSelectionPart(int x,int y,int z) {
 		this.x=x;
 		this.y=y;
 		this.z=z;

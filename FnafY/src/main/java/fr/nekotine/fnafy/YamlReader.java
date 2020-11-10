@@ -13,8 +13,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.EulerAngle;
 
 import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.enums.RoomType;
 import fr.nekotine.fnafy.objets.Position;
+import fr.nekotine.fnafy.room.RoomType;
 
 public class YamlReader {
 	String PATH_TO_DOOR = "doorConfig.yml";

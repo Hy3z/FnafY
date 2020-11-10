@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy.enums;
+package fr.nekotine.fnafy.doors;
 
 public enum DoorType {
 	Classique,

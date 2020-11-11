@@ -1,11 +1,13 @@
 package fr.nekotine.fnafy.room;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
 import org.bukkit.Location;
 
 import fr.nekotine.fnafy.animation.ASOrderMP;
+import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
@@ -21,6 +23,7 @@ public class Room {
 	private final String displayName;
 	private final HashMap<Animatronic,ASOrderMP> InRoomPoses=new HashMap<Animatronic,ASOrderMP>();
 	private final HashMap<Animatronic,ASOrderMP> MinimapPoses=new HashMap<Animatronic,ASOrderMP>();
+	private final ArrayList<Door> doors = new ArrayList<Door>();
 	
 	//CONSTRUCTEURS
 	
@@ -78,5 +81,9 @@ public class Room {
 
 	public Location getCamLocation() {
 		return camLocation;
+	}
+
+	public ArrayList<Door> getDoorsList() {
+		return doors;
 	}
 }

@@ -1,8 +1,13 @@
 package fr.nekotine.fnafy.utils;
 
-import org.bukkit.Location;
+import java.util.HashMap;
+import java.util.Map;
 
-public class BlockSelectionPart {
+import org.bukkit.Location;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
+@SerializableAs("BlockSelectionPart")
+public class BlockSelectionPart implements ConfigurationSerializable{
 	
 	private final int x;
 	private final int y;
@@ -29,4 +34,28 @@ public class BlockSelectionPart {
 	public void apply(Location loc) {
 		loc.add(x, y, z);
 	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		HashMap<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("x", this.x);
+		serialized.put("y", this.y);
+		serialized.put("z", this.z);
+		return serialized;
+	}
+	 public static BlockSelectionPart deserialize(Map<String, Object> args) {
+		 int xx=0;
+		 int yy=0;
+		 int zz=0;
+		 if (args.containsKey("x")){
+			 xx=(int)args.get("x");
+		 }
+		 if (args.containsKey("y")){
+			 yy=(int)args.get("y");
+		 }
+		 if (args.containsKey("z")){
+			 zz=(int)args.get("z");
+		 }
+		 return new BlockSelectionPart(xx,yy,zz);
+	 }
 }

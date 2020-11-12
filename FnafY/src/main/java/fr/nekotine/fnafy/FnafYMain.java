@@ -81,16 +81,14 @@ public class FnafYMain extends JavaPlugin {
 				ASAnimation anim = new ASAnimation();
 				for (String line : content) {
 					String[] parts = line.split(";");
-					if (parts.length==20 && parts[0]=="pose") {
+					if (parts.length==23) {
 						EulerAngle body = new EulerAngle(Double.parseDouble(parts[2]),Double.parseDouble(parts[3]),Double.parseDouble(parts[4]));
 						EulerAngle leftArm = new EulerAngle(Double.parseDouble(parts[5]),Double.parseDouble(parts[6]),Double.parseDouble(parts[7]));
 						EulerAngle rightArm = new EulerAngle(Double.parseDouble(parts[8]),Double.parseDouble(parts[9]),Double.parseDouble(parts[10]));
 						EulerAngle leftLeg = new EulerAngle(Double.parseDouble(parts[11]),Double.parseDouble(parts[12]),Double.parseDouble(parts[13]));
 						EulerAngle rightLeg = new EulerAngle(Double.parseDouble(parts[14]),Double.parseDouble(parts[15]),Double.parseDouble(parts[16]));
 						EulerAngle head = new EulerAngle(Double.parseDouble(parts[17]),Double.parseDouble(parts[18]),Double.parseDouble(parts[19]));
-						anim.addOrder(Integer.parseInt(parts[1]), new ASOrderPose(body, leftArm, rightArm, leftLeg, rightLeg, head));
-					}else if (parts.length==4 && parts[0]=="move") {
-						anim.addOrder(Integer.parseInt(parts[1]), new ASOrderMove(Double.parseDouble(parts[2]),Double.parseDouble(parts[3]),Double.parseDouble(parts[4])));
+						anim.addOrder(Integer.parseInt(parts[1]), new ASAnimOrder(body, leftArm, rightArm, leftLeg, rightLeg, head,Double.parseDouble(parts[20]),Double.parseDouble(parts[21]),Double.parseDouble(parts[22])));
 					}else {
 						getLogger().warning("The line \""+line+"\" is invalid");
 					}

@@ -1,6 +1,6 @@
 name: RTS
 version: 1.0
-authosr: [XxGoldenbluexX,Hyez]
+authors: [XxGoldenbluexX,Hyez]
 main: fr.nekotine.fnafy.FnafYMain
 api-version: 1.16
 depend: [ProtocolLib,CommandAPI]

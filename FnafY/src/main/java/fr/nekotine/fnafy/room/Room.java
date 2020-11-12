@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.bukkit.Location;
 
-import fr.nekotine.fnafy.animation.ASOrderMP;
+import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.utils.BlockSelection;
@@ -21,13 +21,13 @@ public class Room {
 	private final BlockSelection MinimapOutline;
 	private final BlockSelection MinimapSurface;
 	private final String displayName;
-	private final HashMap<Animatronic,ASOrderMP> InRoomPoses=new HashMap<Animatronic,ASOrderMP>();
-	private final HashMap<Animatronic,ASOrderMP> MinimapPoses=new HashMap<Animatronic,ASOrderMP>();
+	private final HashMap<Animatronic,ASAnimOrder> InRoomPoses=new HashMap<Animatronic,ASAnimOrder>();
+	private final HashMap<Animatronic,ASAnimOrder> MinimapPoses=new HashMap<Animatronic,ASAnimOrder>();
 	private final ArrayList<Door> doors = new ArrayList<Door>();
 	
 	//CONSTRUCTEURS
 	
-	public Room(String roomName ,RoomType type,BlockSelection aftonsurf,BlockSelection aftonoutl,BlockSelection minmsurf,BlockSelection minmoutl,Location camloc,HashMap<Animatronic,ASOrderMP> rmpses,HashMap<Animatronic,ASOrderMP> aftses) {
+	public Room(String roomName ,RoomType type,BlockSelection aftonsurf,BlockSelection aftonoutl,BlockSelection minmsurf,BlockSelection minmoutl,Location camloc,HashMap<Animatronic,ASAnimOrder> rmpses,HashMap<Animatronic,ASAnimOrder> aftses) {
 		displayName = roomName;
 		roomType = type;
 		AftonSurface = aftonsurf;
@@ -47,11 +47,11 @@ public class Room {
 	
 	//GETTERS
 
-	public HashMap<Animatronic,ASOrderMP> getMinimapPoses() {
+	public HashMap<Animatronic,ASAnimOrder> getMinimapPoses() {
 		return MinimapPoses;
 	}
 
-	public HashMap<Animatronic,ASOrderMP> getInRoomPoses() {
+	public HashMap<Animatronic,ASAnimOrder> getInRoomPoses() {
 		return InRoomPoses;
 	}
 

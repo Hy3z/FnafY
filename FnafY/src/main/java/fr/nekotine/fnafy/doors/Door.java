@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 
-import fr.nekotine.fnafy.animation.ASOrderMP;
+import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
 
@@ -14,12 +14,12 @@ public class Door {
 	private final Location AftonBlock;
 	private final Room room1;
 	private final Room room2;
-	private final HashMap<Animatronic,ASOrderMP> InRoomPoses=new HashMap<Animatronic,ASOrderMP>();
-	private final HashMap<Animatronic,ASOrderMP> MinimapPoses=new HashMap<Animatronic,ASOrderMP>();
+	private final HashMap<Animatronic,ASAnimOrder> InRoomPoses=new HashMap<Animatronic,ASAnimOrder>();
+	private final HashMap<Animatronic,ASAnimOrder> MinimapPoses=new HashMap<Animatronic,ASAnimOrder>();
 	
 	//CONSTRUCTEURS
 	
-	public Door(Room room1, Room room2, Location displayBlock,HashMap<Animatronic,ASOrderMP> rmpses,HashMap<Animatronic,ASOrderMP> aftses) {
+	public Door(Room room1, Room room2, Location displayBlock,HashMap<Animatronic,ASAnimOrder> rmpses,HashMap<Animatronic,ASAnimOrder> aftses) {
 		this.room1=room1;
 		this.room2=room2;
 		AftonBlock=displayBlock;
@@ -46,11 +46,11 @@ public class Door {
 		return AftonBlock;
 	}
 
-	public HashMap<Animatronic,ASOrderMP> getInRoomPoses() {
+	public HashMap<Animatronic,ASAnimOrder> getInRoomPoses() {
 		return InRoomPoses;
 	}
 
-	public HashMap<Animatronic,ASOrderMP> getMinimapPoses() {
+	public HashMap<Animatronic,ASAnimOrder> getMinimapPoses() {
 		return MinimapPoses;
 	}
 	

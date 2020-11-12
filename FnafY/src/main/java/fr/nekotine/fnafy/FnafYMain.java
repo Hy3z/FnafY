@@ -17,9 +17,8 @@ import org.bukkit.util.EulerAngle;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
+import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.animation.ASOrderMove;
-import fr.nekotine.fnafy.animation.ASOrderPose;
 import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 

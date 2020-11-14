@@ -41,8 +41,6 @@ public class ComAnim {
 		}).register();
 		main.getLogger().info("Commands registered");
 		//----
-		main.getLogger().info("Loading ArmorStand's Animations (.asanim files)");
-		ComAnim.reloadASAnims(main);
 	}
 	
 	public static void reloadASAnims(FnafYMain main) {

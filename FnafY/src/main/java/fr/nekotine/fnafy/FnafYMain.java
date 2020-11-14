@@ -22,9 +22,9 @@ public class FnafYMain extends JavaPlugin {
 	
 	public void onEnable() {
 		super.onEnable();
-		//Register serializable//
+		//Register serializables//
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
-		
+		//
 		eListener = new EventListener();
 		Bukkit.getPluginManager().registerEvents(eListener, this);
 		getLogger().info("Checking for Anim file");
@@ -33,7 +33,9 @@ public class FnafYMain extends JavaPlugin {
 			getLogger().info(ChatColor.GREEN+"Anim file created");
 		 }
 		//---COMMANDS---//
-		ComAnim.registerAnimCommands();
+		ComAnim.registerAnimCommands(this);
+		//
+		ComAnim.reloadASAnims(this);
 	}
 	
 	public ASAnimation getASAnim(String animName) {

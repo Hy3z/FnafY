@@ -22,15 +22,7 @@ public class ASAnimator {
 	public void play(ASAnimation anim) {
 		currentFrame=0;
 		currentAnim=anim;
-		runnable = new BukkitRunnable() {
-			@Override
-			public void run() {
-				currentFrame++;
-				currentAnim.play(currentFrame, as);
-			}
-		};
-		runnable.runTaskTimer(plugin, 1, 1);
-		running=true;
+		resume();
 	}
 	
 	public void resume() {
@@ -38,9 +30,9 @@ public class ASAnimator {
 			runnable = new BukkitRunnable() {
 				@Override
 				public void run() {
-					currentFrame++;
 					currentAnim.play(currentFrame, as);
-					if (currentFrame==currentAnim.getAnimSize()) {
+					currentFrame++;
+					if (currentFrame>currentAnim.getAnimSize()) {
 						if (looping) {
 							currentFrame=0;
 						}else {
@@ -69,6 +61,10 @@ public class ASAnimator {
 			currentAnim=null;
 			running=false;
 		}
+	}
+	
+	public void setFrame(int index) {
+		currentFrame=index;
 	}
 	
 }

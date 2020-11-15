@@ -4,20 +4,26 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.EulerAngle;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.animation.ASAnimEditor;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 
 public class ComAnim {
+	
+	public final ArrayList<ASAnimEditor> editors = new ArrayList<ASAnimEditor>();
 	
 	private static final FilenameFilter asanimFileNameFilter = new FilenameFilter(){
         public boolean accept(File dir, String name) {
@@ -59,7 +65,7 @@ public class ComAnim {
 						EulerAngle leftLeg = new EulerAngle(Double.parseDouble(parts[11]),Double.parseDouble(parts[12]),Double.parseDouble(parts[13]));
 						EulerAngle rightLeg = new EulerAngle(Double.parseDouble(parts[14]),Double.parseDouble(parts[15]),Double.parseDouble(parts[16]));
 						EulerAngle head = new EulerAngle(Double.parseDouble(parts[17]),Double.parseDouble(parts[18]),Double.parseDouble(parts[19]));
-						anim.addOrder(Integer.parseInt(parts[1]), new ASAnimOrder(body, leftArm, rightArm, leftLeg, rightLeg, head,Double.parseDouble(parts[20]),Double.parseDouble(parts[21]),Double.parseDouble(parts[22])));
+						anim.setOrder(Integer.parseInt(parts[1]), new ASAnimOrder(body, leftArm, rightArm, leftLeg, rightLeg, head,Double.parseDouble(parts[20]),Double.parseDouble(parts[21]),Double.parseDouble(parts[22])));
 					}else {
 						main.getLogger().warning("The line \""+line+"\" is invalid");
 					}
@@ -69,6 +75,22 @@ public class ComAnim {
 			}
 		}
 		main.getLogger().info(ChatColor.GREEN+"ArmorStand's Animations reloaded.");
+	}
+	
+	public void addEditor(Player p) {
+		
+	}
+	
+	public void removeEditor(Player p) {
+		ASAnimEditor Editor=null;
+		for (ASAnimEditor edt : editors) {
+			if (edt.player.equals(p)) {Editor=edt;};
+		}
+		if (Editor!=null) {editors.remove(Editor);};
+	}
+	
+	public void onPlayerDC(PlayerQuitEvent evt) {
+		removeEditor(evt.getPlayer());
 	}
 	
 }

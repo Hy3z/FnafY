@@ -1,5 +1,8 @@
 package fr.nekotine.fnafy.animation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -42,5 +45,29 @@ public void execute(ArmorStand as) {
 	as.setRightLegPose(rightLeg);
 	as.setHeadPose(head);
 	}
-	
+	public Map<String, Object> serialize() {
+		HashMap<String, Object> serialized = new HashMap<String, Object>();
+		serialized.put("x", x);
+		serialized.put("y", y);
+		serialized.put("z", z);
+		serialized.put("body", body);
+		serialized.put("leftArm", leftArm);
+		serialized.put("rightArm", rightArm);
+		serialized.put("leftLeg", leftLeg);
+		serialized.put("rightLeg", rightLeg);
+		serialized.put("head", head);
+		return serialized;
+	}
+	public static ASAnimOrder deserialize(Map<String, Object> args) {
+		EulerAngle eBody = (EulerAngle)args.get("body");
+		EulerAngle eLeftArm = (EulerAngle)args.get("leftArm");
+		EulerAngle eRightArm = (EulerAngle)args.get("rightArm");
+		EulerAngle eLeftLeg = (EulerAngle)args.get("leftLeg");
+		EulerAngle eRightLeg = (EulerAngle)args.get("rightLeg");
+		EulerAngle eHead = (EulerAngle)args.get("head");
+		double xx=(double)args.get("x");
+		double yy=(double)args.get("x");
+		double zz=(double)args.get("x");
+		return new ASAnimOrder(eBody, eLeftArm, eRightArm, eLeftLeg, eRightLeg, eHead, xx, yy, zz);
+	 }
 }

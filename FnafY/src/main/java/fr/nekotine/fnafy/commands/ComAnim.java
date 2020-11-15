@@ -37,7 +37,7 @@ public class ComAnim {
      };
 	
 	public static void registerAnimCommands(FnafYMain main) {
-		main.getLogger().info("Registering commands");
+		main.getLogger().info("Registering Animatronic commands");
 		LinkedHashMap<String, Argument> arguments = new LinkedHashMap<String,Argument>();
 	    arguments.put("reload", new LiteralArgument("reload"));
 	    arguments.put("relanim", new LiteralArgument("animas"));
@@ -45,7 +45,7 @@ public class ComAnim {
 			main.getLogger().info("Reloading ArmorStand's Animations (.asanim files)");
 			ComAnim.reloadASAnims(main);
 		}).register();
-		main.getLogger().info("Commands registered");
+		main.getLogger().info("Animatronics Commands registered");
 		//----
 	}
 	

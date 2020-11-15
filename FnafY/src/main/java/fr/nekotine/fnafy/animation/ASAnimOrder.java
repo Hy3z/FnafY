@@ -45,7 +45,7 @@ public void execute(ArmorStand as) {
 	as.setRightLegPose(rightLeg);
 	as.setHeadPose(head);
 	}
-	public Map<String, Object> serialize() {
+public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("x", x);
 		serialized.put("y", y);
@@ -58,7 +58,7 @@ public void execute(ArmorStand as) {
 		serialized.put("head", head);
 		return serialized;
 	}
-	public static ASAnimOrder deserialize(Map<String, Object> args) {
+public static ASAnimOrder deserialize(Map<String, Object> args) {
 		EulerAngle eBody = (EulerAngle)args.get("body");
 		EulerAngle eLeftArm = (EulerAngle)args.get("leftArm");
 		EulerAngle eRightArm = (EulerAngle)args.get("rightArm");

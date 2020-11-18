@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.EulerAngle;
@@ -177,28 +179,28 @@ public class ComAnim {
 		asanims.clear();
 		File[] fileslist = animFolder.listFiles(asanimFileNameFilter);
 		for (File file : fileslist) {
-			try {
-				List<String> content = Files.readAllLines(file.toPath());
-				ASAnimation anim = new ASAnimation();
-				for (String line : content) {
-					String[] parts = line.split(";");
-					if (parts.length==23) {
-						EulerAngle body = new EulerAngle(Double.parseDouble(parts[2]),Double.parseDouble(parts[3]),Double.parseDouble(parts[4]));
-						EulerAngle leftArm = new EulerAngle(Double.parseDouble(parts[5]),Double.parseDouble(parts[6]),Double.parseDouble(parts[7]));
-						EulerAngle rightArm = new EulerAngle(Double.parseDouble(parts[8]),Double.parseDouble(parts[9]),Double.parseDouble(parts[10]));
-						EulerAngle leftLeg = new EulerAngle(Double.parseDouble(parts[11]),Double.parseDouble(parts[12]),Double.parseDouble(parts[13]));
-						EulerAngle rightLeg = new EulerAngle(Double.parseDouble(parts[14]),Double.parseDouble(parts[15]),Double.parseDouble(parts[16]));
-						EulerAngle head = new EulerAngle(Double.parseDouble(parts[17]),Double.parseDouble(parts[18]),Double.parseDouble(parts[19]));
-						anim.setOrder(Integer.parseInt(parts[1]), new ASAnimOrder(body, leftArm, rightArm, leftLeg, rightLeg, head,Double.parseDouble(parts[20]),Double.parseDouble(parts[21]),Double.parseDouble(parts[22])));
-					}else {
-						main.getLogger().warning("The line \""+line+"\" is invalid");
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			YamlConfiguration config = getConfig(file);
+			if (config!=null) {
+				A
+				asanims.put("",config.get(path))
+			}else {
+				main.getLogger().warning("The file "+file.getName()+" failed to load.");
 			}
 		}
 		main.getLogger().info(ChatColor.GREEN+"ArmorStand's Animations reloaded.");
+	}
+	
+	private YamlConfiguration getConfig(File file) {
+		if(file.exists()) {
+			YamlConfiguration yamlConfig = new YamlConfiguration();
+			try {
+				yamlConfig.load(file);
+				return yamlConfig;
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	public void addEditor(Player p) {

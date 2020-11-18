@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class Posture {
+public class Posture implements ConfigurationSerializable {
 	
 	public final EulerAngle body;
 	public final EulerAngle leftArm;
@@ -27,7 +28,7 @@ public class Posture {
 	}
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
-		//TODO
+		serialized.put("location",location);
 		serialized.put("body", body);
 		serialized.put("leftArm", leftArm);
 		serialized.put("rightArm", rightArm);
@@ -43,7 +44,7 @@ public class Posture {
 		EulerAngle eLeftLeg = (EulerAngle)args.get("leftLeg");
 		EulerAngle eRightLeg = (EulerAngle)args.get("rightLeg");
 		EulerAngle eHead = (EulerAngle)args.get("head");
-		Location loc = null;//TODO
+		Location loc = (Location)args.get("location");
 		return new Posture(eBody, eLeftArm, eRightArm, eLeftLeg, eRightLeg, eHead, loc);
 	 }
 }

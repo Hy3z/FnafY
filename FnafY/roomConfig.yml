@@ -1,19 +1,8 @@
 salle1:
    roomType: #String
-   camera:
-      location: #Location
-      rotation: #Rotation
+   camLoc:
    animPose:
       Bonnie: 
-         pos1:
-            location:
-            rotation:
-            head:
-            leftArm:
-            rightArm:
-            body:
-            leftLeg:
-            rightLeg:
       Freddy:
       Chica:
       Foxy:

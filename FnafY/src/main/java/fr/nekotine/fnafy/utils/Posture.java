@@ -6,7 +6,8 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
+import org.bukkit.configuration.serialization.SerializableAs;
+@SerializableAs("Posture")
 public class Posture implements ConfigurationSerializable {
 	
 	public final EulerAngle body;

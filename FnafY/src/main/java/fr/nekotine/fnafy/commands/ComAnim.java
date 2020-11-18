@@ -3,18 +3,15 @@ package fr.nekotine.fnafy.commands;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.util.EulerAngle;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
@@ -22,7 +19,6 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimEditor;
-import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 
 public class ComAnim {
@@ -181,8 +177,8 @@ public class ComAnim {
 		for (File file : fileslist) {
 			YamlConfiguration config = getConfig(file);
 			if (config!=null) {
-				A
-				asanims.put("",config.get(path))
+				
+				asanims.put(file.getName(),(ASAnimation)config.get("animation"));
 			}else {
 				main.getLogger().warning("The file "+file.getName()+" failed to load.");
 			}

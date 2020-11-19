@@ -8,7 +8,7 @@ import org.bukkit.entity.ArmorStand;
 
 public class ASAnimation implements ConfigurationSerializable {
 	
-	private final HashMap<Integer,ASAnimOrder> orders = new HashMap<Integer,ASAnimOrder>();
+	public final HashMap<Integer,ASAnimOrder> orders = new HashMap<Integer,ASAnimOrder>();
 	private int animSize=0;
 	
 	public void setOrder(int index,ASAnimOrder order) {

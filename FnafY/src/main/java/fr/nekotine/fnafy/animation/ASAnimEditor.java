@@ -2,13 +2,16 @@ package fr.nekotine.fnafy.animation;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.util.EulerAngle;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.commands.ComAnim;
+import fr.nekotine.fnafy.utils.Posture;
 
 public class ASAnimEditor {
 	
@@ -82,4 +85,16 @@ public class ASAnimEditor {
 		animator.pause();
 	}
 	
+	public ASAnimOrder getFrameOrder() {
+		return anim.orders.getOrDefault(currentFrame, new ASAnimOrder(nullPosture(anim.orders.get(0).pose.location.getWorld()), false));
+	}
+	
+	public void setFrameOrder(ASAnimOrder newOrder) {
+		anim.orders.put(currentFrame, newOrder);
+	}
+	
+	private Posture nullPosture(World w) {
+		return new Posture(new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),
+				new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new Location(w,0,0,0));
+	}
 }

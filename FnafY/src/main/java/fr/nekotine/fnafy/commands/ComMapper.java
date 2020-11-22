@@ -1,6 +1,5 @@
 package fr.nekotine.fnafy.commands;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import org.bukkit.ChatColor;
@@ -18,16 +17,28 @@ import fr.nekotine.fnafy.room.RoomType;
 public class ComMapper {
 	private FnafYMain main;
 	public ComMapper(FnafYMain _main) {
-		main=_main;//
+		main=_main;
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("map", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("doorType", new StringArgument().overrideSuggestions(Arrays.copyOf(DoorType.values(), DoorType.values().length, String[].class)));
+		String[] doorType = new String[DoorType.values().length];
+		int x=-1;
+		for(DoorType type : DoorType.values()) {
+			x++;
+			doorType[x] = type.toString();
+		}
+		argument.put("doorType", new StringArgument().overrideSuggestions(doorType));
 	}
 	private void setRoomTypeArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("roomType", new StringArgument().overrideSuggestions(Arrays.copyOf(RoomType.values(), RoomType.values().length, String[].class)));
+		String[] roomType = new String[RoomType.values().length];
+		int x=-1;
+		for(RoomType type : RoomType.values()) {
+			x++;
+			roomType[x] = type.toString();
+		}
+		argument.put("roomType", new StringArgument().overrideSuggestions(roomType));
 	}
 	private void set1Or2Argument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2"}));
@@ -55,7 +66,7 @@ public class ComMapper {
 		setAutoCompleteArgument(argument,"setMap");
 		setMapFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			main.setMapName((String)args[1]);
+			main.setMapName((String)args[0]);
 		}).register();
 		argument.clear();
 		
@@ -63,7 +74,7 @@ public class ComMapper {
 		setAutoCompleteArgument(argument,"create");
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().createMap((String)args[2])) {
+			if(main.getYamlReader().createMap((String)args[0])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Map crée!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Une map existe déjà avec ce nom");
@@ -76,7 +87,7 @@ public class ComMapper {
 		setMapFinderArgument(argument);
 		
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().deleteMap((String)args[2])) {
+			if(main.getYamlReader().deleteMap((String)args[0])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Map supprimée!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas!");
@@ -89,7 +100,7 @@ public class ComMapper {
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().addDoor((String)args[2],(String)args[3])) {
+			if(main.getYamlReader().addDoor((String)args[0],(String)args[1])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[3]+"] crée");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas, ou la porte existe déjà");
@@ -102,7 +113,7 @@ public class ComMapper {
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().addRoom((String)args[2],(String)args[3])) {
+			if(main.getYamlReader().addRoom((String)args[0],(String)args[1])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[3]+"] crée");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas, ou la salle existe déjà");
@@ -116,8 +127,8 @@ public class ComMapper {
 		setDoorFinderArgument(argument); //door
 		setDoorTypeArgument(argument); //doorType
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().setDoorType((String)args[2],(String)args[3],DoorType.valueOf((String)args[4]))) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[3]+"] mise à jour!");
+			if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.valueOf((String)args[2]))) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la porte ou le type de porte n'existent pas!");
 			}
@@ -130,8 +141,8 @@ public class ComMapper {
 		setRoomFinderArgument(argument); //door
 		setRoomTypeArgument(argument); //doorType
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().setRoomType((String)args[2],(String)args[3],RoomType.valueOf((String)args[4]))) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[3]+"] mise à jour!");
+			if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.valueOf((String)args[2]))) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la salle ou le type de salle n'existent pas!");
 			}
@@ -144,8 +155,8 @@ public class ComMapper {
 		setRoomFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(sender instanceof Player) {
-				if(main.getYamlReader().setCameraLocation((String)args[2], (String)args[3], ((Player) sender).getLocation())) {
-					sender.sendMessage(ChatColor.DARK_GREEN+"Caméra de la salle ["+(String)args[3]+"] mise à jour!");
+				if(main.getYamlReader().setCameraLocation((String)args[0], (String)args[1], ((Player) sender).getLocation())) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Caméra de la salle ["+(String)args[1]+"] mise à jour!");
 				}else {
 					sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'existent pas!");
 				}
@@ -162,8 +173,8 @@ public class ComMapper {
 		setRoomFinderArgument(argument);
 		set1Or2Argument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().linkRoomToDoor((String)args[2],(String)args[3],(String)args[4],(int)args[5])) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[4]+"] liée à porte ["+(String)args[3]+"] à la sortie n°"+(int)args[5]);
+			if(main.getYamlReader().linkRoomToDoor((String)args[0],(String)args[1],(String)args[2],(int)args[3])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[2]+"] liée à porte ["+(String)args[1]+"] à la sortie n°"+(int)args[3]);
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle ou le numéro n'existent pas!");
 			}

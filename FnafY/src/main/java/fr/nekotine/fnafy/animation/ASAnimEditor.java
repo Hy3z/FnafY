@@ -51,6 +51,7 @@ public class ASAnimEditor {
 		if (valid) {
 			currentFrame=frameNb;
 			animator.setFrame(currentFrame);
+			player.sendMessage(ChatColor.LIGHT_PURPLE+"L'image passe à: "+currentFrame);
 		}
 	}
 	
@@ -96,5 +97,9 @@ public class ASAnimEditor {
 	private Posture nullPosture(World w) {
 		return new Posture(new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),
 				new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new Location(w,0,0,0));
+	}
+	
+	public int getCurrentFrame() {
+		return currentFrame;
 	}
 }

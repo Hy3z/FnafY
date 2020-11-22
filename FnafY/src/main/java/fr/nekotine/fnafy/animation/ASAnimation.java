@@ -10,6 +10,7 @@ public class ASAnimation implements ConfigurationSerializable {
 	
 	public final HashMap<Integer,ASAnimOrder> orders = new HashMap<Integer,ASAnimOrder>();
 	private int animSize=0;
+	private String name;
 	
 	public void setOrder(int index,ASAnimOrder order) {
 		orders.put(index,order);
@@ -29,17 +30,27 @@ public class ASAnimation implements ConfigurationSerializable {
 	@Override
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
-		serialized.put("orders", orders);
+		serialized.put("name", name);
+		for (Integer i : orders.keySet()) {
+			serialized.put(i.toString(), orders.get(i));
+		}
 		return serialized;
 	}
 	
 	public static ASAnimation deserialize(Map<String, Object> args) {
 		ASAnimation anim = new ASAnimation();
-		@SuppressWarnings("unchecked")
-		HashMap<Integer,ASAnimOrder> ord = (HashMap<Integer, ASAnimOrder>) args.get("orders");
-		for (Integer i : ord.keySet()) {
-			anim.setOrder(i, ord.get(i));
+		anim.setName((String) args.get("name"));
+		for (String s : args.keySet()) {
+			anim.setOrder(Integer.parseInt(s), (ASAnimOrder) args.get(s));
 		}
 		return anim;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String n) {
+		name=n;
 	}
 }

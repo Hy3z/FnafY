@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -191,9 +192,9 @@ public class ComAnim {
 		}).register();
 		//anime <editableValue> <axis> <add/setValue>
 		arguments.clear();
-	    arguments.put("bodyPart", BodyPartArgument().withRequirement(isInEdition).overrideSuggestions(editablesValues));
+	    arguments.put("editableValue", BodyPartArgument().withRequirement(isInEdition).overrideSuggestions(editablesValues));
 	    arguments.put("axis", new AxisArgument().withRequirement(isInEdition));
-	    arguments.put("add/setValue",AddSetValue().withRequirement(isInEdition));
+	    arguments.put("add/setValue",DoubleAddSetValue().withRequirement(isInEdition));
 		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
 			ASAnimEditor e=null;
 			for (ASAnimEditor edt : editors) {
@@ -207,6 +208,42 @@ public class ComAnim {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
 		}).register();
+		//anime setFrame <IntegerAddOrSet>
+		arguments.clear();
+	    arguments.put("setframe", new LiteralArgument("setframe").withRequirement(isInEdition));
+	    arguments.put("add/setValue",IntAddSetValue());
+		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
+			ASAnimEditor e=null;
+			for (ASAnimEditor edt : editors) {
+				if (edt.player.equals(player)) {
+					e=edt;
+				}
+			}
+			if (e!=null) {
+				IntegerAddOrSet a = (IntegerAddOrSet) args[0];
+				e.setFrame(a.isRelative()?e.getCurrentFrame()+a.getValue():a.getValue());
+			}else {
+				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
+			}
+		}).register();
+		//anime create <name>
+				arguments.clear();
+			    arguments.put("create", new LiteralArgument("setframe"));
+			    arguments.put("name",new StringArgument());
+				new CommandAPICommand("anime").withArguments(arguments).executes((sender,args)->{
+					String name = (String)args[0];
+					if (asanims.containsKey(name)) {
+						sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja.");
+					}else if (Arrays.asList(getAnimFiles()).contains(name)) {
+						sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja mais n'est pas chargée.");
+					}else {
+						ASAnimation anim=new ASAnimation();
+						anim.setName(name);
+						asanims.put(name, anim);
+						save(anim);
+						sender.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
+					}
+				}).register();
 		//
 		main.getLogger().info("Animatronics Commands registered");
 	}
@@ -238,10 +275,6 @@ public class ComAnim {
 		return null;
 	}
 	
-	public void addEditor(Player p) {
-		
-	}
-	
 	public void removeEditor(Player p) {
 		ASAnimEditor Editor=null;
 		for (ASAnimEditor edt : editors) {
@@ -257,8 +290,8 @@ public class ComAnim {
 	public String[] getAnimFiles() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (String s : animFolder.list()) {
-			if (s.endsWith(".yaml")) {
-				list.add(s.replace(".yaml", ""));
+			if (s.endsWith(".yml")) {
+				list.add(s.replace(".yml", ""));
 			}
 		}
 		String[] finalList = new String[list.size()];
@@ -269,10 +302,28 @@ public class ComAnim {
 	}
 	
 	public boolean save(ASAnimation anim) {
+		File f = new File(animFolder, anim.getName()+".yml");
+		try {
+			f.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		if (f.exists()) {
+			YamlConfiguration cfg = getConfig(f);
+			cfg.set("animation", anim);
+			try {
+				cfg.save(f);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
 		return false;
 	}
 	
-	private Argument AddSetValue() {
+	private Argument DoubleAddSetValue() {
 		return new CustomArgument<DoubleAddOrSet>((String input)->{
 			boolean rel=false;
 			double value=0.0;
@@ -284,10 +335,29 @@ public class ComAnim {
 				try {
 				value = Double.parseDouble(input);
 				}catch(NullPointerException|NumberFormatException e) {
-					throw new CustomArgumentException(new MessageBuilder("Invalide double: ").appendArgInput().appendHere());
+					throw new CustomArgumentException(new MessageBuilder("Invalid double: ").appendArgInput().appendHere());
 				}
 			}
 			return new DoubleAddOrSet(value, rel);
+		});
+	}
+	
+	private Argument IntAddSetValue() {
+		return new CustomArgument<IntegerAddOrSet>((String input)->{
+			boolean rel=false;
+			int value=0;
+			if (input.length()>0) {
+				if (input.startsWith("+")) {
+					rel=true;
+					input.replace("+","");
+				}
+				try {
+				value = Integer.parseInt(input);
+				}catch(NullPointerException|NumberFormatException e) {
+					throw new CustomArgumentException(new MessageBuilder("Invalid int: ").appendArgInput().appendHere());
+				}
+			}
+			return new IntegerAddOrSet(value, rel);
 		});
 	}
 	

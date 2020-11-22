@@ -20,7 +20,7 @@ public class ComMapper {
 		main=_main;
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("map", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
+		argument.put("mapList", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
 		String[] doorType = new String[DoorType.values().length];
@@ -85,7 +85,6 @@ public class ComMapper {
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"delete");
 		setMapFinderArgument(argument);
-		
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().deleteMap((String)args[0])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Map supprimée!");

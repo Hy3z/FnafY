@@ -18,7 +18,7 @@ import fr.nekotine.fnafy.room.RoomType;
 public class ComMapper {
 	private FnafYMain main;
 	public ComMapper(FnafYMain _main) {
-		main=_main;
+		main=_main;//
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("map", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
@@ -42,13 +42,13 @@ public class ComMapper {
 			return main.getYamlReader().getRoomList((String)args[2]).toArray(new String[0]);
 		}));	
 	}
-	private void setAutoCompleteArgument(LinkedHashMap<String, Argument> argument,String hinted) {
-		argument.put("arg", new LiteralArgument(hinted));
+	private void setAutoCompleteArgument(LinkedHashMap<String, Argument> argument, String hinted) {
+		argument.put(hinted, new LiteralArgument(hinted));
 	}
 	private void setFlatArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("arg", new StringArgument());
 	}
-	public void registerAnimCommands() {
+	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");
 		LinkedHashMap<String, Argument> argument = new LinkedHashMap<String,Argument>();
 		

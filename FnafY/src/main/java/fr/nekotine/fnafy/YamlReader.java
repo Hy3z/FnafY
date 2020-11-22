@@ -25,7 +25,7 @@ public class YamlReader {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
 		if (!mapFolder.exists()) {
-			mapFolder.getParentFile().mkdirs();
+			mapFolder.mkdirs();
 			main.getLogger().info(ChatColor.GREEN+"Maps file created");
 		 }
 	}

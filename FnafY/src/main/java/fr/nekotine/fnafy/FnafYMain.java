@@ -28,7 +28,7 @@ public class FnafYMain extends JavaPlugin {
 		yamlReader = new YamlReader(this);
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
-		commandManager.registerAnimCommands();
+		commandManager.registerMapperCommands();
 		//
 		animManager.reloadASAnims();
 	}

@@ -227,23 +227,23 @@ public class ComAnim {
 			}
 		}).register();
 		//anime create <name>
-				arguments.clear();
-			    arguments.put("create", new LiteralArgument("setframe"));
-			    arguments.put("name",new StringArgument());
-				new CommandAPICommand("anime").withArguments(arguments).executes((sender,args)->{
-					String name = (String)args[0];
-					if (asanims.containsKey(name)) {
-						sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja.");
-					}else if (Arrays.asList(getAnimFiles()).contains(name)) {
-						sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja mais n'est pas chargée.");
-					}else {
-						ASAnimation anim=new ASAnimation();
-						anim.setName(name);
-						asanims.put(name, anim);
-						save(anim);
-						sender.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
-					}
-				}).register();
+		arguments.clear();
+	    arguments.put("create", new LiteralArgument("create"));
+	    arguments.put("name",new StringArgument());
+		new CommandAPICommand("anime").withArguments(arguments).executes((sender,args)->{
+			String name = (String)args[0];
+			if (asanims.containsKey(name)) {
+				sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja.");
+			}else if (Arrays.asList(getAnimFiles()).contains(name)) {
+				sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja mais n'est pas chargée.");
+			}else {
+				ASAnimation anim=new ASAnimation();
+				anim.setName(name);
+				asanims.put(name, anim);
+				save(anim);
+				sender.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
+			}
+		}).register();
 		//
 		main.getLogger().info("Animatronics Commands registered");
 	}

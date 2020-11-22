@@ -33,8 +33,12 @@ public class YamlReader {
 		File mapConfigFolder = new File(mapFolder, mapName);
 		if (!mapConfigFolder.exists()) {
 			mapConfigFolder.getParentFile().mkdirs();
-			new File(mapConfigFolder,"roomConfig.yml");
-			new File(mapConfigFolder,"doorConfig.yml");
+			try {
+				new File(mapConfigFolder,"roomConfig.yml").createNewFile();
+				new File(mapConfigFolder,"doorConfig.yml").createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			main.getLogger().info(ChatColor.GREEN+"Map: ["+mapName+"] folder created");
 			return true;
 		 }

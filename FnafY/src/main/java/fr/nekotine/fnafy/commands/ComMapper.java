@@ -18,7 +18,7 @@ public class ComMapper {
 	private FnafYMain main;
 	public ComMapper(FnafYMain _main) {
 		main=_main;
-	}//
+	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("map", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
 	}

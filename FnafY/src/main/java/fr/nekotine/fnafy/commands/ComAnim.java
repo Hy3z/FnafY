@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -55,7 +56,7 @@ public class ComAnim {
 		animFolder = new File(main.getDataFolder(),"Animations");
 		main.getLogger().info("Checking for Anim file");
 		if (!animFolder.exists()) {
-			animFolder.getParentFile().mkdirs();
+			animFolder.mkdir();
 			main.getLogger().info(ChatColor.GREEN+"Anim file created");
 		}
 	}
@@ -85,9 +86,9 @@ public class ComAnim {
 		//anime open <animName>
 		arguments.clear();
 	    arguments.put("open", new LiteralArgument("open").withRequirement(isInEdition.negate()));
-	    arguments.put("animName", new StringArgument().overrideSuggestions((sender) -> {return (String[]) asanims.keySet().toArray();}));
+	    arguments.put("animName", new StringArgument().overrideSuggestions((sender) -> {Set<String> temp = asanims.keySet();return temp.toArray(new String[temp.size()]);}));
 		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
-			ASAnimation anim = asanims.get((String)args[1]);
+			ASAnimation anim = asanims.get((String)args[0]);
 			if (anim!=null) {
 				editors.add(new ASAnimEditor(main,player,anim,this));
 			}else {

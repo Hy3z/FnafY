@@ -3,7 +3,6 @@ package fr.nekotine.fnafy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;

@@ -32,7 +32,7 @@ public class YamlReader {
 	public boolean createMap(String mapName) {
 		File mapConfigFolder = new File(mapFolder, mapName);
 		if (!mapConfigFolder.exists()) {
-			mapConfigFolder.getParentFile().mkdirs();
+			mapConfigFolder.mkdirs();
 			try {
 				new File(mapConfigFolder,"roomConfig.yml").createNewFile();
 				new File(mapConfigFolder,"doorConfig.yml").createNewFile();

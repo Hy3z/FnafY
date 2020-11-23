@@ -61,10 +61,10 @@ public class ComAnim {
 		}
 	}
 	
-	private static final FilenameFilter asanimFileNameFilter = new FilenameFilter(){
+	private static final FilenameFilter ymlFileNameFilter = new FilenameFilter(){
         public boolean accept(File dir, String name) {
            String lowercaseName = name.toLowerCase();
-           if (lowercaseName.endsWith(".asanim")) {
+           if (lowercaseName.endsWith(".yml")) {
               return true;
            } else {
               return false;
@@ -80,8 +80,9 @@ public class ComAnim {
 	    arguments.put("reload", new LiteralArgument("reload"));
 	    arguments.put("relanim", new LiteralArgument("animas"));
 		new CommandAPICommand("fnafy").withArguments(arguments).executes((sender,args)->{
-			main.getLogger().info("Reloading ArmorStand's Animations (.asanim files)");
+			sender.sendMessage(ChatColor.LIGHT_PURPLE+"Rechargement des animations de fnafy...");
 			reloadASAnims();
+			sender.sendMessage(ChatColor.GREEN+"Rechargement terminé!");
 		}).register();
 		//anime open <animName>
 		arguments.clear();
@@ -250,12 +251,13 @@ public class ComAnim {
 	}
 	
 	public void reloadASAnims() {
+		main.getLogger().info("Reloading ArmorStand's Animations (.yml files)");
 		asanims.clear();
-		File[] fileslist = animFolder.listFiles(asanimFileNameFilter);
+		File[] fileslist = animFolder.listFiles(ymlFileNameFilter);
 		for (File file : fileslist) {
 			YamlConfiguration config = getConfig(file);
 			if (config!=null) {
-				asanims.put(file.getName(),(ASAnimation)config.get("animation"));
+				asanims.put(file.getName().replace(".yml", ""),(ASAnimation)config.get("animation"));
 			}else {
 				main.getLogger().warning("The file "+file.getName()+" failed to load.");
 			}

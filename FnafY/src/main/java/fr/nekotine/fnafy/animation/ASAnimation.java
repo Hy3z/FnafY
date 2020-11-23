@@ -41,7 +41,9 @@ public class ASAnimation implements ConfigurationSerializable {
 		ASAnimation anim = new ASAnimation();
 		anim.setName((String) args.get("name"));
 		for (String s : args.keySet()) {
-			anim.setOrder(Integer.parseInt(s), (ASAnimOrder) args.get(s));
+			if ((!s.contains("==")) && (!s.contains("name"))) {
+				anim.setOrder(Integer.parseInt(s), (ASAnimOrder) args.get(s));
+			}
 		}
 		return anim;
 	}

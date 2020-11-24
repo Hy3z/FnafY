@@ -27,8 +27,11 @@ public class Posture implements ConfigurationSerializable {
 		this.head=head;
 		this.location=loc;
 	}
+	
+	@Override
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
+		System.out.println("Serializing Posture-----------");
 		serialized.put("location",location);
 		serialized.put("body", body);
 		serialized.put("leftArm", leftArm);
@@ -36,6 +39,7 @@ public class Posture implements ConfigurationSerializable {
 		serialized.put("leftLeg", leftLeg);
 		serialized.put("rightLeg", rightLeg);
 		serialized.put("head", head);
+		System.out.println("Posture serialized.");
 		return serialized;
 	}
 	public static Posture deserialize(Map<String, Object> args) {

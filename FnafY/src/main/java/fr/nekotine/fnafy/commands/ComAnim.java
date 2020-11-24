@@ -14,12 +14,15 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Axis;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.util.EulerAngle;
 
+import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.AxisArgument;
@@ -32,6 +35,7 @@ import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimEditor;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.utils.Posture;
 
 public class ComAnim {
 	
@@ -41,14 +45,15 @@ public class ComAnim {
 	private final File animFolder;
 	private final HashMap<String,ASAnimation> asanims = new HashMap<String,ASAnimation>();
 	private final Predicate<CommandSender> isInEdition = (CommandSender sender)->{
-		Player p = (Player)sender;
-		ASAnimEditor e=null;
-		for (ASAnimEditor edt : editors) {
-			if (edt.player.equals(p)) {
-				e=edt;
+		if (sender instanceof Player) {
+			Player p = (Player)sender;
+			for (ASAnimEditor edt : editors) {
+				if (edt.player==p) {
+					return true;
+				}
 			}
 		}
-		return e!=null;
+		return false;
 	};
 	
 	public ComAnim(FnafYMain m) {
@@ -61,10 +66,10 @@ public class ComAnim {
 		}
 	}
 	
-	private static final FilenameFilter asanimFileNameFilter = new FilenameFilter(){
+	private static final FilenameFilter ymlFileNameFilter = new FilenameFilter(){
         public boolean accept(File dir, String name) {
            String lowercaseName = name.toLowerCase();
-           if (lowercaseName.endsWith(".asanim")) {
+           if (lowercaseName.endsWith(".yml")) {
               return true;
            } else {
               return false;
@@ -80,8 +85,9 @@ public class ComAnim {
 	    arguments.put("reload", new LiteralArgument("reload"));
 	    arguments.put("relanim", new LiteralArgument("animas"));
 		new CommandAPICommand("fnafy").withArguments(arguments).executes((sender,args)->{
-			main.getLogger().info("Reloading ArmorStand's Animations (.asanim files)");
+			sender.sendMessage(ChatColor.LIGHT_PURPLE+"Rechargement des animations de fnafy...");
 			reloadASAnims();
+			sender.sendMessage(ChatColor.GREEN+"Rechargement terminé!");
 		}).register();
 		//anime open <animName>
 		arguments.clear();
@@ -91,6 +97,7 @@ public class ComAnim {
 			ASAnimation anim = asanims.get((String)args[0]);
 			if (anim!=null) {
 				editors.add(new ASAnimEditor(main,player,anim,this));
+				CommandAPI.updateRequirements(player);
 			}else {
 				player.sendMessage(ChatColor.RED+"Cette Animation n'existe pas. Essayez de recharger les animations.");
 			}
@@ -191,8 +198,9 @@ public class ComAnim {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
 		}).register();
-		//anime <editableValue> <axis> <add/setValue>
+		//anime edit <editableValue> <axis> <add/setValue>
 		arguments.clear();
+		arguments.put("edit", new LiteralArgument("edit").withRequirement(isInEdition));
 	    arguments.put("editableValue", BodyPartArgument().withRequirement(isInEdition).overrideSuggestions(editablesValues));
 	    arguments.put("axis", new AxisArgument().withRequirement(isInEdition));
 	    arguments.put("add/setValue",DoubleAddSetValue().withRequirement(isInEdition));
@@ -231,18 +239,19 @@ public class ComAnim {
 		arguments.clear();
 	    arguments.put("create", new LiteralArgument("create"));
 	    arguments.put("name",new StringArgument());
-		new CommandAPICommand("anime").withArguments(arguments).executes((sender,args)->{
+		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
 			String name = (String)args[0];
 			if (asanims.containsKey(name)) {
-				sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja.");
+				player.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja.");
 			}else if (Arrays.asList(getAnimFiles()).contains(name)) {
-				sender.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja mais n'est pas chargée.");
+				player.sendMessage(ChatColor.RED+"Une animation de ce nom existe déja mais n'est pas chargée.");
 			}else {
 				ASAnimation anim=new ASAnimation();
 				anim.setName(name);
+				anim.setOrder(0, new ASAnimOrder(new Posture(EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,new Location(player.getWorld(),0,0,0,0,0)),true));
 				asanims.put(name, anim);
 				save(anim);
-				sender.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
+				player.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
 			}
 		}).register();
 		//
@@ -250,12 +259,13 @@ public class ComAnim {
 	}
 	
 	public void reloadASAnims() {
+		main.getLogger().info("Reloading ArmorStand's Animations (.yml files)");
 		asanims.clear();
-		File[] fileslist = animFolder.listFiles(asanimFileNameFilter);
+		File[] fileslist = animFolder.listFiles(ymlFileNameFilter);
 		for (File file : fileslist) {
 			YamlConfiguration config = getConfig(file);
 			if (config!=null) {
-				asanims.put(file.getName(),(ASAnimation)config.get("animation"));
+				asanims.put(file.getName().replace(".yml", ""),(ASAnimation)config.get("animation"));
 			}else {
 				main.getLogger().warning("The file "+file.getName()+" failed to load.");
 			}
@@ -281,7 +291,16 @@ public class ComAnim {
 		for (ASAnimEditor edt : editors) {
 			if (edt.player.equals(p)) {Editor=edt;};
 		}
-		if (Editor!=null) {editors.remove(Editor);};
+		if (Editor!=null) {
+			editors.remove(Editor);
+			CommandAPI.updateRequirements(p);
+		};
+	}
+	
+	public void removeEditor(ASAnimEditor edt) {
+		editors.remove(edt);
+		CommandAPI.updateRequirements(edt.player);
+		edt.player.sendMessage(ChatColor.GREEN+"Vous quittez le mode édition");
 	}
 	
 	public void onPlayerDC(PlayerQuitEvent evt) {

@@ -42,6 +42,8 @@ public class ASAnimEditor {
 			p.sendMessage(ChatColor.GREEN+"Vous passez en mode édition.");
 			animator=new ASAnimator(main,as);
 			as.setGravity(false);
+			as.setBasePlate(false);
+			as.setArms(true);
 			an.play(currentFrame, as);
 		}
 		animManager=anmng;
@@ -75,11 +77,13 @@ public class ASAnimEditor {
 	public void exit() {
 		animator.stop();
 		as.remove();
-		player.sendMessage(ChatColor.GREEN+"Vous quittez le mode édition");
+		animManager.removeEditor(player);
 	}
 	
 	public void save() {
-		if (animManager.save(anim)) {player.sendMessage(ChatColor.DARK_GREEN+"Animation sauvegardée!");}
+		if (animManager.save(anim)) {player.sendMessage(ChatColor.DARK_GREEN+"Animation sauvegardée!");}else {
+			player.sendMessage(ChatColor.RED+"Impossible de sauvegarder l'animation.");
+		}
 	}
 	
 	public void pause() {

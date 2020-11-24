@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.ArmorStand;
-
+@SerializableAs("ASAnimation")
 public class ASAnimation implements ConfigurationSerializable {
 	
 	public final HashMap<Integer,ASAnimOrder> orders = new HashMap<Integer,ASAnimOrder>();
@@ -32,6 +33,10 @@ public class ASAnimation implements ConfigurationSerializable {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("name", name);
 		for (Integer i : orders.keySet()) {
+			if (orders.get(i)==null) {
+			}else {
+				System.out.println(orders.get(i));
+			}
 			serialized.put(i.toString(), orders.get(i));
 		}
 		return serialized;
@@ -41,7 +46,9 @@ public class ASAnimation implements ConfigurationSerializable {
 		ASAnimation anim = new ASAnimation();
 		anim.setName((String) args.get("name"));
 		for (String s : args.keySet()) {
-			anim.setOrder(Integer.parseInt(s), (ASAnimOrder) args.get(s));
+			if ((!s.contains("==")) && (!s.contains("name"))) {
+				anim.setOrder(Integer.parseInt(s), (ASAnimOrder) args.get(s));
+			}
 		}
 		return anim;
 	}

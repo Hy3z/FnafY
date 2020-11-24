@@ -8,6 +8,7 @@ import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
+import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class FnafYMain extends JavaPlugin {
@@ -20,6 +21,7 @@ public class FnafYMain extends JavaPlugin {
 	public void onEnable() {
 		super.onEnable();
 		//Register serializables//
+		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
 		ConfigurationSerialization.registerClass(Posture.class, "Posture");
 		//

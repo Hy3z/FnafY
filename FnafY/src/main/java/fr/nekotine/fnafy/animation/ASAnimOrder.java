@@ -7,12 +7,13 @@ import java.util.Map;
 import org.bukkit.Axis;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import fr.nekotine.fnafy.commands.DoubleAddOrSet;
 import fr.nekotine.fnafy.utils.Posture;
-
+@SerializableAs("ASAnimOrder")
 public class ASAnimOrder implements ConfigurationSerializable{
 	
 	public final Posture pose;

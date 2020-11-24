@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.ArmorStand;
-
+@SerializableAs("ASAnimation")
 public class ASAnimation implements ConfigurationSerializable {
 	
 	public final HashMap<Integer,ASAnimOrder> orders = new HashMap<Integer,ASAnimOrder>();

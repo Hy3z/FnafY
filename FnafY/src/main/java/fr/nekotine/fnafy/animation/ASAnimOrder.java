@@ -151,11 +151,11 @@ public class ASAnimOrder implements ConfigurationSerializable{
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("pose",pose);
 		serialized.put("relative", relative);
-		return null;
+		return serialized;
 	}
 	
 	public static ASAnimOrder deserialize(Map<String, Object> args) {
-		return new ASAnimOrder((Posture)args.get("pose"),(boolean)args.get("relative"));
+		return new ASAnimOrder((Posture)args.get("pose"),(boolean) args.get("relative"));
 	}
 	
 }

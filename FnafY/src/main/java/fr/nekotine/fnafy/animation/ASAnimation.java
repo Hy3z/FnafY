@@ -33,6 +33,10 @@ public class ASAnimation implements ConfigurationSerializable {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("name", name);
 		for (Integer i : orders.keySet()) {
+			if (orders.get(i)==null) {
+			}else {
+				System.out.println(orders.get(i));
+			}
 			serialized.put(i.toString(), orders.get(i));
 		}
 		return serialized;

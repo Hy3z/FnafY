@@ -19,6 +19,7 @@ public class FnafYMain extends JavaPlugin {
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper commandManager = new ComMapper(this);
 	private String mapName = "";
+	
 	public void onEnable() {
 		super.onEnable();
 		//Register serializables//

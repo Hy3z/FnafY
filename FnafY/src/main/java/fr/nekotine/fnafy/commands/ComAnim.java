@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Axis;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -247,7 +248,7 @@ public class ComAnim {
 			}else {
 				ASAnimation anim=new ASAnimation();
 				anim.setName(name);
-				anim.setOrder(0, new ASAnimOrder(new Posture(EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,player.getLocation().clone()),true));
+				anim.setOrder(0, new ASAnimOrder(new Posture(EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,new Location(player.getWorld(),0,0,0,0,0)),true));
 				asanims.put(name, anim);
 				save(anim);
 				player.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");

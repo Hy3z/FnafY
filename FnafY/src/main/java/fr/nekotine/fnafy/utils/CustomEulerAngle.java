@@ -20,7 +20,7 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 		serialized.put("z", super.getZ());
 		return serialized;
 	}
-	public static EulerAngle deserialize(Map<String, Object> args) {
+	public static CustomEulerAngle deserialize(Map<String, Object> args) {
 		double xx=0;
 		double yy=0;
 		double zz=0;
@@ -33,10 +33,33 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 		 if (args.containsKey("z")){
 			 zz=(double)args.get("z");
 		 }
-		 return new EulerAngle(xx, yy, zz);
+		 return new CustomEulerAngle(xx, yy, zz);
 	 }
 	
 	public static final CustomEulerAngle zero() {
 		return new CustomEulerAngle(0,0,0);
+	}
+	
+	@Override
+	public CustomEulerAngle add(double x, double y, double z) {
+		return new CustomEulerAngle(super.getX()+x, super.getY()+y, super.getZ()+z);
+	}
+	
+	@Override
+	public CustomEulerAngle setX(double x) {
+		super.setX(x);
+		return this;
+	}
+	
+	@Override
+	public CustomEulerAngle setY(double y) {
+		super.setY(y);
+		return this;
+	}
+	
+	@Override
+	public CustomEulerAngle setZ(double z) {
+		super.setZ(z);
+		return this;
 	}
 }

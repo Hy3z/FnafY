@@ -20,12 +20,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.util.EulerAngle;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.AxisArgument;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.CustomArgument.CustomArgumentException;
 import dev.jorel.commandapi.arguments.CustomArgument.MessageBuilder;
@@ -35,6 +35,7 @@ import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimEditor;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class ComAnim {
@@ -231,6 +232,7 @@ public class ComAnim {
 			if (e!=null) {
 				IntegerAddOrSet a = (IntegerAddOrSet) args[0];
 				e.setFrame(a.isRelative()?e.getCurrentFrame()+a.getValue():a.getValue());
+				e.refreshPose();
 			}else {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
@@ -248,10 +250,50 @@ public class ComAnim {
 			}else {
 				ASAnimation anim=new ASAnimation();
 				anim.setName(name);
-				anim.setOrder(0, new ASAnimOrder(new Posture(EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,new Location(player.getWorld(),0,0,0,0,0)),true));
+				anim.setOrder(0, new ASAnimOrder(
+						new Posture(CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),
+								CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),new Location(player.getWorld(),0,0,0,0,0)),true));
 				asanims.put(name, anim);
 				save(anim);
 				player.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
+			}
+		}).register();
+		//anime loop <boolean>
+		arguments.clear();
+	    arguments.put("loop", new LiteralArgument("loop").withRequirement(isInEdition));
+	    arguments.put("value",new BooleanArgument());
+		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
+			ASAnimEditor e=null;
+			for (ASAnimEditor edt : editors) {
+				if (edt.player.equals(player)) {
+					e=edt;
+				}
+			}
+			if (e!=null) {
+				boolean loop = (boolean) args[0];
+				e.setLoop(loop);
+				player.sendMessage(ChatColor.LIGHT_PURPLE+"Le bouclage de l'aperçu de l'animation "+(loop?"est bouclé":"est non bouclé")+".");
+			}else {
+				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
+			}
+		}).register();
+		//anime setrelative <boolean>
+		arguments.clear();
+	    arguments.put("setrelative", new LiteralArgument("setrelative").withRequirement(isInEdition));
+	    arguments.put("add/setValue",IntAddSetValue());
+		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
+			ASAnimEditor e=null;
+			for (ASAnimEditor edt : editors) {
+				if (edt.player.equals(player)) {
+					e=edt;
+				}
+			}
+			if (e!=null) {
+				boolean rel = (boolean) args[0];
+				e.getFrameOrder().relative=rel;
+				player.sendMessage(ChatColor.LIGHT_PURPLE+"La position est devenue "+(rel?"relative":"non relative")+".");
+			}else {
+				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
 		}).register();
 		//

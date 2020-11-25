@@ -280,7 +280,7 @@ public class ComAnim {
 		//anime setrelative <boolean>
 		arguments.clear();
 	    arguments.put("setrelative", new LiteralArgument("setrelative").withRequirement(isInEdition));
-	    arguments.put("add/setValue",IntAddSetValue());
+	    arguments.put("value",new BooleanArgument());
 		new CommandAPICommand("anime").withArguments(arguments).executesPlayer((player,args)->{
 			ASAnimEditor e=null;
 			for (ASAnimEditor edt : editors) {

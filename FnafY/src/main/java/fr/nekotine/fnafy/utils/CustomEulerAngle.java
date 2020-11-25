@@ -21,17 +21,17 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 		return serialized;
 	}
 	public static EulerAngle deserialize(Map<String, Object> args) {
-		 int xx=0;
-		 int yy=0;
-		 int zz=0;
+		double xx=0;
+		double yy=0;
+		double zz=0;
 		 if (args.containsKey("x")){
-			 xx=(int)args.get("x");
+			 xx=(double)args.get("x");
 		 }
 		 if (args.containsKey("y")){
-			 yy=(int)args.get("y");
+			 yy=(double)args.get("y");
 		 }
 		 if (args.containsKey("z")){
-			 zz=(int)args.get("z");
+			 zz=(double)args.get("z");
 		 }
 		 return new EulerAngle(xx, yy, zz);
 	 }

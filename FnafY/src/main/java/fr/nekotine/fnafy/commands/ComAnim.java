@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -334,15 +335,23 @@ public class ComAnim {
 			if (edt.player.equals(p)) {Editor=edt;};
 		}
 		if (Editor!=null) {
+			Editor.exit();
 			editors.remove(Editor);
 			CommandAPI.updateRequirements(p);
 		};
 	}
 	
 	public void removeEditor(ASAnimEditor edt) {
+		edt.exit();
 		editors.remove(edt);
 		CommandAPI.updateRequirements(edt.player);
 		edt.player.sendMessage(ChatColor.GREEN+"Vous quittez le mode édition");
+	}
+	
+	public void disable() {
+		for (ASAnimEditor edt : editors) {
+			edt.exit();
+		}
 	}
 	
 	public void onPlayerDC(PlayerQuitEvent evt) {

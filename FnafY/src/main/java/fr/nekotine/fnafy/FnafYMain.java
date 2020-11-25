@@ -48,4 +48,10 @@ public class FnafYMain extends JavaPlugin {
 	public void setMapName(String _mapName) {
 		mapName=_mapName;
 	}
+	
+	@Override
+	public void onDisable() {
+		super.onDisable();
+		animManager.disable();
+	}
 }

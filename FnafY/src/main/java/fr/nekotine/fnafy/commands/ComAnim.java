@@ -334,15 +334,23 @@ public class ComAnim {
 			if (edt.player.equals(p)) {Editor=edt;};
 		}
 		if (Editor!=null) {
+			Editor.exit();
 			editors.remove(Editor);
 			CommandAPI.updateRequirements(p);
 		};
 	}
 	
 	public void removeEditor(ASAnimEditor edt) {
+		edt.exit();
 		editors.remove(edt);
 		CommandAPI.updateRequirements(edt.player);
 		edt.player.sendMessage(ChatColor.GREEN+"Vous quittez le mode édition");
+	}
+	
+	public void disable() {
+		for (ASAnimEditor edt : editors) {
+			edt.exit();
+		}
 	}
 	
 	public void onPlayerDC(PlayerQuitEvent evt) {

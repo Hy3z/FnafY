@@ -46,12 +46,15 @@ public class YamlReader {
 	}
 	public boolean deleteMap(String mapName) {
 		File mapConfigFolder = new File(mapFolder, mapName);
+		for(File s : mapConfigFolder.listFiles()) {
+			s.delete();
+		}
 		main.getLogger().info(ChatColor.RED+"Map: ["+mapName+"] folder have been deleted! (only if it existed!)");
 		return mapConfigFolder.delete();
 	}
 	public YamlConfiguration getConfig(String mapName, String configName) {
 		if(mapExist(mapName)) {
-			File f = new File(new File(mapFolder,mapName),configName+".yml");
+			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 			if(f.exists()) {
 				YamlConfiguration config = new YamlConfiguration();
 				try {

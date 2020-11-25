@@ -1,6 +1,6 @@
 package fr.nekotine.fnafy.commands;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -18,13 +18,15 @@ import fr.nekotine.fnafy.room.RoomType;
 
 public class ComMapper {
 	private FnafYMain main;
-	private List<String> mapArray;
+	private List<String> mapArray = new ArrayList<String>();
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		if(mapArray.isEmpty()) {
-			mapArray = Arrays.asList(main.getYamlReader().getMapList());
+			for(String s : main.getYamlReader().getMapList()) {
+				mapArray.add(s);
+			}
 		}
 		argument.put("mapList", new StringArgument().overrideSuggestions((sender) -> {return mapArray.toArray(new String[mapArray.size()]);}));
 	}

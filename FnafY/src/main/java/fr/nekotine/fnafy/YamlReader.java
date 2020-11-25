@@ -54,8 +54,10 @@ public class YamlReader {
 	}
 	public YamlConfiguration getConfig(String mapName, String configName) {
 		if(mapExist(mapName)) {
+			System.out.println("mapExist : True");
 			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 			if(f.exists()) {
+				System.out.println("fileExist : True");
 				YamlConfiguration config = new YamlConfiguration();
 				try {
 					config.load(f);
@@ -107,9 +109,7 @@ public class YamlReader {
 	}
 	public boolean addRoom(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		System.out.println("RoomConfig: "+roomConfig);
 		if (roomConfig != null) {
-			System.out.println("roomExist: "+roomExist(mapName,roomName));
 			if(!roomExist(mapName,roomName)) {
 				roomConfig.set("roomType", null);
 				roomConfig.set("camLoc", null);

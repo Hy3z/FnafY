@@ -96,6 +96,7 @@ public class ComMapper {
 		setMapFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().deleteMap((String)args[0])) {
+				mapArray.remove((String)args[0]);
 				sender.sendMessage(ChatColor.DARK_GREEN+"Map supprimée!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas!");

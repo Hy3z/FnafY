@@ -125,7 +125,7 @@ public class YamlReader {
 		return getConfig(doorConfigName,mapName);
 	}
 	public String[] getMapList() {
-		return mapFolder.list();
+		return mapFolder.list();//
 	}
 	public Location getCameraLocation(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);

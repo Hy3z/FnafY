@@ -53,6 +53,7 @@ public class ASAnimEditor {
 		if (valid) {
 			currentFrame=frameNb;
 			animator.setFrame(currentFrame);
+			anim.play(currentFrame, as);
 			player.sendMessage(ChatColor.LIGHT_PURPLE+"L'image passe à: "+currentFrame);
 		}
 	}

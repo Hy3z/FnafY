@@ -65,7 +65,6 @@ public class ASAnimator {
 	
 	public void setFrame(int index) {
 		currentFrame=index;
-		currentAnim.play(currentFrame, as);
 	}
 	
 }

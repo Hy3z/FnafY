@@ -20,7 +20,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.util.EulerAngle;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -35,6 +34,7 @@ import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimEditor;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class ComAnim {
@@ -248,7 +248,9 @@ public class ComAnim {
 			}else {
 				ASAnimation anim=new ASAnimation();
 				anim.setName(name);
-				anim.setOrder(0, new ASAnimOrder(new Posture(EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,EulerAngle.ZERO,new Location(player.getWorld(),0,0,0,0,0)),true));
+				anim.setOrder(0, new ASAnimOrder(
+						new Posture(CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),
+								CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),new Location(player.getWorld(),0,0,0,0,0)),true));
 				asanims.put(name, anim);
 				save(anim);
 				player.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");

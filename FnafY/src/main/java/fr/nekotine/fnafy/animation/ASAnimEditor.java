@@ -7,10 +7,10 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.EulerAngle;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.commands.ComAnim;
+import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class ASAnimEditor {
@@ -99,8 +99,8 @@ public class ASAnimEditor {
 	}
 	
 	private Posture nullPosture(World w) {
-		return new Posture(new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),
-				new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new EulerAngle(0, 0, 0),new Location(w,0,0,0));
+		return new Posture(CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),
+				CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),new Location(w,0,0,0));
 	}
 	
 	public int getCurrentFrame() {

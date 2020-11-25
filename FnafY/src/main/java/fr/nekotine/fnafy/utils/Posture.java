@@ -4,21 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.util.EulerAngle;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 @SerializableAs("Posture")
 public class Posture implements ConfigurationSerializable {
 	
-	public final EulerAngle body;
-	public final EulerAngle leftArm;
-	public final EulerAngle rightArm;
-	public final EulerAngle leftLeg;
-	public final EulerAngle rightLeg;
-	public final EulerAngle head;
+	public final CustomEulerAngle body;
+	public final CustomEulerAngle leftArm;
+	public final CustomEulerAngle rightArm;
+	public final CustomEulerAngle leftLeg;
+	public final CustomEulerAngle rightLeg;
+	public final CustomEulerAngle head;
 	public final Location location;
 	
-	public Posture(EulerAngle body, EulerAngle leftArm, EulerAngle rightArm, EulerAngle leftLeg, EulerAngle rightLeg, EulerAngle head, Location loc) {
+	public Posture(CustomEulerAngle body, CustomEulerAngle leftArm, CustomEulerAngle rightArm, CustomEulerAngle leftLeg, CustomEulerAngle rightLeg, CustomEulerAngle head, Location loc) {
 		this.body=body;
 		this.leftArm=leftArm;
 		this.rightArm=rightArm;
@@ -43,12 +42,12 @@ public class Posture implements ConfigurationSerializable {
 		return serialized;
 	}
 	public static Posture deserialize(Map<String, Object> args) {
-		EulerAngle eBody = (EulerAngle)args.get("body");
-		EulerAngle eLeftArm = (EulerAngle)args.get("leftArm");
-		EulerAngle eRightArm = (EulerAngle)args.get("rightArm");
-		EulerAngle eLeftLeg = (EulerAngle)args.get("leftLeg");
-		EulerAngle eRightLeg = (EulerAngle)args.get("rightLeg");
-		EulerAngle eHead = (EulerAngle)args.get("head");
+		CustomEulerAngle eBody = (CustomEulerAngle)args.get("body");
+		CustomEulerAngle eLeftArm = (CustomEulerAngle)args.get("leftArm");
+		CustomEulerAngle eRightArm = (CustomEulerAngle)args.get("rightArm");
+		CustomEulerAngle eLeftLeg = (CustomEulerAngle)args.get("leftLeg");
+		CustomEulerAngle eRightLeg = (CustomEulerAngle)args.get("rightLeg");
+		CustomEulerAngle eHead = (CustomEulerAngle)args.get("head");
 		Location loc = (Location)args.get("location");
 		return new Posture(eBody, eLeftArm, eRightArm, eLeftLeg, eRightLeg, eHead, loc);
 	 }

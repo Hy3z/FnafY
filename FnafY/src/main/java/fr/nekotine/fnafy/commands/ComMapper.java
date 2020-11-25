@@ -23,7 +23,7 @@ public class ComMapper {
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 		mapArray = Arrays.asList(main.getYamlReader().getMapList());
-	}//
+	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("mapList", new StringArgument().overrideSuggestions((sender) -> {return mapArray.toArray(new String[mapArray.size()]);}));
 	}

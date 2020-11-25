@@ -1,7 +1,5 @@
 package fr.nekotine.fnafy.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -22,7 +20,9 @@ public class ComMapper {
 	private List<String> mapArray;
 	public ComMapper(FnafYMain _main) {
 		main=_main;
-		mapArray = Arrays.asList(main.getYamlReader().getMapList());
+		for(String map : main.getYamlReader().getMapList()) {
+			mapArray.add(map);
+		}
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("mapList", new StringArgument().overrideSuggestions((sender) -> {return mapArray.toArray(new String[mapArray.size()]);}));

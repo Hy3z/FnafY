@@ -104,7 +104,9 @@ public class YamlReader {
 	}
 	public boolean addRoom(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		System.out.println("RoomConfig: "+roomConfig);
 		if (roomConfig != null) {
+			System.out.println("roomExist: "+roomExist(mapName,roomName));
 			if(!roomExist(mapName,roomName)) {
 				roomConfig.set("roomType", null);
 				roomConfig.set("camLoc", null);

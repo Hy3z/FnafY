@@ -1,6 +1,9 @@
 package fr.nekotine.fnafy.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,11 +19,13 @@ import fr.nekotine.fnafy.room.RoomType;
 
 public class ComMapper {
 	private FnafYMain main;
+	private List<String> mapArray;
 	public ComMapper(FnafYMain _main) {
 		main=_main;
+		mapArray = Arrays.asList(main.getYamlReader().getMapList());
 	}//
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("mapList", new StringArgument().overrideSuggestions(main.getYamlReader().getMapList()));
+		argument.put("mapList", new StringArgument().overrideSuggestions((sender) -> {return mapArray.toArray(new String[mapArray.size()]);}));
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
 		String[] doorType = new String[DoorType.values().length];
@@ -75,6 +80,7 @@ public class ComMapper {
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().createMap((String)args[0])) {
+				mapArray.add((String)args[0]);
 				sender.sendMessage(ChatColor.DARK_GREEN+"Map crée!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Une map existe déjà avec ce nom");

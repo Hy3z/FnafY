@@ -11,7 +11,6 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 
 	public CustomEulerAngle(double x, double y, double z) {
 		super(x, y, z);
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public Map<String, Object> serialize() {
@@ -36,4 +35,8 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 		 }
 		 return new EulerAngle(xx, yy, zz);
 	 }
+	
+	public static final CustomEulerAngle zero() {
+		return new CustomEulerAngle(0,0,0);
+	}
 }

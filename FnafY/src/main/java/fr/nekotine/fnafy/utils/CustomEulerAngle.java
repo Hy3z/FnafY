@@ -39,4 +39,27 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 	public static final CustomEulerAngle zero() {
 		return new CustomEulerAngle(0,0,0);
 	}
+	
+	@Override
+	public CustomEulerAngle add(double x, double y, double z) {
+		return new CustomEulerAngle(super.getX()+x, super.getY()+y, super.getZ()+z);
+	}
+	
+	@Override
+	public CustomEulerAngle setX(double x) {
+		super.setX(x);
+		return this;
+	}
+	
+	@Override
+	public CustomEulerAngle setY(double y) {
+		super.setY(y);
+		return this;
+	}
+	
+	@Override
+	public CustomEulerAngle setZ(double z) {
+		super.setZ(z);
+		return this;
+	}
 }

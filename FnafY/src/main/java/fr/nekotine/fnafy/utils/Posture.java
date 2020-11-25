@@ -50,5 +50,5 @@ public class Posture implements ConfigurationSerializable {
 		CustomEulerAngle eHead = (CustomEulerAngle)args.get("head");
 		Location loc = (Location)args.get("location");
 		return new Posture(eBody, eLeftArm, eRightArm, eLeftLeg, eRightLeg, eHead, loc);
-	 }
+	}
 }

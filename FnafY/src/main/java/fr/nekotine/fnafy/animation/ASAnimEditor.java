@@ -74,13 +74,12 @@ public class ASAnimEditor {
 	
 	public void close() {
 		save();
-		exit();
+		animManager.removeEditor(player);
 	}
 	
 	public void exit() {
 		animator.stop();
 		as.remove();
-		animManager.removeEditor(player);
 		player.sendMessage(ChatColor.DARK_PURPLE+"Vous quittez le mode édition.");
 	}
 	

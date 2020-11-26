@@ -130,7 +130,7 @@ public class ComAnim {
 				}
 			}
 			if (e!=null) {
-				e.exit();
+				removeEditor(e);
 			}else {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
@@ -349,7 +349,7 @@ public class ComAnim {
 	
 	public void disable() {
 		for (ASAnimEditor edt : editors) {
-			edt.exit();
+			removeEditor(edt);
 		}
 	}
 	

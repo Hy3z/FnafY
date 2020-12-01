@@ -105,12 +105,13 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
 		setAutoCompleteArgument(argument,"addDoor");
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().addDoor((String)args[0],(String)args[1])) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[3]+"] crée");
+				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] crée");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas, ou la porte existe déjà");
 			}
@@ -118,12 +119,13 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"addRoom");
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().addRoom((String)args[0],(String)args[1])) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[3]+"] crée");
+				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[1]+"] crée");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas, ou la salle existe déjà");
 			}
@@ -131,6 +133,7 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
 		setAutoCompleteArgument(argument,"setDoorType");
 		setMapFinderArgument(argument); //map
 		setDoorFinderArgument(argument); //door
@@ -145,6 +148,7 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"setRoomType");
 		setMapFinderArgument(argument); //map
 		setRoomFinderArgument(argument); //door
@@ -159,6 +163,7 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"setCamLoc");
 		setMapFinderArgument(argument);
 		setRoomFinderArgument(argument);
@@ -176,6 +181,7 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
 		setAutoCompleteArgument(argument,"LinkRoomToDoor");
 		setMapFinderArgument(argument);
 		setDoorFinderArgument(argument);

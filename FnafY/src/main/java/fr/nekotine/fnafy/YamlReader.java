@@ -54,10 +54,8 @@ public class YamlReader {
 	}
 	public YamlConfiguration getConfig(String mapName, String configName) {
 		if(mapExist(mapName)) {
-			System.out.println("mapExist : True");
 			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 			if(f.exists()) {
-				System.out.println("fileExist : True");
 				YamlConfiguration config = new YamlConfiguration();
 				try {
 					config.load(f);
@@ -87,21 +85,38 @@ public class YamlReader {
 		}
 		return false;
 	}
+	public boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
+		File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
+		try {
+			config.save(f);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public boolean saveDoorConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, doorConfigName, config);
+	}
+	public boolean saveRoomConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, roomConfigName, config);
+	}
 	public boolean addDoor(String mapName, String doorName) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(!doorExist(mapName, doorName)) {
-				doorConfig.set("doorType", null);
-				doorConfig.set("doorLoc", null);
-				doorConfig.set("length.x", null);
-				doorConfig.set("length.y", null);
-				doorConfig.set("length.z", null);
-				doorConfig.set("room1Name", null);
-				doorConfig.set("room2Name", null);
+				doorConfig.set(doorName+".doorType", "");
+				doorConfig.set(doorName+".doorLoc", "");
+				doorConfig.set(doorName+".length.x", "");
+				doorConfig.set(doorName+".length.y", "");
+				doorConfig.set(doorName+".length.z", "");
+				doorConfig.set(doorName+".room1Name", "");
+				doorConfig.set(doorName+".room2Name", "");
 				for (String anim : animList){
-					doorConfig.set("animPose.room1."+anim, null);
-					doorConfig.set("animPose.room2."+anim, null);
+					doorConfig.set(doorName+".animPose.room1."+anim, "");
+					doorConfig.set(doorName+".animPose.room2."+anim, "");
 				}
+				saveDoorConfig(mapName,doorConfig);
 				return true;
 			}
 		}
@@ -111,21 +126,22 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(!roomExist(mapName,roomName)) {
-				roomConfig.set("roomType", null);
-				roomConfig.set("camLoc", null);
+				roomConfig.set(roomName+".roomType", "");
+				roomConfig.set(roomName+".camLoc", "");
 				for (String anim : animList){
-					roomConfig.set("animPose."+anim, null);
+					roomConfig.set(roomName+".animPose."+anim, "");
 				}
+				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}
 		}
 		return false;
 	}
 	public YamlConfiguration getRoomConfig(String mapName) {
-		return getConfig(roomConfigName,mapName);
+		return getConfig(mapName,roomConfigName);
 	}
 	public YamlConfiguration getDoorConfig(String mapName) {
-		return getConfig(doorConfigName,mapName);
+		return getConfig(mapName,doorConfigName);
 	}
 	public String[] getMapList() {
 		return mapFolder.list();//
@@ -143,7 +159,8 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName, loc);
+				roomConfig.set(roomName+".camLoc", loc);
+				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}
 		}
@@ -172,6 +189,7 @@ public class YamlReader {
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
 				roomConfig.set(roomName+".roomType", roomType);
+				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}
 		}
@@ -182,6 +200,7 @@ public class YamlReader {
 		if (doorConfig != null) {
 			if(doorExist(mapName, doorName)) {
 				doorConfig.set(doorName+".doorType", doorType);
+				saveDoorConfig(mapName,doorConfig);
 				return true;
 			}
 		}
@@ -207,7 +226,9 @@ public class YamlReader {
 			if(doorExist(mapName, doorName)) {
 				if(roomExist(mapName, roomName)) {
 					if(doorNum==1 || doorNum==2) {
-						doorConfig.set(doorName+".room+"+doorNum+"Name", roomName);
+						doorConfig.set(doorName+".room"+doorNum+"Name", roomName);
+						saveDoorConfig(mapName,doorConfig);
+						return true;
 					}
 				}
 			}

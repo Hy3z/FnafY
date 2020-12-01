@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.Vector;
 
 import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
@@ -29,6 +30,45 @@ public class YamlReader {
 			main.getLogger().info(ChatColor.GREEN+"Maps file created");
 		 }
 	}
+	//--------------------------------------------------------------------------------------
+	private YamlConfiguration getConfig(String mapName, String configName) {
+		if(mapExist(mapName)) {
+			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
+			if(f.exists()) {
+				YamlConfiguration config = new YamlConfiguration();
+				try {
+					config.load(f);
+					return config;
+				}catch (IOException | InvalidConfigurationException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+	private boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
+		File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
+		try {
+			config.save(f);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	private YamlConfiguration getRoomConfig(String mapName) {
+		return getConfig(mapName,roomConfigName);
+	}
+	private YamlConfiguration getDoorConfig(String mapName) {
+		return getConfig(mapName,doorConfigName);
+	}
+	private boolean saveDoorConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, doorConfigName, config);
+	}
+	private boolean saveRoomConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, roomConfigName, config);
+	}
+	//--------------------------------------------------------------------------------------
 	public boolean createMap(String mapName) {
 		File mapConfigFolder = new File(mapFolder, mapName);
 		if (!mapConfigFolder.exists()) {
@@ -52,25 +92,13 @@ public class YamlReader {
 		main.getLogger().info(ChatColor.RED+"Map: ["+mapName+"] folder have been deleted! (only if it existed!)");
 		return mapConfigFolder.delete();
 	}
-	public YamlConfiguration getConfig(String mapName, String configName) {
-		if(mapExist(mapName)) {
-			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
-			if(f.exists()) {
-				YamlConfiguration config = new YamlConfiguration();
-				try {
-					config.load(f);
-					return config;
-				}catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-					return null;
-				}
-			}
-		}
-		return null;
-	}
 	public boolean mapExist(String mapName) {
 		return new File(mapFolder,mapName).exists();
 	}
+	public String[] getMapList() {
+		return mapFolder.list();//
+	}
+	//--------------------------------------------------------------------------------------
 	public boolean doorExist(String mapName, String doorName) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
@@ -78,34 +106,11 @@ public class YamlReader {
 		}
 		return false;
 	}
-	public boolean roomExist(String mapName, String roomName) {
-		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		if (roomConfig != null) {
-			return getRoomList(mapName).contains(roomName);
-		}
-		return false;
-	}
-	public boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
-		File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
-		try {
-			config.save(f);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-	public boolean saveDoorConfig(String mapName, YamlConfiguration config) {
-		return saveConfig(mapName, doorConfigName, config);
-	}
-	public boolean saveRoomConfig(String mapName, YamlConfiguration config) {
-		return saveConfig(mapName, roomConfigName, config);
-	}
 	public boolean addDoor(String mapName, String doorName) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(!doorExist(mapName, doorName)) {
-				doorConfig.set(doorName+".doorType", "");
+				doorConfig.set(doorName+".doorType", "Unknown");
 				doorConfig.set(doorName+".doorLoc", "");
 				doorConfig.set(doorName+".length.x", "");
 				doorConfig.set(doorName+".length.y", "");
@@ -130,6 +135,87 @@ public class YamlReader {
 				saveDoorConfig(mapName,doorConfig);
 				return true;
 			}
+		}
+		return false;
+	}
+	public DoorType getDoorType(String mapName, String doorName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				try {
+					return DoorType.valueOf(doorConfig.getString(doorName+".roomType"));
+				} catch (IllegalArgumentException e) {
+				}
+			}
+		}
+		return null;
+	}
+	public boolean setDoorType(String mapName, String doorName, DoorType doorType) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				doorConfig.set(doorName+".doorType", doorType.toString());
+				saveDoorConfig(mapName,doorConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	public Set<String> getDoorList(String mapName){
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			return doorConfig.getKeys(false);
+		}
+		return null;
+	}
+	public boolean linkRoomToDoor(String mapName, String doorName, String roomName, int doorNum) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(doorNum==1 || doorNum==2) {
+						doorConfig.set(doorName+".room"+doorNum+"Name", roomName);
+						saveDoorConfig(mapName,doorConfig);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public String getLinkedRoomName(String mapName, String doorName, int doorNum) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				return doorConfig.getString(doorName+".room"+doorNum+"Name");
+			}
+		}
+		return "";
+	}
+	public Location getDoorLocation(String mapName, String doorName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				return doorConfig.getLocation(doorName+".doorLoc");
+			}
+		}
+		return null;
+	}
+	public Vector getDoorLength(String mapName, String doorName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				return new Vector(doorConfig.getDouble(doorName+".length.x"),doorConfig.getDouble(doorName+".length.y"),
+						doorConfig.getDouble(doorName+".length.z"));
+			}
+		}
+		return null;
+	}
+	//--------------------------------------------------------------------------------------
+	public boolean roomExist(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return getRoomList(mapName).contains(roomName);
 		}
 		return false;
 	}
@@ -159,15 +245,6 @@ public class YamlReader {
 		}
 		return false;
 	}
-	public YamlConfiguration getRoomConfig(String mapName) {
-		return getConfig(mapName,roomConfigName);
-	}
-	public YamlConfiguration getDoorConfig(String mapName) {
-		return getConfig(mapName,doorConfigName);
-	}
-	public String[] getMapList() {
-		return mapFolder.list();//
-	}
 	public Location getCameraLocation(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -192,16 +269,10 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
+				try {
 				return RoomType.valueOf(roomConfig.getString(roomName+".roomType"));
-			}
-		}
-		return null;
-	}
-	public DoorType getDoorType(String mapName, String doorName) {
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			if(doorExist(mapName, doorName)) {
-				return DoorType.valueOf(doorConfig.getString(doorName+".roomType"));
+				} catch (IllegalArgumentException e) {
+				}
 			}
 		}
 		return null;
@@ -210,19 +281,8 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName+".roomType", roomType);
+				roomConfig.set(roomName+".roomType", roomType.toString());
 				saveRoomConfig(mapName,roomConfig);
-				return true;
-			}
-		}
-		return false;
-	}
-	public boolean setDoorType(String mapName, String doorName, DoorType doorType) {
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			if(doorExist(mapName, doorName)) {
-				doorConfig.set(doorName+".doorType", doorType);
-				saveDoorConfig(mapName,doorConfig);
 				return true;
 			}
 		}
@@ -234,29 +294,7 @@ public class YamlReader {
 			return roomConfig.getKeys(false);
 		}
 		return null;
-	}
-	public Set<String> getDoorList(String mapName){
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			return doorConfig.getKeys(false);
-		}
-		return null;
-	}
-	public boolean linkRoomToDoor(String mapName, String doorName, String roomName, int doorNum) {
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			if(doorExist(mapName, doorName)) {
-				if(roomExist(mapName, roomName)) {
-					if(doorNum==1 || doorNum==2) {
-						doorConfig.set(doorName+".room"+doorNum+"Name", roomName);
-						saveDoorConfig(mapName,doorConfig);
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+	}	
 	public ArrayList<Posture> getAnimatronicRoomPostures(Animatronic animatronic, String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {

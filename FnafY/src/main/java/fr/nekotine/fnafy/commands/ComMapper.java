@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import dev.jorel.commandapi.CommandAPICommand;
@@ -67,6 +68,21 @@ public class ComMapper {
 	private void setFlatArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("arg", new StringArgument());
 	}
+	private void sendDoorInfo(CommandSender sender, String mapName, String doorName) {
+		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
+		sender.sendMessage(ChatColor.WHITE+"doorType: "+ChatColor.GOLD+main.getYamlReader().getDoorType(mapName, doorName).toString());
+		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName).toString());
+		sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+main.getYamlReader().getDoorLocation(mapName, doorName).toVector().toString());
+		sender.sendMessage(ChatColor.WHITE+"room1Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 1));
+		sender.sendMessage(ChatColor.WHITE+"room2Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 2));
+		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
+	}
+	private void sendRoomInfo(CommandSender sender, String mapName, String roomName) {
+		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+roomName+ChatColor.WHITE+"] --");
+		sender.sendMessage(ChatColor.WHITE+"roomType: "+ChatColor.GOLD+main.getYamlReader().getRoomType(mapName, roomName).toString());
+		sender.sendMessage(ChatColor.WHITE+"camLoc: "+ChatColor.GOLD+main.getYamlReader().getCameraLocation(mapName, roomName).toVector().toString());
+		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+roomName+ChatColor.WHITE+"] --");
+	}
 	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");
 		LinkedHashMap<String, Argument> argument = new LinkedHashMap<String,Argument>();
@@ -74,7 +90,12 @@ public class ComMapper {
 		setAutoCompleteArgument(argument,"setMap");
 		setMapFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			main.setMapName((String)args[0]);
+			if(main.getYamlReader().mapExist((String)args[0])) {
+				main.setMapName((String)args[0]);
+				sender.sendMessage(ChatColor.GREEN+"Map set!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas!");
+			}
 		}).register();
 		argument.clear();
 		
@@ -103,7 +124,7 @@ public class ComMapper {
 			}
 		}).register();
 		argument.clear();
-		
+		//--------------------------------------------------------------------------------------
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"door");
 		setAutoCompleteArgument(argument,"add");
@@ -133,6 +154,55 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"setType");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setDoorTypeArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			try {
+				if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.valueOf((String)args[2]))) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'éxistent pas!");
+				}
+			} catch (IllegalArgumentException e) {
+				sender.sendMessage(ChatColor.RED+"Ce type de porte n'éxiste pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"linkToRoom");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		set1Or2Argument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().linkRoomToDoor((String)args[0],(String)args[1],(String)args[2],(int)args[3])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[2]+"] liée à porte ["+(String)args[1]+"] à la sortie n°"+(int)args[3]);
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle ou le numéro n'existent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"getInfo");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().doorExist((String)args[0], (String)args[1])) {
+				sendDoorInfo(sender, (String)args[0], (String)args[1]);
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'existent pas!");
+			}
+		}).register();
+		argument.clear();
+		//--------------------------------------------------------------------------------------
+		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
@@ -161,31 +231,20 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
-		setAutoCompleteArgument(argument,"door");
-		setAutoCompleteArgument(argument,"setType");
-		setMapFinderArgument(argument);
-		setDoorFinderArgument(argument);
-		setDoorTypeArgument(argument);
-		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.valueOf((String)args[2]))) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
-			}else {
-				sender.sendMessage(ChatColor.RED+"Cette map, la porte ou le type de porte n'existent pas!");
-			}
-		}).register();
-		argument.clear();
-		
-		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"setType");
 		setMapFinderArgument(argument);
 		setRoomFinderArgument(argument);
 		setRoomTypeArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.valueOf((String)args[2]))) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
-			}else {
-				sender.sendMessage(ChatColor.RED+"Cette map, la salle ou le type de salle n'existent pas!");
+			try {
+				if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.valueOf((String)args[2]))) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'existent pas!");
+				}
+			} catch (IllegalArgumentException e) {
+				sender.sendMessage(ChatColor.RED+"Ce type de salle n'éxiste pas!");
 			}
 		}).register();
 		argument.clear();
@@ -209,20 +268,17 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
-		setAutoCompleteArgument(argument,"door");
-		setAutoCompleteArgument(argument,"LinkToRoom");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"getInfo");
 		setMapFinderArgument(argument);
-		setDoorFinderArgument(argument);
 		setRoomFinderArgument(argument);
-		set1Or2Argument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().linkRoomToDoor((String)args[0],(String)args[1],(String)args[2],(int)args[3])) {
-				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[2]+"] liée à porte ["+(String)args[1]+"] à la sortie n°"+(int)args[3]);
+			if(main.getYamlReader().roomExist((String)args[0], (String)args[1])) {
+				sendRoomInfo(sender, (String)args[0], (String)args[1]);
 			}else {
-				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle ou le numéro n'existent pas!");
+				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'existent pas!");
 			}
 		}).register();
-		argument.clear();
 		
 		main.getLogger().info("Mapper Commands registered");
 	}

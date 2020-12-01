@@ -122,6 +122,17 @@ public class YamlReader {
 		}
 		return false;
 	}
+	public boolean removeDoor(String mapName, String doorName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				doorConfig.set(doorName, null);
+				saveDoorConfig(mapName,doorConfig);
+				return true;
+			}
+		}
+		return false;
+	}
 	public boolean addRoom(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -131,6 +142,17 @@ public class YamlReader {
 				for (String anim : animList){
 					roomConfig.set(roomName+".animPose."+anim, "");
 				}
+				saveRoomConfig(mapName,roomConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean removeRoom(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName, null);
 				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}

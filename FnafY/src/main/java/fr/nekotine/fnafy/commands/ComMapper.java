@@ -23,12 +23,12 @@ public class ComMapper {
 		main=_main;
 	}
 	private void setMapFinderArgument(LinkedHashMap<String, Argument> argument) {
-		if(mapArray.isEmpty()) {
-			for(String s : main.getYamlReader().getMapList()) {
-				mapArray.add(s);
-			}
-		}
 		argument.put("mapList", new StringArgument().overrideSuggestions((sender) -> {return mapArray.toArray(new String[mapArray.size()]);}));
+	}
+	public void searchForMaps() {
+		for(String s : main.getYamlReader().getMapList()) {
+			mapArray.add(s);
+		}
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
 		String[] doorType = new String[DoorType.values().length];
@@ -52,13 +52,13 @@ public class ComMapper {
 		argument.put("roomNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2"}));
 	}
 	private void setDoorFinderArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("door", new StringArgument().overrideSuggestions((sender, args) -> {
-			return main.getYamlReader().getDoorList((String)args[2]).toArray(new String[0]);
+		argument.put("doorList", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getDoorList((String)args[3]).toArray(new String[0]);
 		}));	
 	}
 	private void setRoomFinderArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("room", new StringArgument().overrideSuggestions((sender, args) -> {
-			return main.getYamlReader().getRoomList((String)args[2]).toArray(new String[0]);
+		argument.put("roomList", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getRoomList((String)args[3]).toArray(new String[0]);
 		}));	
 	}
 	private void setAutoCompleteArgument(LinkedHashMap<String, Argument> argument, String hinted) {
@@ -106,7 +106,7 @@ public class ComMapper {
 		
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"door");
-		setAutoCompleteArgument(argument,"addDoor");
+		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
@@ -119,8 +119,22 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"delete");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeDoor((String)args[0],(String)args[1])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] supprimée");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'éxistent pas");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
-		setAutoCompleteArgument(argument,"addRoom");
+		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
@@ -133,11 +147,25 @@ public class ComMapper {
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"delete");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeRoom((String)args[0],(String)args[1])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Salle ["+(String)args[1]+"] supprimée");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'éxistent pas");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"door");
-		setAutoCompleteArgument(argument,"setDoorType");
-		setMapFinderArgument(argument); //map
-		setDoorFinderArgument(argument); //door
-		setDoorTypeArgument(argument); //doorType
+		setAutoCompleteArgument(argument,"setType");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setDoorTypeArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.valueOf((String)args[2]))) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
@@ -149,10 +177,10 @@ public class ComMapper {
 		
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
-		setAutoCompleteArgument(argument,"setRoomType");
-		setMapFinderArgument(argument); //map
-		setRoomFinderArgument(argument); //door
-		setRoomTypeArgument(argument); //doorType
+		setAutoCompleteArgument(argument,"setType");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setRoomTypeArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.valueOf((String)args[2]))) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
@@ -182,7 +210,7 @@ public class ComMapper {
 		
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"door");
-		setAutoCompleteArgument(argument,"LinkRoomToDoor");
+		setAutoCompleteArgument(argument,"LinkToRoom");
 		setMapFinderArgument(argument);
 		setDoorFinderArgument(argument);
 		setRoomFinderArgument(argument);

@@ -18,7 +18,7 @@ public class FnafYMain extends JavaPlugin {
 	private EventListener eListener;
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
-	private ComMapper commandManager = new ComMapper(this);
+	private ComMapper mapManager = new ComMapper(this);
 	private String mapName = "";
 	
 	public void onEnable() {
@@ -35,9 +35,10 @@ public class FnafYMain extends JavaPlugin {
 		yamlReader = new YamlReader(this);
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
-		commandManager.registerMapperCommands();
+		mapManager.registerMapperCommands();
 		//
 		animManager.reloadASAnims();
+		mapManager.searchForMaps();
 	}
 	public YamlReader getYamlReader() {
 		return yamlReader;

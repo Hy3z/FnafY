@@ -112,9 +112,7 @@ public class YamlReader {
 			if(!doorExist(mapName, doorName)) {
 				doorConfig.set(doorName+".doorType", "Unknown");
 				doorConfig.set(doorName+".doorLoc", "");
-				doorConfig.set(doorName+".length.x", "");
-				doorConfig.set(doorName+".length.y", "");
-				doorConfig.set(doorName+".length.z", "");
+				doorConfig.set(doorName+".length", "");
 				doorConfig.set(doorName+".room1Name", "");
 				doorConfig.set(doorName+".room2Name", "");
 				for (String anim : animList){
@@ -142,13 +140,10 @@ public class YamlReader {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(doorExist(mapName, doorName)) {
-				try {
-					return DoorType.valueOf(doorConfig.getString(doorName+".roomType"));
-				} catch (IllegalArgumentException e) {
+				return DoorType.fromString(doorConfig.getString(doorName+".roomType"));
 				}
 			}
-		}
-		return null;
+		return DoorType.Unknown;
 	}
 	public boolean setDoorType(String mapName, String doorName, DoorType doorType) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
@@ -205,8 +200,7 @@ public class YamlReader {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(doorExist(mapName, doorName)) {
-				return new Vector(doorConfig.getDouble(doorName+".length.x"),doorConfig.getDouble(doorName+".length.y"),
-						doorConfig.getDouble(doorName+".length.z"));
+				return doorConfig.getVector(doorName+".length");
 			}
 		}
 		return null;
@@ -269,13 +263,10 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
-				try {
-				return RoomType.valueOf(roomConfig.getString(roomName+".roomType"));
-				} catch (IllegalArgumentException e) {
+				return RoomType.fromString(roomConfig.getString(roomName+".roomType"));
 				}
 			}
-		}
-		return null;
+		return RoomType.Unknown;
 	}
 	public boolean setRoomType(String mapName, String roomName, RoomType roomType) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);

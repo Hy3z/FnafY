@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -71,17 +72,25 @@ public class ComMapper {
 	private void sendDoorInfo(CommandSender sender, String mapName, String doorName) {
 		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
 		sender.sendMessage(ChatColor.WHITE+"doorType: "+ChatColor.GOLD+main.getYamlReader().getDoorType(mapName, doorName).toString());
-		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName).toString());
-		sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+main.getYamlReader().getDoorLocation(mapName, doorName).toVector().toString());
+		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName));
+		Location doorLoc = main.getYamlReader().getDoorLocation(mapName, doorName);
+		if(doorLoc!=null) {
+			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+main.getYamlReader().getDoorLocation(mapName, doorName).toVector());
+		}else {
+			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+"null");
+		}
 		sender.sendMessage(ChatColor.WHITE+"room1Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 1));
 		sender.sendMessage(ChatColor.WHITE+"room2Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 2));
-		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
 	}
 	private void sendRoomInfo(CommandSender sender, String mapName, String roomName) {
 		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+roomName+ChatColor.WHITE+"] --");
 		sender.sendMessage(ChatColor.WHITE+"roomType: "+ChatColor.GOLD+main.getYamlReader().getRoomType(mapName, roomName).toString());
-		sender.sendMessage(ChatColor.WHITE+"camLoc: "+ChatColor.GOLD+main.getYamlReader().getCameraLocation(mapName, roomName).toVector().toString());
-		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+roomName+ChatColor.WHITE+"] --");
+		Location camLoc = main.getYamlReader().getCameraLocation(mapName, roomName);
+		if(camLoc!=null) {
+			sender.sendMessage(ChatColor.WHITE+"camLoc: "+ChatColor.GOLD+main.getYamlReader().getCameraLocation(mapName, roomName).toVector());
+		}else {
+			sender.sendMessage(ChatColor.WHITE+"camLoc: "+ChatColor.GOLD+"null");
+		}
 	}
 	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");
@@ -161,7 +170,7 @@ public class ComMapper {
 		setDoorTypeArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			try {
-				if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.valueOf((String)args[2]))) {
+				if(main.getYamlReader().setDoorType((String)args[0],(String)args[1],DoorType.fromString((String)args[2]))) {
 					sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
 				}else {
 					sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'éxistent pas!");
@@ -238,7 +247,7 @@ public class ComMapper {
 		setRoomTypeArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			try {
-				if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.valueOf((String)args[2]))) {
+				if(main.getYamlReader().setRoomType((String)args[0],(String)args[1],RoomType.fromString((String)args[2]))) {
 					sender.sendMessage(ChatColor.DARK_GREEN+"Porte ["+(String)args[1]+"] mise à jour!");
 				}else {
 					sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'existent pas!");

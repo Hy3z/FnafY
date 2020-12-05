@@ -7,6 +7,11 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.Bisected.Half;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
@@ -113,6 +118,7 @@ public class YamlReader {
 				doorConfig.set(doorName+".doorType", "Unknown");
 				doorConfig.set(doorName+".doorLoc", "");
 				doorConfig.set(doorName+".length", "");
+				doorConfig.set(doorName+".facing", "");
 				doorConfig.set(doorName+".room1Name", "");
 				doorConfig.set(doorName+".room2Name", "");
 				for (String anim : animList){
@@ -187,6 +193,17 @@ public class YamlReader {
 		}
 		return "";
 	}
+	private boolean setDoorLocation(String mapName, String doorName, Location loc) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				doorConfig.set(doorName+".doorLoc", loc);
+				saveDoorConfig(mapName, doorConfig);
+				return true;
+			}
+		}
+		return false;
+	}
 	public Location getDoorLocation(String mapName, String doorName) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
@@ -205,6 +222,68 @@ public class YamlReader {
 		}
 		return null;
 	}
+	public boolean setDoorLocationAndLength(String mapName, String doorName, Location doorLoc) {
+		if(doorLoc!=null) {
+			if(doorExist(mapName, doorName)) {
+				if(((Bisected)doorLoc.getBlock().getBlockData()).getHalf().equals(Half.TOP)){
+					doorLoc.add(0, -1, 0);
+				}
+				setDoorFacing(mapName, doorName, doorLoc.getBlock());
+				int minusX = +numberOfDoor(doorLoc.clone(), new Vector(-1, 0, 0));
+				int minusY = +numberOfDoor(doorLoc.clone(), new Vector(0, -2, 0));
+				int minusZ = +numberOfDoor(doorLoc.clone(), new Vector(0, 0, -1));
+				int x = numberOfDoor(doorLoc.clone(), new Vector(1, 0, 0))+minusX;
+				int y = numberOfDoor(doorLoc.clone(), new Vector(0, 2, 0))+minusY;
+				int z = numberOfDoor(doorLoc.clone(), new Vector(0, 0, 1))+minusZ;
+				setDoorLocation(mapName, doorName, doorLoc.add(-minusX, -minusY*2, -minusZ));
+				setDoorLength(mapName, doorName, new Vector(x,y,z));
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean setDoorLength(String mapName, String doorName, Vector vec) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				doorConfig.set(doorName+".length", vec);
+				saveDoorConfig(mapName, doorConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	private int numberOfDoor(Location doorLoc, Vector vec) {
+		doorLoc.add(vec);
+		Block b = doorLoc.getBlock();
+		if(b.getType().toString().contains("DOOR")) {
+			return 1+numberOfDoor(doorLoc,vec);
+		}
+		return 0;
+	}
+	private boolean setDoorFacing(String mapName, String doorName, Block block) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				doorConfig.set(doorName+".facing", ((Door)block.getBlockData()).getFacing().toString());
+				saveDoorConfig(mapName, doorConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	public BlockFace getDoorFacing(String mapName, String doorName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				String blockFaceString = doorConfig.getString(doorName+".facing");
+				if(blockFaceString.length()>0) {
+					return BlockFace.valueOf(blockFaceString);
+				}
+			}	
+		}
+		return null;
+	}
 	//--------------------------------------------------------------------------------------
 	public boolean roomExist(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -217,7 +296,7 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(!roomExist(mapName,roomName)) {
-				roomConfig.set(roomName+".roomType", "");
+				roomConfig.set(roomName+".roomType", "Unknown");
 				roomConfig.set(roomName+".camLoc", "");
 				for (String anim : animList){
 					roomConfig.set(roomName+".animPose."+anim, "");

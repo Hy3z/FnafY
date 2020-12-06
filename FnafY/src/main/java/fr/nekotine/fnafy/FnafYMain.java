@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
+import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
@@ -19,8 +20,11 @@ public class FnafYMain extends JavaPlugin {
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
-	private String mapName = "";
+	private ComGame gameManager = new ComGame(this);
 	
+	private String mapName = "";
+	private boolean gameRunnig=false;
+	//private ArrayList<Door> doorList = new ArrayList<Door>();
 	public void onEnable() {
 		super.onEnable();
 		//Register serializables//
@@ -36,6 +40,7 @@ public class FnafYMain extends JavaPlugin {
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
 		mapManager.registerMapperCommands();
+		gameManager.registerGameCommands();
 		//
 		animManager.reloadASAnims();
 		mapManager.searchForMaps();
@@ -49,7 +54,26 @@ public class FnafYMain extends JavaPlugin {
 	public void setMapName(String _mapName) {
 		mapName=_mapName;
 	}
-	
+	public boolean isGameRunning() {
+		return gameRunnig;
+	}
+	/*public boolean loadGame() {
+		if(loadFiles()) {
+			return true;
+		}
+		return false;
+	}
+	private boolean loadFiles() {
+		if(yamlReader.mapExist(mapName)&&yamlReader.configFilesExists(mapName)) {
+			HashMap<String, Room> roomHashMap = new HashMap<>();
+			for(String roomName : yamlReader.getRoomList(mapName)) {
+				yamlReader.getCameraLocation(mapName, roomName);
+				yamlReader.getRoomType(mapName, roomName);
+				
+			}
+		}
+		return false;
+	}*/
 	@Override
 	public void onDisable() {
 		super.onDisable();

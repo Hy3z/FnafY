@@ -2,31 +2,28 @@ package fr.nekotine.fnafy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
-import org.bukkit.block.data.type.Door;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
+import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.RoomType;
-import fr.nekotine.fnafy.utils.Posture;
 
 public class YamlReader {
 	private FnafYMain main;
 	private File mapFolder;
 	private final String roomConfigName = "roomConfig";
 	private final String doorConfigName = "doorConfig";
-	private String[] animList= {"Bonnie", "Freddy", "Chica", "Foxy", "Mangle", "Springtrap"};
 	public YamlReader(FnafYMain _main) {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
@@ -73,6 +70,14 @@ public class YamlReader {
 	private boolean saveRoomConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, roomConfigName, config);
 	}
+	public boolean configFilesExists(String mapName) {
+		File room = new File(mapFolder.getPath()+"/"+mapName,roomConfigName+".yml");
+		File door = new File(mapFolder.getPath()+"/"+mapName,doorConfigName+".yml");
+		if(room.exists() && door.exists()) {
+			return true;
+		}
+		return false;
+	}
 	//--------------------------------------------------------------------------------------
 	public boolean createMap(String mapName) {
 		File mapConfigFolder = new File(mapFolder, mapName);
@@ -115,15 +120,14 @@ public class YamlReader {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(!doorExist(mapName, doorName)) {
-				doorConfig.set(doorName+".doorType", "Unknown");
+				doorConfig.set(doorName+".doorType", "UNKNOWN");
 				doorConfig.set(doorName+".doorLoc", "");
 				doorConfig.set(doorName+".length", "");
-				doorConfig.set(doorName+".facing", "");
 				doorConfig.set(doorName+".room1Name", "");
 				doorConfig.set(doorName+".room2Name", "");
-				for (String anim : animList){
-					doorConfig.set(doorName+".animPose.room1."+anim, "");
-					doorConfig.set(doorName+".animPose.room2."+anim, "");
+				for (Animatronic anim : Animatronic.values()){
+					doorConfig.set(doorName+".animPose.room1."+anim.toString(), "");
+					doorConfig.set(doorName+".animPose.room2."+anim.toString(), "");
 				}
 				saveDoorConfig(mapName,doorConfig);
 				return true;
@@ -149,7 +153,7 @@ public class YamlReader {
 				return DoorType.fromString(doorConfig.getString(doorName+".roomType"));
 				}
 			}
-		return DoorType.Unknown;
+		return DoorType.UNKNOWN;
 	}
 	public boolean setDoorType(String mapName, String doorName, DoorType doorType) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
@@ -228,7 +232,6 @@ public class YamlReader {
 				if(((Bisected)doorLoc.getBlock().getBlockData()).getHalf().equals(Half.TOP)){
 					doorLoc.add(0, -1, 0);
 				}
-				setDoorFacing(mapName, doorName, doorLoc.getBlock());
 				int minusX = +numberOfDoor(doorLoc.clone(), new Vector(-1, 0, 0));
 				int minusY = +numberOfDoor(doorLoc.clone(), new Vector(0, -2, 0));
 				int minusZ = +numberOfDoor(doorLoc.clone(), new Vector(0, 0, -1));
@@ -261,29 +264,6 @@ public class YamlReader {
 		}
 		return 0;
 	}
-	private boolean setDoorFacing(String mapName, String doorName, Block block) {
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			if(doorExist(mapName, doorName)) {
-				doorConfig.set(doorName+".facing", ((Door)block.getBlockData()).getFacing().toString());
-				saveDoorConfig(mapName, doorConfig);
-				return true;
-			}
-		}
-		return false;
-	}
-	public BlockFace getDoorFacing(String mapName, String doorName) {
-		YamlConfiguration doorConfig = getDoorConfig(mapName);
-		if (doorConfig != null) {
-			if(doorExist(mapName, doorName)) {
-				String blockFaceString = doorConfig.getString(doorName+".facing");
-				if(blockFaceString.length()>0) {
-					return BlockFace.valueOf(blockFaceString);
-				}
-			}	
-		}
-		return null;
-	}
 	//--------------------------------------------------------------------------------------
 	public boolean roomExist(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -296,10 +276,10 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(!roomExist(mapName,roomName)) {
-				roomConfig.set(roomName+".roomType", "Unknown");
+				roomConfig.set(roomName+".roomType", "UNKNOWN");
 				roomConfig.set(roomName+".camLoc", "");
-				for (String anim : animList){
-					roomConfig.set(roomName+".animPose."+anim, "");
+				for (Animatronic anim : Animatronic.values()){
+					roomConfig.set(roomName+".animPose."+anim.toString(), "");
 				}
 				saveRoomConfig(mapName,roomConfig);
 				return true;
@@ -345,7 +325,7 @@ public class YamlReader {
 				return RoomType.fromString(roomConfig.getString(roomName+".roomType"));
 				}
 			}
-		return RoomType.Unknown;
+		return RoomType.UNKNOWN;
 	}
 	public boolean setRoomType(String mapName, String roomName, RoomType roomType) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -365,16 +345,15 @@ public class YamlReader {
 		}
 		return null;
 	}	
-	public ArrayList<Posture> getAnimatronicRoomPostures(Animatronic animatronic, String mapName, String roomName) {
+	public HashMap<Animatronic,ASAnimOrder> getInRoomPose(String mapName, String roomName){
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
-				ArrayList<Posture> posturesList = new ArrayList<>();
-				for(Object obj : roomConfig.getList(roomName+".animPose."+animatronic.toString())) {
-					posturesList.add((Posture)obj);
+				HashMap<Animatronic,ASAnimOrder> InRoomPoses = new HashMap<Animatronic,ASAnimOrder>();
+				for(Animatronic anim : Animatronic.values()) {
+					InRoomPoses.put(anim, (ASAnimOrder)roomConfig.get(roomName+".animPose."+anim.toString()));
 				}
-				return posturesList;
-			}
+			}	
 		}
 		return null;
 	}

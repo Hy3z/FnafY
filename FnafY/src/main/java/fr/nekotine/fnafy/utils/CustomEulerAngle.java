@@ -33,7 +33,9 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 		 if (args.containsKey("z")){
 			 zz=(double)args.get("z");
 		 }
-		 return new CustomEulerAngle(xx, yy, zz);
+		 CustomEulerAngle toReturn = new CustomEulerAngle(xx, yy, zz);
+		 System.out.println("deserialized euleur angle as: "+toReturn);
+		 return toReturn;
 	 }
 	
 	public static final CustomEulerAngle zero() {
@@ -41,25 +43,18 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 	}
 	
 	@Override
-	public CustomEulerAngle add(double x, double y, double z) {
-		return new CustomEulerAngle(super.getX()+x, super.getY()+y, super.getZ()+z);
-	}
-	
-	@Override
 	public CustomEulerAngle setX(double x) {
-		super.setX(x);
-		return this;
+		return new CustomEulerAngle(x, getY(), getZ());
 	}
 	
 	@Override
 	public CustomEulerAngle setY(double y) {
-		super.setY(y);
-		return this;
+		return new CustomEulerAngle(getX(), y, getZ());
 	}
 	
 	@Override
 	public CustomEulerAngle setZ(double z) {
-		super.setZ(z);
-		return this;
+		return new CustomEulerAngle(getX(), getY(), z);
 	}
+
 }

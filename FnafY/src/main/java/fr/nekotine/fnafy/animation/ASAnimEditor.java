@@ -2,7 +2,6 @@ package fr.nekotine.fnafy.animation;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -10,13 +9,11 @@ import org.bukkit.entity.Player;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.commands.ComAnim;
-import fr.nekotine.fnafy.utils.CustomEulerAngle;
-import fr.nekotine.fnafy.utils.Posture;
 
 public class ASAnimEditor {
 	
 	public final Player player;
-	private final ASAnimation anim;
+	public final ASAnimation anim;
 	private ASAnimator animator;
 	private ArmorStand as;
 	private final Location baseLoc;
@@ -96,19 +93,6 @@ public class ASAnimEditor {
 	public void pause() {
 		animator.pause();
 		player.sendMessage(ChatColor.LIGHT_PURPLE+"Animation mise en pause.");
-	}
-	
-	public ASAnimOrder getFrameOrder() {
-		return anim.orders.getOrDefault(currentFrame, new ASAnimOrder(nullPosture(anim.orders.get(0).pose.location.getWorld()), false));
-	}
-	
-	public void setFrameOrder(ASAnimOrder newOrder) {
-		anim.orders.put(currentFrame, newOrder);
-	}
-	
-	private Posture nullPosture(World w) {
-		return new Posture(CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),
-				CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),new Location(w,0,0,0));
 	}
 	
 	public int getCurrentFrame() {

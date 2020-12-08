@@ -17,7 +17,9 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.doors.DoorType;
+import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.RoomType;
 
 public class ComMapper {
@@ -33,6 +35,35 @@ public class ComMapper {
 		for(String s : main.getYamlReader().getMapList()) {
 			mapArray.add(s);
 		}
+	}
+	private void setRoomFinderFromDoorArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("roomsFromDoor", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getLinkedRoomsNames((String)args[3], (String)args[4]).toArray(new String[0]);
+		}));
+	}
+	private void setAnimationFinderFromDoorArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("animationFromDoor", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getDoorRoomAnimation((String)args[3], (String)args[4], (String)args[5], Animatronic.valueOf((String)args[6])).toArray(new String[0]);
+		}));
+	}
+	private void setAnimationFinderFromRoomArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("animationFromRoom", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getRoomAnimation((String)args[3], (String)args[4], Animatronic.valueOf((String)args[5])).toArray(new String[0]);
+		}));
+	}
+	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
+		String[] animatronic = new String[Animatronic.values().length];
+		int x=-1;
+		for(Animatronic anim : Animatronic.values()) {
+			x++;
+			animatronic[x] = anim.toString();
+		}
+		argument.put("animatronic", new StringArgument().overrideSuggestions(animatronic));
+	}
+	private void setAnimationArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("animationList", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getAnimManager().getAsanims().values().stream().map(ASAnimation::getName).toArray(String[]::new);
+		}));
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
 		String[] doorType = new String[DoorType.values().length];
@@ -83,6 +114,10 @@ public class ComMapper {
 		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName));
 		sender.sendMessage(ChatColor.WHITE+"room1Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 1));
 		sender.sendMessage(ChatColor.WHITE+"room2Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 2));
+		for(Animatronic anim : Animatronic.values()) {
+			sender.sendMessage(ChatColor.WHITE+"room1."+anim+": "+ChatColor.GOLD+main.getYamlReader().getDoorRoomAnimation(mapName, doorName, main.getYamlReader().getLinkedRoomName(mapName, doorName, 1), anim));
+			sender.sendMessage(ChatColor.WHITE+"room2."+anim+": "+ChatColor.GOLD+main.getYamlReader().getDoorRoomAnimation(mapName, doorName, main.getYamlReader().getLinkedRoomName(mapName, doorName, 2), anim));
+		}
 	}
 	private void sendRoomInfo(CommandSender sender, String mapName, String roomName) {
 		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+roomName+ChatColor.WHITE+"] --");
@@ -93,6 +128,10 @@ public class ComMapper {
 		}else {
 			sender.sendMessage(ChatColor.WHITE+"camLoc: "+ChatColor.GOLD+"null");
 		}
+		for(Animatronic anim : Animatronic.values()) {
+			sender.sendMessage(ChatColor.WHITE+"Animation."+anim+": "+ChatColor.GOLD+main.getYamlReader().getRoomAnimation(mapName, roomName, anim));
+		}
+		
 	}
 	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");
@@ -239,6 +278,40 @@ public class ComMapper {
 			}
 		}).register();
 		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"addAnimation");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setRoomFinderFromDoorArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().addDoorAnimation((String)args[0], (String)args[1], (String)args[2], Animatronic.valueOf((String)args[3]), (String)args[4])) {
+				sender.sendMessage(ChatColor.GREEN+"Animation set pour l'animatronic dans la porte précisée vers la salle précisée!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle, l'animatronic ou l'animation n'existent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"removeAnimation");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setRoomFinderFromDoorArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationFinderFromDoorArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeDoorAnimation((String)args[0], (String)args[1], (String)args[2], Animatronic.valueOf((String)args[3]), (String)args[4])) {
+				sender.sendMessage(ChatColor.GREEN+"Animation enlevée pour l'animatronic dans la porte précisée vers la salle précisée!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
+			}
+		}).register();
+		argument.clear();
 		//--------------------------------------------------------------------------------------
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
@@ -317,6 +390,39 @@ public class ComMapper {
 				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'existent pas!");
 			}
 		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"addAnimation");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().addRoomAnimation((String)args[0], (String)args[1], Animatronic.valueOf((String)args[2]), (String)args[3])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Animation: ["+(String)args[3]+"] ajoutée à l'animatronic "+(String)args[2]+" dans la salle ["+(String)args[1]+"]");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation est déjà présente) !");
+			}
+		}).register();
+		argument.clear();
+
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"removeAnimation");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationFinderFromRoomArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeRoomAnimation((String)args[0], (String)args[1], Animatronic.valueOf((String)args[2]), (String)args[3])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Animation: ["+(String)args[3]+"] enlevée à l'animatronic "+(String)args[2]+" dans la salle ["+(String)args[1]+"]");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
+			}
+		}).register();
+		argument.clear();
 		
 		main.getLogger().info("Mapper Commands registered");
 	}

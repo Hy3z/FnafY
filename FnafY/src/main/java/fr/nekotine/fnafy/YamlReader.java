@@ -2,6 +2,7 @@ package fr.nekotine.fnafy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -121,14 +122,14 @@ public class YamlReader {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(!doorExist(mapName, doorName)) {
-				doorConfig.set(doorName+".doorType", "UNKNOWN");
+				doorConfig.set(doorName+".doorType", DoorType.UNKNOWN.toString());
 				doorConfig.set(doorName+".doorLoc", "");
 				doorConfig.set(doorName+".length", "");
 				doorConfig.set(doorName+".room1Name", "");
 				doorConfig.set(doorName+".room2Name", "");
 				for (Animatronic anim : Animatronic.values()){
-					doorConfig.set(doorName+".animPose.room1."+anim.toString(), "");
-					doorConfig.set(doorName+".animPose.room2."+anim.toString(), "");
+					doorConfig.set(doorName+".animPose.room1."+anim.toString(), new String[0]);
+					doorConfig.set(doorName+".animPose.room2."+anim.toString(), new String[0]);
 				}
 				saveDoorConfig(mapName,doorConfig);
 				return true;
@@ -198,6 +199,18 @@ public class YamlReader {
 		}
 		return "";
 	}
+	public List<String> getLinkedRoomsNames(String mapName, String doorName){
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				List<String> roomsNames = new ArrayList<>();
+				roomsNames.add(doorConfig.getString(doorName+".room1Name"));
+				roomsNames.add(doorConfig.getString(doorName+".room2Name"));
+				return roomsNames;
+			}
+		}
+		return null;
+	}
 	private boolean setDoorLocation(String mapName, String doorName, Location loc) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
@@ -265,6 +278,82 @@ public class YamlReader {
 		}
 		return 0;
 	}
+	private int getRoomNumberFromName(String mapName, String doorName, String roomName) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(getLinkedRoomsNames(mapName, doorName).contains(roomName)) {
+						if(getLinkedRoomName(mapName, doorName, 1).equals(roomName)) {
+							return 1;
+						}
+						return 2;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	public boolean addDoorAnimation(String mapName, String doorName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(getLinkedRoomsNames(mapName, doorName).contains(roomName)) {
+						if(anim!=null) {
+							if(main.getAnimManager().getAsanims().containsKey(animation)) {
+								List<String> animationList = getDoorRoomAnimation(mapName, doorName, roomName, anim);
+								if(!animationList.contains(animation)) {
+									animationList.add(animation);
+									doorConfig.set(doorName+".animPose.room"+getRoomNumberFromName(mapName, doorName, roomName)+"."+anim.toString(), animationList);
+									saveDoorConfig(mapName, doorConfig);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public boolean removeDoorAnimation(String mapName, String doorName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(getLinkedRoomsNames(mapName, doorName).contains(roomName)) {
+						if(anim!=null) {
+							if(main.getAnimManager().getAsanims().containsKey(animation)) {
+								List<String> animationList = getDoorRoomAnimation(mapName, doorName, roomName, anim);
+								if(animationList.contains(animation)) {
+									animationList.remove(animation);
+									doorConfig.set(doorName+".animPose.room"+getRoomNumberFromName(mapName, doorName, roomName)+"."+anim.toString(), animationList);
+									saveDoorConfig(mapName, doorConfig);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public List<String> getDoorRoomAnimation(String mapName, String doorName, String roomName, Animatronic anim){
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					int roomNum = getRoomNumberFromName(mapName, doorName, roomName);
+					if(roomNum!=0) {
+						return doorConfig.getStringList(doorName+".animPose.room"+roomNum+"."+anim.toString());
+					}
+				}
+			}
+		}
+		return null;
+	}
 	//--------------------------------------------------------------------------------------
 	public boolean addRoomAnimation(String mapName, String roomName, Animatronic anim, String animation) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -272,7 +361,7 @@ public class YamlReader {
 			if(roomExist(mapName, roomName)) {
 				if(anim!=null) {
 					if(main.getAnimManager().getAsanims().containsKey(animation)) {
-						List<String> animationList = roomConfig.getStringList(roomName+".animPose."+anim.toString());
+						List<String> animationList = getRoomAnimation(mapName, roomName, anim);
 						if(!animationList.contains(animation)) {
 							animationList.add(animation);
 							roomConfig.set(roomName+".animPose."+anim.toString(), animationList);
@@ -285,6 +374,36 @@ public class YamlReader {
 		}
 		return false;
 	}
+	public boolean removeRoomAnimation(String mapName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				if(anim!=null) {
+					if(main.getAnimManager().getAsanims().containsKey(animation)) {
+						List<String> animationList = getRoomAnimation(mapName, roomName, anim);
+						if(animationList.contains(animation)) {
+							animationList.remove(animation);
+							roomConfig.set(roomName+".animPose."+anim.toString(), animationList);
+							saveRoomConfig(mapName, roomConfig);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public List<String> getRoomAnimation(String mapName, String roomName, Animatronic anim){
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				if(anim!=null) {
+					return roomConfig.getStringList(roomName+".animPose."+anim.toString());
+				}
+			}
+		}
+		return null;
+	}
 	public boolean roomExist(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -296,10 +415,10 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(!roomExist(mapName,roomName)) {
-				roomConfig.set(roomName+".roomType", "UNKNOWN");
+				roomConfig.set(roomName+".roomType", RoomType.UNKNOWN.toString());
 				roomConfig.set(roomName+".camLoc", "");
 				for (Animatronic anim : Animatronic.values()){
-					roomConfig.set(roomName+".animPose."+anim.toString(), "");
+					roomConfig.set(roomName+".animPose."+anim.toString(), new String[0]);
 				}
 				saveRoomConfig(mapName,roomConfig);
 				return true;

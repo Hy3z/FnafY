@@ -441,4 +441,7 @@ public class ComAnim {
 		});
 	}
 	
+	public HashMap<String,ASAnimation> getAsanims(){
+		return asanims;
+	}
 }

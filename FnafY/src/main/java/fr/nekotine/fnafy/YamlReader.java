@@ -3,6 +3,7 @@ package fr.nekotine.fnafy;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -265,6 +266,25 @@ public class YamlReader {
 		return 0;
 	}
 	//--------------------------------------------------------------------------------------
+	public boolean addRoomAnimation(String mapName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				if(anim!=null) {
+					if(main.getAnimManager().getAsanims().containsKey(animation)) {
+						List<String> animationList = roomConfig.getStringList(roomName+".animPose."+anim.toString());
+						if(!animationList.contains(animation)) {
+							animationList.add(animation);
+							roomConfig.set(roomName+".animPose."+anim.toString(), animationList);
+							saveRoomConfig(mapName, roomConfig);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 	public boolean roomExist(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {

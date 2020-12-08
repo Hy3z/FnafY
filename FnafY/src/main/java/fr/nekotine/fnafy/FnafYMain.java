@@ -45,6 +45,9 @@ public class FnafYMain extends JavaPlugin {
 		animManager.reloadASAnims();
 		mapManager.searchForMaps();
 	}
+	public ComAnim getAnimManager() {
+		return animManager;
+	}
 	public YamlReader getYamlReader() {
 		return yamlReader;
 	}

@@ -6,6 +6,8 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.ArmorStand;
+
+import fr.nekotine.fnafy.utils.Posture;
 @SerializableAs("ASAnimation")
 public class ASAnimation implements ConfigurationSerializable {
 	
@@ -27,16 +29,22 @@ public class ASAnimation implements ConfigurationSerializable {
 	public int getAnimSize() {
 		return animSize;
 	}
+	
+	public ASAnimOrder getFrameOrder(int frame) {
+		if (orders.containsKey(frame)) {
+			return orders.get(frame);
+		}else {
+			ASAnimOrder temp=new ASAnimOrder(Posture.zero(orders.get(0).pose.location.getWorld()), true);
+			setOrder(frame,temp);
+			return temp;
+		}
+	}
 
 	@Override
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();
 		serialized.put("name", name);
 		for (Integer i : orders.keySet()) {
-			if (orders.get(i)==null) {
-			}else {
-				System.out.println(orders.get(i));
-			}
 			serialized.put(i.toString(), orders.get(i));
 		}
 		return serialized;

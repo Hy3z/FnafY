@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Axis;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -213,7 +212,8 @@ public class ComAnim {
 				}
 			}
 			if (e!=null) {
-				e.setFrameOrder(ASAnimOrder.modified(e.getFrameOrder(), (String)args[0],(EnumSet<Axis>)args[1], (DoubleAddOrSet)args[2]));
+				e.anim.getFrameOrder(e.getCurrentFrame()).modify((String)args[0],(EnumSet<Axis>)args[1], (DoubleAddOrSet)args[2]);
+				e.setFrame(e.getCurrentFrame());
 			}else {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");
 			}
@@ -252,7 +252,7 @@ public class ComAnim {
 				anim.setName(name);
 				anim.setOrder(0, new ASAnimOrder(
 						new Posture(CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),
-								CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),new Location(player.getWorld(),0,0,0,0,0)),true));
+								CustomEulerAngle.zero(),CustomEulerAngle.zero(),CustomEulerAngle.zero(),player.getLocation().clone()),false));
 				asanims.put(name, anim);
 				save(anim);
 				player.sendMessage(ChatColor.DARK_GREEN+"L'animation a bien été crée et enregistrée.");
@@ -290,7 +290,7 @@ public class ComAnim {
 			}
 			if (e!=null) {
 				boolean rel = (boolean) args[0];
-				e.getFrameOrder().relative=rel;
+				e.anim.getFrameOrder(e.getCurrentFrame()).relative=rel;
 				player.sendMessage(ChatColor.LIGHT_PURPLE+"La position est devenue "+(rel?"relative":"non relative")+".");
 			}else {
 				player.sendMessage(ChatColor.RED+"Vous n'êtes pas en mode édition.");

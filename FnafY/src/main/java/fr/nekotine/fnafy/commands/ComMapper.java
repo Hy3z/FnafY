@@ -5,7 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -72,13 +74,13 @@ public class ComMapper {
 	private void sendDoorInfo(CommandSender sender, String mapName, String doorName) {
 		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
 		sender.sendMessage(ChatColor.WHITE+"doorType: "+ChatColor.GOLD+main.getYamlReader().getDoorType(mapName, doorName).toString());
-		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName));
 		Location doorLoc = main.getYamlReader().getDoorLocation(mapName, doorName);
 		if(doorLoc!=null) {
 			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+main.getYamlReader().getDoorLocation(mapName, doorName).toVector());
 		}else {
 			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+"null");
 		}
+		sender.sendMessage(ChatColor.WHITE+"length: "+ChatColor.GOLD+main.getYamlReader().getDoorLength(mapName, doorName));
 		sender.sendMessage(ChatColor.WHITE+"room1Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 1));
 		sender.sendMessage(ChatColor.WHITE+"room2Name: "+ChatColor.GOLD+main.getYamlReader().getLinkedRoomName(mapName, doorName, 2));
 	}
@@ -207,6 +209,33 @@ public class ComMapper {
 				sendDoorInfo(sender, (String)args[0], (String)args[1]);
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'existent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"setLoc");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				Block block = ((Player) sender).getTargetBlockExact(10, FluidCollisionMode.NEVER);
+				if(block != null) {
+					if(block.getType().toString().contains("DOOR")) {
+						if(main.getYamlReader().setDoorLocationAndLength((String)args[0], (String)args[1],block.getLocation())) {
+							sender.sendMessage(ChatColor.GREEN+"Location mise à jour!");
+						}else {
+							sender.sendMessage(ChatColor.RED+"Cette map ou la porte n'existent pas!");
+						}
+					}else {
+						sender.sendMessage(ChatColor.RED+"Visez une porte en faisant cette commande!");
+					}
+				}else {
+					sender.sendMessage(ChatColor.RED+"Visez la porte en faisant cette commande!");
+				}
+			}else {
+				sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
 			}
 		}).register();
 		argument.clear();

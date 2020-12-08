@@ -1,10 +1,11 @@
 package fr.nekotine.fnafy.doors;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Location;
 
-import fr.nekotine.fnafy.animation.ASAnimOrder;
+import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
 
@@ -14,16 +15,18 @@ public class Door {
 	private final Location AftonBlock;
 	private final Room room1;
 	private final Room room2;
-	private final HashMap<Animatronic,ASAnimOrder> InRoomPoses=new HashMap<Animatronic,ASAnimOrder>();
-	private final HashMap<Animatronic,ASAnimOrder> MinimapPoses=new HashMap<Animatronic,ASAnimOrder>();
+	private final HashMap<Animatronic,List<ASAnimation>> goingToFirstRoom=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> goingToSecondRoom=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> MinimapPoses=new HashMap<Animatronic,List<ASAnimation>>();
 	
 	//CONSTRUCTEURS
 	
-	public Door(Room room1, Room room2, Location displayBlock,HashMap<Animatronic,ASAnimOrder> rmpses,HashMap<Animatronic,ASAnimOrder> aftses) {
+	public Door(Room room1, Room room2, Location displayBlock,HashMap<Animatronic,List<ASAnimation>> firstdoor,HashMap<Animatronic,List<ASAnimation>> seconddoor,HashMap<Animatronic,List<ASAnimation>> aftses) {
 		this.room1=room1;
 		this.room2=room2;
 		AftonBlock=displayBlock;
-		InRoomPoses.putAll(rmpses);
+		goingToFirstRoom.putAll(firstdoor);
+		goingToSecondRoom.putAll(seconddoor);
 		MinimapPoses.putAll(aftses);
 		
 	}
@@ -46,11 +49,13 @@ public class Door {
 		return AftonBlock;
 	}
 
-	public HashMap<Animatronic,ASAnimOrder> getInRoomPoses() {
-		return InRoomPoses;
+	public HashMap<Animatronic,List<ASAnimation>> getGoingToRoom1Animation() {
+		return goingToFirstRoom;
 	}
-
-	public HashMap<Animatronic,ASAnimOrder> getMinimapPoses() {
+	public HashMap<Animatronic,List<ASAnimation>> getGoingToRoom2Animation() {
+		return goingToSecondRoom;
+	}
+	public HashMap<Animatronic,List<ASAnimation>> getMinimapPoses() {
 		return MinimapPoses;
 	}
 	

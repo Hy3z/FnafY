@@ -2,11 +2,12 @@ package fr.nekotine.fnafy.room;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Location;
 
-import fr.nekotine.fnafy.animation.ASAnimOrder;
+import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.utils.BlockSelection;
@@ -21,13 +22,13 @@ public class Room {
 	private final BlockSelection MinimapOutline;
 	private final BlockSelection MinimapSurface;
 	private final String displayName;
-	private final HashMap<Animatronic,ASAnimOrder> InRoomPoses=new HashMap<Animatronic,ASAnimOrder>();
-	private final HashMap<Animatronic,ASAnimOrder> MinimapPoses=new HashMap<Animatronic,ASAnimOrder>();
+	private final HashMap<Animatronic,List<ASAnimation>> InRoomPoses=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> MinimapPoses=new HashMap<Animatronic,List<ASAnimation>>();
 	private final ArrayList<Door> doors = new ArrayList<Door>();
 	
 	//CONSTRUCTEURS
 	
-	public Room(String roomName ,RoomType type,BlockSelection aftonsurf,BlockSelection aftonoutl,BlockSelection minmsurf,BlockSelection minmoutl,Location camloc,HashMap<Animatronic,ASAnimOrder> rmpses,HashMap<Animatronic,ASAnimOrder> aftses) {
+	public Room(String roomName ,RoomType type,BlockSelection aftonsurf,BlockSelection aftonoutl,BlockSelection minmsurf,BlockSelection minmoutl,Location camloc,HashMap<Animatronic,List<ASAnimation>> rmpses,HashMap<Animatronic,List<ASAnimation>> aftses) {
 		displayName = roomName;
 		roomType = type;
 		AftonSurface = aftonsurf;
@@ -47,11 +48,11 @@ public class Room {
 	
 	//GETTERS
 
-	public HashMap<Animatronic,ASAnimOrder> getMinimapPoses() {
+	public HashMap<Animatronic,List<ASAnimation>> getMinimapPoses() {
 		return MinimapPoses;
 	}
 
-	public HashMap<Animatronic,ASAnimOrder> getInRoomPoses() {
+	public HashMap<Animatronic,List<ASAnimation>> getInRoomPoses() {
 		return InRoomPoses;
 	}
 

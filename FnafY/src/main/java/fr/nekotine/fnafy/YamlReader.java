@@ -150,7 +150,7 @@ public class YamlReader {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
 			if(doorExist(mapName, doorName)) {
-				return DoorType.fromString(doorConfig.getString(doorName+".roomType"));
+				return DoorType.fromString(doorConfig.getString(doorName+".doorType"));
 				}
 			}
 		return DoorType.UNKNOWN;

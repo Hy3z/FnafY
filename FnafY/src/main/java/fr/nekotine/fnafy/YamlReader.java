@@ -3,6 +3,7 @@ package fr.nekotine.fnafy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -17,8 +18,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
 import fr.nekotine.fnafy.animation.ASAnimOrder;
+import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
+import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomType;
 
 public class YamlReader {
@@ -354,6 +358,48 @@ public class YamlReader {
 		}
 		return null;
 	}
+	public List<Door> getDoorObjectList(){
+		List<Door> doorList = new ArrayList<>();
+		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
+			for(String doorName : getDoorList(main.getMapName())) {
+				DoorType type = getDoorType(main.getMapName(), doorName);
+				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
+				Vector length = getDoorLength(main.getMapName(), doorName);
+				Room room1 = main.getRoomsHashMap().get(getLinkedRoomName(main.getMapName(), doorName, 1));
+				Room room2 = main.getRoomsHashMap().get(getLinkedRoomName(main.getMapName(), doorName, 2));
+				
+				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
+				HashMap<Animatronic,List<ASAnimation>> animToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
+				for(Animatronic animatronic : Animatronic.values()) {
+					List<ASAnimation> tempList = new ArrayList<>();
+					List<String> temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, 1), animatronic);
+					if(temp.isEmpty()) {
+						break;
+					}
+					for(String animation : temp) {
+						tempList.add(main.getAnimManager().getAsanims().get(animation));
+					}
+					animToRoom1.put(animatronic, tempList);
+					
+					tempList.clear();
+					temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, 2), animatronic);
+					if(temp.isEmpty()) {
+						break;
+					}
+					for(String animation : temp) {
+						tempList.add(main.getAnimManager().getAsanims().get(animation));
+					}
+					animToRoom2.put(animatronic, tempList);
+				}
+				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null
+						&& animToRoom1.keySet().containsAll(Arrays.asList(Animatronic.values()))
+						&& animToRoom2.keySet().containsAll(Arrays.asList(Animatronic.values()))){
+					doorList.add(new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2));
+				}
+			}
+		}
+		return doorList;
+	}
 	//--------------------------------------------------------------------------------------
 	public boolean addRoomAnimation(String mapName, String roomName, Animatronic anim, String animation) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -495,5 +541,30 @@ public class YamlReader {
 			}	
 		}
 		return null;
+	}
+	public HashMap<String, Room> getRoomObjectsHash() {
+		HashMap<String, Room> rooms = new HashMap<String, Room>();
+		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
+			for(String roomName : getRoomList(main.getMapName())) {
+				RoomType type = getRoomType(main.getMapName(), roomName);
+				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				HashMap<Animatronic,List<ASAnimation>> inRoomAnimation =new HashMap<Animatronic,List<ASAnimation>>();
+				for(Animatronic animatronic : Animatronic.values()) {
+					List<ASAnimation> tempList = new ArrayList<>();
+					List<String> temp = getRoomAnimation(main.getMapName(), roomName, animatronic);
+					if(temp.isEmpty()) {
+						break;
+					}
+					for(String animation : temp) {
+						tempList.add(main.getAnimManager().getAsanims().get(animation));
+					}
+					inRoomAnimation.put(animatronic, tempList);
+				}
+				if(type!=RoomType.UNKNOWN && camLoc!=null && inRoomAnimation.keySet().containsAll(Arrays.asList(Animatronic.values()))){
+					rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation));
+				}
+			}
+		}
+		return rooms;
 	}
 }

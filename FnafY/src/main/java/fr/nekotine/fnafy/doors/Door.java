@@ -4,59 +4,55 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
 
 public class Door {
-	
-	//VARS
-	private final Location AftonBlock;
+	private final String roomName;
+	private final DoorType doorType;
+	private final Location doorLoc;
+	private final Vector length;
 	private final Room room1;
 	private final Room room2;
-	private final HashMap<Animatronic,List<ASAnimation>> goingToFirstRoom=new HashMap<Animatronic,List<ASAnimation>>();
-	private final HashMap<Animatronic,List<ASAnimation>> goingToSecondRoom=new HashMap<Animatronic,List<ASAnimation>>();
-	private final HashMap<Animatronic,List<ASAnimation>> MinimapPoses=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> animToRoom1=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> animToRoom2=new HashMap<Animatronic,List<ASAnimation>>();
 	
-	//CONSTRUCTEURS
-	
-	public Door(Room room1, Room room2, Location displayBlock,HashMap<Animatronic,List<ASAnimation>> firstdoor,HashMap<Animatronic,List<ASAnimation>> seconddoor,HashMap<Animatronic,List<ASAnimation>> aftses) {
+	public Door(String roomName, DoorType doorType, Location doorLoc, Vector length, Room room1, Room room2,
+			HashMap<Animatronic,List<ASAnimation>> animToRoom1, HashMap<Animatronic,List<ASAnimation>> animToRoom2) {
+		this.roomName=roomName;
+		this.doorType=doorType;
+		this.doorLoc=doorLoc;
+		this.length=length;
 		this.room1=room1;
 		this.room2=room2;
-		AftonBlock=displayBlock;
-		goingToFirstRoom.putAll(firstdoor);
-		goingToSecondRoom.putAll(seconddoor);
-		MinimapPoses.putAll(aftses);
-		
+		this.animToRoom1.putAll(animToRoom1);
+		this.animToRoom2.putAll(animToRoom2);
 	}
-	
-	//FONCTIONS
-	
-	
-	
-	//GETTERS
 
-	public Room getRoom2() {
-		return room2;
+	public String getRoomName() {
+		return roomName;
+	}
+
+	public DoorType getDoorType() {
+		return doorType;
+	}
+
+	public Location getDoorLoc() {
+		return doorLoc;
+	}
+
+	public Vector getLength() {
+		return length;
 	}
 
 	public Room getRoom1() {
 		return room1;
 	}
 
-	public Location getAftonBlock() {
-		return AftonBlock;
+	public Room getRoom2() {
+		return room2;
 	}
-
-	public HashMap<Animatronic,List<ASAnimation>> getGoingToRoom1Animation() {
-		return goingToFirstRoom;
-	}
-	public HashMap<Animatronic,List<ASAnimation>> getGoingToRoom2Animation() {
-		return goingToSecondRoom;
-	}
-	public HashMap<Animatronic,List<ASAnimation>> getMinimapPoses() {
-		return MinimapPoses;
-	}
-	
 }

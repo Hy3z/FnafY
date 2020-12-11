@@ -1,5 +1,9 @@
 package fr.nekotine.fnafy;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,7 +13,9 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
+import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.events.EventListener;
+import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
@@ -23,8 +29,10 @@ public class FnafYMain extends JavaPlugin {
 	private ComGame gameManager = new ComGame(this);
 	
 	private String mapName = "";
+	private HashMap<String, Room> roomsHashMap = new HashMap<>();
+	List<Door> doorList = new ArrayList<>();
 	private boolean gameRunnig=false;
-	//private ArrayList<Door> doorList = new ArrayList<Door>();
+	
 	public void onEnable() {
 		super.onEnable();
 		//Register serializables//
@@ -60,78 +68,24 @@ public class FnafYMain extends JavaPlugin {
 	public boolean isGameRunning() {
 		return gameRunnig;
 	}
-	public boolean loadGame() {
+	public boolean startGame() {
+		if(loadGame()) {
+			return true;
+		}
+		return false;
+	}
+	private boolean loadGame() {
 		if(loadFiles()) {
+			//START GAME
 			return true;
 		}
 		return false;
 	}
 	private boolean loadFiles() {
-		if(yamlReader.mapExist(mapName)&&yamlReader.configFilesExists(mapName)) {
-			//load door
-			/*for(String doorName : yamlReader.getDoorList(mapName)) {
-				DoorType doorType = yamlReader.getDoorType(mapName, doorName);
-				Location doorLocation = yamlReader.getDoorLocation(mapName, doorName);
-				Vector doorLength = yamlReader.getDoorLength(mapName, doorName);
-				String room1Name = yamlReader.getLinkedRoomName(mapName, doorName, 1);
-				String room2Name = yamlReader.getLinkedRoomName(mapName, doorName, 2);
-				HashMap<Animatronic,List<ASAnimation>> room1Animation=new HashMap<Animatronic,List<ASAnimation>>();
-				HashMap<Animatronic,List<ASAnimation>> room2Animation=new HashMap<Animatronic,List<ASAnimation>>();
-				for(Animatronic animatronic : Animatronic.values()) {
-					List<ASAnimation> tempList = new ArrayList<>();
-					List<String> temp = yamlReader.getDoorRoomAnimation(mapName, doorName, room1Name, animatronic);
-					if(temp.isEmpty()) {
-						break;
-					}
-					for(String animation : temp) {
-						tempList.add(animManager.getAsanims().get(animation));
-					}
-					room1Animation.put(animatronic, tempList);
-					
-					tempList.clear();
-					temp = yamlReader.getDoorRoomAnimation(mapName, doorName, room2Name, animatronic);
-					if(temp.isEmpty()) {
-						break;
-					}
-					for(String animation : temp) {
-						
-						tempList.add(animManager.getAsanims().get(animation));
-					}
-					room2Animation.put(animatronic, tempList);
-				}
-				if(doorType!=DoorType.UNKNOWN && doorLocation!=null && doorLength!=null && !room1Name.isEmpty() && !room2Name.isEmpty() 
-						&& room1Animation.keySet().containsAll(Arrays.asList(Animatronic.values())) 
-						&& room2Animation.keySet().containsAll(Arrays.asList(Animatronic.values()))) {
-					new Door(room1Name, room2Name, doorLocation, room1Animation, room2Animation, aftses);
-				}
-			}
-			//load door end
-			
-			for(String roomName : yamlReader.getRoomList(mapName)) {
-				RoomType type = yamlReader.getRoomType(mapName, roomName);
-				BlockSelection aftonsurf;
-				BlockSelection aftonoutl;
-				BlockSelection minmsurf;
-				BlockSelection minmoutl;
-				Location camLoc = yamlReader.getCameraLocation(mapName, roomName);
-				HashMap<Animatronic,List<ASAnimation>> inRoomAnimation =new HashMap<Animatronic,List<ASAnimation>>();
-				for(Animatronic animatronic : Animatronic.values()) {
-					List<ASAnimation> tempList = new ArrayList<>();
-					List<String> temp = yamlReader.getRoomAnimation(mapName, roomName, animatronic);
-					if(temp.isEmpty()) {
-						break;
-					}
-					for(String animation : temp) {
-						tempList.add(animManager.getAsanims().get(animation));
-					}
-					inRoomAnimation.put(animatronic, tempList);
-				}
-				if(type!=RoomType.UNKNOWN && /*aftonsurfetcnonnulle camLoc!=null 
-						&& inRoomAnimation.keySet().containsAll(Arrays.asList(Animatronic.values()))
-						&& inRoomAnimation.keySet().containsAll(Arrays.asList(Animatronic.values()))) {
-					
-				}
-			}*/
+		roomsHashMap = yamlReader.getRoomObjectsHash();
+		doorList = yamlReader.getDoorObjectList();
+		if(!roomsHashMap.isEmpty() && !doorList.isEmpty()) {
+			return true;
 		}
 		return false;
 	}
@@ -139,5 +93,8 @@ public class FnafYMain extends JavaPlugin {
 	public void onDisable() {
 		super.onDisable();
 		animManager.disable();
+	}
+	public HashMap<String, Room> getRoomsHashMap() {
+		return roomsHashMap;
 	}
 }

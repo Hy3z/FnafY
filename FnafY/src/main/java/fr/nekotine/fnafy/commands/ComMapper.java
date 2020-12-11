@@ -131,7 +131,6 @@ public class ComMapper {
 		for(Animatronic anim : Animatronic.values()) {
 			sender.sendMessage(ChatColor.WHITE+"Animation."+anim+": "+ChatColor.GOLD+main.getYamlReader().getRoomAnimation(mapName, roomName, anim));
 		}
-		
 	}
 	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");

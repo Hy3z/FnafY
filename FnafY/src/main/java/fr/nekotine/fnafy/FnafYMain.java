@@ -16,6 +16,7 @@ import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.room.Room;
+import fr.nekotine.fnafy.room.RoomMinimapManager;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
@@ -31,6 +32,7 @@ public class FnafYMain extends JavaPlugin {
 	private String mapName = "";
 	private HashMap<String, Room> roomsHashMap = new HashMap<>();
 	List<Door> doorList = new ArrayList<>();
+	private RoomMinimapManager roomMinimapManager;
 	private boolean gameRunnig=false;
 	
 	public void onEnable() {
@@ -96,5 +98,8 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public HashMap<String, Room> getRoomsHashMap() {
 		return roomsHashMap;
+	}
+	public RoomMinimapManager getRoomMinimapManager() {
+		return roomMinimapManager;
 	}
 }

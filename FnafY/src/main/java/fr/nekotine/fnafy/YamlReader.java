@@ -24,6 +24,7 @@ import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomType;
+import fr.nekotine.fnafy.utils.BlockSelection;
 
 public class YamlReader {
 	private FnafYMain main;
@@ -360,7 +361,7 @@ public class YamlReader {
 	}
 	public List<Door> getDoorObjectList(){
 		List<Door> doorList = new ArrayList<>();
-		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
+		/*if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
 			for(String doorName : getDoorList(main.getMapName())) {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
@@ -397,7 +398,7 @@ public class YamlReader {
 					doorList.add(new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2));
 				}
 			}
-		}
+		}*/
 		return doorList;
 	}
 	//--------------------------------------------------------------------------------------
@@ -466,7 +467,90 @@ public class YamlReader {
 				for (Animatronic anim : Animatronic.values()){
 					roomConfig.set(roomName+".animPose."+anim.toString(), new String[0]);
 				}
+				roomConfig.set(roomName+".aftonSurface", "");
+				roomConfig.set(roomName+".aftonOutline", "");
+				roomConfig.set(roomName+".guardOutline", "");
+				roomConfig.set(roomName+".guardSurface", "");
+				for (Animatronic anim : Animatronic.values()){
+					roomConfig.set(roomName+".minimapPose."+anim.toString(), new String[0]);
+				}
 				saveRoomConfig(mapName,roomConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	public BlockSelection getAftonSurface(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return (BlockSelection)roomConfig.get(roomName+".aftonSurface");
+			}
+		}
+		return null;
+	}
+	public boolean setAftonSurface(String mapName, String roomName, BlockSelection bs) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+".aftonSurface", bs);
+				return true;
+			}
+		}
+		return false;
+	}
+	public BlockSelection getAftonOutline(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return (BlockSelection)roomConfig.get(roomName+".aftonOutline");
+			}
+		}
+		return null;
+	}
+	public boolean setAftonOutline(String mapName, String roomName, BlockSelection bs) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+".aftonOutline", bs);
+				return true;
+			}
+		}
+		return false;
+	}
+	public BlockSelection getGuardOutline(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return (BlockSelection)roomConfig.get(roomName+".guardOutline");
+			}
+		}
+		return null;
+	}
+	public boolean setGuardOutline(String mapName, String roomName, BlockSelection bs) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+".guardOutline", bs);
+				return true;
+			}
+		}
+		return false;
+	}
+	public BlockSelection getGuardSurface(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return (BlockSelection)roomConfig.get(roomName+".guardSurface");
+			}
+		}
+		return null;
+	}
+	public boolean setGuardSurface(String mapName, String roomName, BlockSelection bs) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+".guardSurface", bs);
 				return true;
 			}
 		}
@@ -561,7 +645,7 @@ public class YamlReader {
 					inRoomAnimation.put(animatronic, tempList);
 				}
 				if(type!=RoomType.UNKNOWN && camLoc!=null && inRoomAnimation.keySet().containsAll(Arrays.asList(Animatronic.values()))){
-					rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation));
+					//rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation));
 				}
 			}
 		}

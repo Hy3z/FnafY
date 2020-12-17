@@ -9,15 +9,15 @@ import org.bukkit.event.Listener;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 
-public class RoomMinimapManager extends PlayerMoveHeadListener implements Listener{
-	private final List<RoomMinimap> roomMinimapList = new ArrayList<>();
-	public RoomMinimapManager(FnafYMain main, List<RoomMinimap> roomMinimapList) {
+public class RoomManager extends PlayerMoveHeadListener implements Listener{
+	private final List<Room> roomList = new ArrayList<>();
+	public RoomManager(FnafYMain main, List<Room> roomList) {
 		super(main);
-		this.roomMinimapList.addAll(roomMinimapList);
+		this.roomList.addAll(roomList);
 	}
 	@Override
 	public void playerMoveHeadEvent(Player p) {
-		for(RoomMinimap r : roomMinimapList) {
+		for(Room r : roomList) {
 			r.playerMoveHeadEvent(p);
 		}
 	}

@@ -1,9 +1,5 @@
 package fr.nekotine.fnafy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,10 +9,9 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
-import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.events.EventListener;
-import fr.nekotine.fnafy.room.Room;
-import fr.nekotine.fnafy.room.RoomMinimapManager;
+import fr.nekotine.fnafy.room.RoomManager;
+import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
@@ -30,9 +25,7 @@ public class FnafYMain extends JavaPlugin {
 	private ComGame gameManager = new ComGame(this);
 	
 	private String mapName = "";
-	private HashMap<String, Room> roomsHashMap = new HashMap<>();
-	List<Door> doorList = new ArrayList<>();
-	private RoomMinimapManager roomMinimapManager;
+	private RoomManager roomManager;
 	private boolean gameRunnig=false;
 	
 	public void onEnable() {
@@ -40,6 +33,7 @@ public class FnafYMain extends JavaPlugin {
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
+		ConfigurationSerialization.registerClass(BlockSelection.class, "BlockSelection");
 		ConfigurationSerialization.registerClass(Posture.class, "Posture");
 		ConfigurationSerialization.registerClass(ASAnimation.class, "ASAnimation");
 		ConfigurationSerialization.registerClass(ASAnimOrder.class, "ASAnimOrder");
@@ -84,22 +78,16 @@ public class FnafYMain extends JavaPlugin {
 		return false;
 	}
 	private boolean loadFiles() {
-		roomsHashMap = yamlReader.getRoomObjectsHash();
+		/*roomsHashMap = yamlReader.getRoomObjectsHash();
 		doorList = yamlReader.getDoorObjectList();
 		if(!roomsHashMap.isEmpty() && !doorList.isEmpty()) {
 			return true;
-		}
+		}*/
 		return false;
 	}
 	@Override
 	public void onDisable() {
 		super.onDisable();
 		animManager.disable();
-	}
-	public HashMap<String, Room> getRoomsHashMap() {
-		return roomsHashMap;
-	}
-	public RoomMinimapManager getRoomMinimapManager() {
-		return roomMinimapManager;
 	}
 }

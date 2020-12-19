@@ -48,13 +48,16 @@ public class OutlineCreator implements Listener{
 					e.setCancelled(true);
 					Vector vec = e.getClickedBlock().getLocation().toVector();
 					if(precedent!=null) {
-						if(vec.distanceSquared(precedent)>0 && vec.distanceSquared(precedent)<=2) {
-							Vector bVector = vec.clone().subtract(precedent);
-							parts.add(new BlockSelectionPart(bVector.getBlockX(), bVector.getBlockY(), bVector.getBlockZ()));
-							p.sendMessage(ChatColor.GREEN+"Vector added: "+vec.clone().subtract(precedent));
-							precedent=vec;
+						if(vec.distanceSquared(precedent)>0 ) {
+							if(vec.distanceSquared(precedent)<=2) {
+								Vector bVector = vec.clone().subtract(precedent);
+								parts.add(new BlockSelectionPart(bVector.getBlockX(), bVector.getBlockY(), bVector.getBlockZ()));
+								p.sendMessage(ChatColor.GREEN+"Vector added: "+vec.clone().subtract(precedent));
+								precedent=vec;
+								showOutline(e.getClickedBlock().getLocation());
+								return;
+							}
 							showOutline(e.getClickedBlock().getLocation());
-							return;
 						}
 						p.sendMessage(ChatColor.RED+"Selectionez un bloc adjaceant au précédent");
 						return;
@@ -108,9 +111,11 @@ public class OutlineCreator implements Listener{
 	}
 	public void hideOutline() {
 		Location loc = baseLoc.clone();
+		p.sendBlockChange(loc,loc.getBlock().getBlockData());
 		for(BlockSelectionPart bsp : parts) {
-			p.sendBlockChange(loc,loc.getBlock().getBlockData());
 			loc.add(bsp.toVector());
+			p.sendBlockChange(loc,loc.getBlock().getBlockData());
 		}
+		
 	}
 }

@@ -1,30 +1,37 @@
 package fr.nekotine.fnafy.room;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 
-public class RoomManager extends PlayerMoveHeadListener implements Listener{
-	private final List<Room> roomList = new ArrayList<>();
-	public RoomManager(FnafYMain main, List<Room> roomList) {
+public class RoomManager extends PlayerMoveHeadListener{
+	private final HashMap<String, Room> rooms = new HashMap<>();
+	public RoomManager(FnafYMain main) {
 		super(main);
-		this.roomList.addAll(roomList);
 	}
 	@Override
 	public void playerMoveHeadEvent(Player p) {
-		for(Room r : roomList) {
+		for(Room r : rooms.values()) {
 			r.playerMoveHeadEvent(p);
 		}
+	}
+	public void setRoomHash( HashMap<String, Room> rooms){
+		rooms.clear();
+		this.rooms.putAll(rooms);
 	}
 	public boolean trackPlayer(Player p) {
 		return super.trackPlayer(p);
 	}
 	public boolean untrackPlayer(Player p) {
 		return super.untrackPlayer(p);
+	}
+	public Room getRoom(String roomName) {
+		return rooms.get(roomName);
+	}
+	public HashMap<String, Room> getRooms(){
+		return rooms;
 	}
 }

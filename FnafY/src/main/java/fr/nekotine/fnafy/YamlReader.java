@@ -3,7 +3,6 @@ package fr.nekotine.fnafy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +22,7 @@ import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
+import fr.nekotine.fnafy.room.RoomManager;
 import fr.nekotine.fnafy.room.RoomType;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
@@ -135,6 +135,8 @@ public class YamlReader {
 				for (Animatronic anim : Animatronic.values()){
 					doorConfig.set(doorName+".animPose.room1."+anim.toString(), new String[0]);
 					doorConfig.set(doorName+".animPose.room2."+anim.toString(), new String[0]);
+					doorConfig.set(doorName+".minimapPose.room1."+anim.toString(), new String[0]);
+					doorConfig.set(doorName+".minimapPose.room2."+anim.toString(), new String[0]);
 				}
 				saveDoorConfig(mapName,doorConfig);
 				return true;
@@ -322,6 +324,29 @@ public class YamlReader {
 		}
 		return false;
 	}
+	public boolean addDoorMinimapAnimation(String mapName, String doorName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(getLinkedRoomsNames(mapName, doorName).contains(roomName)) {
+						if(anim!=null) {
+							if(main.getAnimManager().getAsanims().containsKey(animation)) {
+								List<String> animationList = getDoorRoomMinimapAnimation(mapName, doorName, roomName, anim);
+								if(!animationList.contains(animation)) {
+									animationList.add(animation);
+									doorConfig.set(doorName+".minimapPose.room"+getRoomNumberFromName(mapName, doorName, roomName)+"."+anim.toString(), animationList);
+									saveDoorConfig(mapName, doorConfig);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 	public boolean removeDoorAnimation(String mapName, String doorName, String roomName, Animatronic anim, String animation) {
 		YamlConfiguration doorConfig = getDoorConfig(mapName);
 		if (doorConfig != null) {
@@ -334,6 +359,29 @@ public class YamlReader {
 								if(animationList.contains(animation)) {
 									animationList.remove(animation);
 									doorConfig.set(doorName+".animPose.room"+getRoomNumberFromName(mapName, doorName, roomName)+"."+anim.toString(), animationList);
+									saveDoorConfig(mapName, doorConfig);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public boolean removeDoorMinimapAnimation(String mapName, String doorName, String roomName, Animatronic anim, String animation) {
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					if(getLinkedRoomsNames(mapName, doorName).contains(roomName)) {
+						if(anim!=null) {
+							if(main.getAnimManager().getAsanims().containsKey(animation)) {
+								List<String> animationList = getDoorRoomMinimapAnimation(mapName, doorName, roomName, anim);
+								if(animationList.contains(animation)) {
+									animationList.remove(animation);
+									doorConfig.set(doorName+".minimapPose.room"+getRoomNumberFromName(mapName, doorName, roomName)+"."+anim.toString(), animationList);
 									saveDoorConfig(mapName, doorConfig);
 									return true;
 								}
@@ -359,47 +407,74 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public List<Door> getDoorObjectList(){
-		List<Door> doorList = new ArrayList<>();
-		/*if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
+	public List<String> getDoorRoomMinimapAnimation(String mapName, String doorName, String roomName, Animatronic anim){
+		YamlConfiguration doorConfig = getDoorConfig(mapName);
+		if (doorConfig != null) {
+			if(doorExist(mapName, doorName)) {
+				if(roomExist(mapName, roomName)) {
+					int roomNum = getRoomNumberFromName(mapName, doorName, roomName);
+					if(roomNum!=0) {
+						return doorConfig.getStringList(doorName+".minimapPose.room"+roomNum+"."+anim.toString());
+					}
+				}
+			}
+		}
+		return null;
+	}
+	public HashMap<String, Door> getDoorObjectHash(RoomManager rm){
+		HashMap<String, Door> doors = new HashMap<>();
+		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
 			for(String doorName : getDoorList(main.getMapName())) {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
 				Vector length = getDoorLength(main.getMapName(), doorName);
-				Room room1 = main.getRoomsHashMap().get(getLinkedRoomName(main.getMapName(), doorName, 1));
-				Room room2 = main.getRoomsHashMap().get(getLinkedRoomName(main.getMapName(), doorName, 2));
-				
+				Room room1 =rm.getRoom((getLinkedRoomName(main.getMapName(), doorName, 1)));
+				Room room2 =rm.getRoom((getLinkedRoomName(main.getMapName(), doorName, 2)));
 				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> animToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
+				HashMap<Animatronic,List<ASAnimation>> minimapToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
+				HashMap<Animatronic,List<ASAnimation>> minimapToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
 				for(Animatronic animatronic : Animatronic.values()) {
-					List<ASAnimation> tempList = new ArrayList<>();
-					List<String> temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, 1), animatronic);
-					if(temp.isEmpty()) {
-						break;
+					for(int x=1;x<=2;x++) {
+						List<ASAnimation> tempList = new ArrayList<>();
+						List<String> temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, x), animatronic);
+						if(temp.isEmpty()) {
+							return null;
+						}
+						for(String animation : temp) {
+							tempList.add(main.getAnimManager().getAsanims().get(animation));
+						}
+						if(x==1) {
+							animToRoom1.put(animatronic, tempList);
+							continue;
+						}else {
+							animToRoom2.put(animatronic, tempList);
+						}
+						//
+						tempList.clear();
+						temp = getDoorRoomMinimapAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, x), animatronic);
+						if(temp.isEmpty()) {
+							return null;
+						}
+						for(String animation : temp) {
+							tempList.add(main.getAnimManager().getAsanims().get(animation));
+						}
+						if(x==1) {
+							minimapToRoom1.put(animatronic, tempList);
+							continue;
+						}else {
+							minimapToRoom2.put(animatronic, tempList);
+						}
 					}
-					for(String animation : temp) {
-						tempList.add(main.getAnimManager().getAsanims().get(animation));
-					}
-					animToRoom1.put(animatronic, tempList);
-					
-					tempList.clear();
-					temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, 2), animatronic);
-					if(temp.isEmpty()) {
-						break;
-					}
-					for(String animation : temp) {
-						tempList.add(main.getAnimManager().getAsanims().get(animation));
-					}
-					animToRoom2.put(animatronic, tempList);
 				}
-				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null
-						&& animToRoom1.keySet().containsAll(Arrays.asList(Animatronic.values()))
-						&& animToRoom2.keySet().containsAll(Arrays.asList(Animatronic.values()))){
-					doorList.add(new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2));
+				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null){
+					doors.put(doorName, new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
+				}else {
+					return null;
 				}
 			}
-		}*/
-		return doorList;
+		}
+		return doors;
 	}
 	//--------------------------------------------------------------------------------------
 	public boolean addRoomAnimation(String mapName, String roomName, Animatronic anim, String animation) {
@@ -446,6 +521,17 @@ public class YamlReader {
 			if(roomExist(mapName, roomName)) {
 				if(anim!=null) {
 					return roomConfig.getStringList(roomName+".animPose."+anim.toString());
+				}
+			}
+		}
+		return null;
+	}
+	public List<String> getRoomMinimapAnimation(String mapName, String roomName, Animatronic anim){
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				if(anim!=null) {
+					return roomConfig.getStringList(roomName+".minimapPose."+anim.toString());
 				}
 			}
 		}
@@ -603,20 +689,37 @@ public class YamlReader {
 			for(String roomName : getRoomList(main.getMapName())) {
 				RoomType type = getRoomType(main.getMapName(), roomName);
 				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				BlockSelection aO = getAftonOutline(main.getMapName(), roomName);
+				BlockSelection aS = getAftonSurface(main.getMapName(), roomName);
+				BlockSelection gO = getGuardOutline(main.getMapName(), roomName);
+				BlockSelection gS = getGuardSurface(main.getMapName(), roomName);
 				HashMap<Animatronic,List<ASAnimation>> inRoomAnimation =new HashMap<Animatronic,List<ASAnimation>>();
+				HashMap<Animatronic,List<ASAnimation>> inMinimapAnimation =new HashMap<Animatronic,List<ASAnimation>>();
 				for(Animatronic animatronic : Animatronic.values()) {
 					List<ASAnimation> tempList = new ArrayList<>();
 					List<String> temp = getRoomAnimation(main.getMapName(), roomName, animatronic);
 					if(temp.isEmpty()) {
-						break;
+						return null;
 					}
 					for(String animation : temp) {
 						tempList.add(main.getAnimManager().getAsanims().get(animation));
 					}
 					inRoomAnimation.put(animatronic, tempList);
+					
+					tempList.clear();
+					temp = getRoomMinimapAnimation(main.getMapName(), roomName, animatronic);
+					if(temp.isEmpty()) {
+						return null;
+					}
+					for(String animation : temp) {
+						tempList.add(main.getAnimManager().getAsanims().get(animation));
+					}
+					inMinimapAnimation.put(animatronic, tempList);
 				}
-				if(type!=RoomType.UNKNOWN && camLoc!=null && inRoomAnimation.keySet().containsAll(Arrays.asList(Animatronic.values()))){
-					//rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation));
+				if(type!=RoomType.UNKNOWN && camLoc!=null && aO!=null && aS!=null && gO!=null && gS!=null){
+					rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
+				}else {
+					return null;
 				}
 			}
 		}

@@ -55,6 +55,11 @@ public class ComMapper{
 			return main.getYamlReader().getDoorRoomAnimation((String)args[3], (String)args[4], (String)args[5], Animatronic.valueOf((String)args[6])).toArray(new String[0]);
 		}));
 	}
+	private void setMinimapAnimationFinderFromDoorArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("animationFromMinimapDoor", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getDoorRoomMinimapAnimation((String)args[3], (String)args[4], (String)args[5], Animatronic.valueOf((String)args[6])).toArray(new String[0]);
+		}));
+	}
 	private void setAnimationFinderFromRoomArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("animationFromRoom", new StringArgument().overrideSuggestions((sender, args) -> {
 			return main.getYamlReader().getRoomAnimation((String)args[3], (String)args[4], Animatronic.valueOf((String)args[5])).toArray(new String[0]);
@@ -333,6 +338,42 @@ public class ComMapper{
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
 			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"addMinimapAnimation");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setRoomFinderFromDoorArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().addDoorMinimapAnimation((String)args[0], (String)args[1], (String)args[2], Animatronic.valueOf((String)args[3]), (String)args[4])) {
+				sender.sendMessage(ChatColor.GREEN+"Minimap Animation set pour l'animatronic dans la porte précisée vers la salle précisée!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle, l'animatronic ou l'animation n'existent pas!");
+			}
+			
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"door");
+		setAutoCompleteArgument(argument,"removeMinimapAnimation");
+		setMapFinderArgument(argument);
+		setDoorFinderArgument(argument);
+		setRoomFinderFromDoorArgument(argument);
+		setAnimatronicArgument(argument);
+		setMinimapAnimationFinderFromDoorArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeDoorMinimapAnimation((String)args[0], (String)args[1], (String)args[2], Animatronic.valueOf((String)args[3]), (String)args[4])) {
+				sender.sendMessage(ChatColor.GREEN+"Minimap Animation enlevée pour l'animatronic dans la porte précisée vers la salle précisée!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la porte, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
+			}
+			
 		}).register();
 		argument.clear();
 		//--------------------------------------------------------------------------------------

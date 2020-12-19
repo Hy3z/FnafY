@@ -20,8 +20,11 @@ public class Door {
 	private final HashMap<Animatronic,List<ASAnimation>> animToRoom1=new HashMap<Animatronic,List<ASAnimation>>();
 	private final HashMap<Animatronic,List<ASAnimation>> animToRoom2=new HashMap<Animatronic,List<ASAnimation>>();
 	
+	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom1=new HashMap<Animatronic,List<ASAnimation>>();
+	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom2=new HashMap<Animatronic,List<ASAnimation>>();
 	public Door(String roomName, DoorType doorType, Location doorLoc, Vector length, Room room1, Room room2,
-			HashMap<Animatronic,List<ASAnimation>> animToRoom1, HashMap<Animatronic,List<ASAnimation>> animToRoom2) {
+			HashMap<Animatronic,List<ASAnimation>> animToRoom1, HashMap<Animatronic,List<ASAnimation>> animToRoom2,
+			HashMap<Animatronic,List<ASAnimation>> minimapToRoom1, HashMap<Animatronic,List<ASAnimation>> minimapToRoom2) {
 		this.roomName=roomName;
 		this.doorType=doorType;
 		this.doorLoc=doorLoc;
@@ -30,6 +33,8 @@ public class Door {
 		this.room2=room2;
 		this.animToRoom1.putAll(animToRoom1);
 		this.animToRoom2.putAll(animToRoom2);
+		this.minimapToRoom1.putAll(minimapToRoom1);
+		this.minimapToRoom2.putAll(minimapToRoom2);
 	}
 
 	public String getRoomName() {

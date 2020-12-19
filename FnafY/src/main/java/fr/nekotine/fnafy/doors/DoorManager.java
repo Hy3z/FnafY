@@ -1,5 +1,18 @@
 package fr.nekotine.fnafy.doors;
 
-public class DoorManager {
+import java.util.HashMap;
 
+import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.room.Room;
+
+public class DoorManager {
+	private FnafYMain main;
+	private final HashMap<String, Door> doors = new HashMap<>();
+	public DoorManager(FnafYMain main) {
+		this.main=main;
+	}
+	public void setDoorHash(HashMap<String, Door> doors) {
+		doors.clear();
+		this.doors.putAll(doors);
+	}
 }

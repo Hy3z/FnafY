@@ -70,7 +70,7 @@ public class OutlineCreator implements Listener{
 				}
 				if(e.getAction()==Action.LEFT_CLICK_BLOCK || e.getAction()==Action.LEFT_CLICK_AIR) {
 					e.setCancelled(true);
-					if(parts.size()>0) {
+					if(baseLoc!=null) {
 						hideOutline();
 						cm.registerOutline(mapName, roomName, outline, baseLoc, parts, p);
 						p.sendMessage(ChatColor.GREEN+"Outline registered!");

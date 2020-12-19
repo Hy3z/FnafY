@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.nekotine.fnafy.FnafYMain;
 
@@ -15,9 +14,10 @@ public abstract class PlayerMoveHeadListener implements Listener{
 	private final FnafYMain main;
 	private final long REFRESHTICKTIMER=20;
 	private HashMap<Player, Location> eyeLocationPerPlayer = new HashMap<>();
+	private int scheduler;
+	private boolean schedulerRunning = false;
 	public PlayerMoveHeadListener(FnafYMain main) {
 		this.main=main;
-		scheduleEvent();
 	}
 	public abstract void playerMoveHeadEvent(Player p);
 	@EventHandler
@@ -26,9 +26,19 @@ public abstract class PlayerMoveHeadListener implements Listener{
 			eyeLocationPerPlayer.remove(e.getPlayer());
 		}
 	}
+	public boolean isScheduling() {
+		return schedulerRunning;
+	}
+	public boolean triggerSchedule() {
+		if(schedulerRunning) {
+			main.getServer().getScheduler().cancelTask(scheduler);
+			return false;
+		}
+		scheduleEvent();
+		return true;
+	}
 	private void scheduleEvent() {
-		BukkitScheduler scheduler = main.getServer().getScheduler();
-	    scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
+		scheduler = main.getServer().getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
 	        @Override
 	        public void run() {
 	        	for(Player p : eyeLocationPerPlayer.keySet()) {
@@ -47,6 +57,9 @@ public abstract class PlayerMoveHeadListener implements Listener{
 			return true;
 		}
 		return false;
+	}
+	public PlayerMoveHeadListener getSuper() {
+		return this;
 	}
 	public boolean untrackPlayer(Player p) {
 		if(eyeLocationPerPlayer.containsKey(p)) {

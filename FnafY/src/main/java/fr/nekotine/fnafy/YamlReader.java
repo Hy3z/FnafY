@@ -480,6 +480,17 @@ public class YamlReader {
 		}
 		return false;
 	}
+	public boolean setBlockSelection(String mapName, String roomName, String outline, BlockSelection bs) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+"."+outline, bs);
+				saveRoomConfig(mapName, roomConfig);
+				return true;
+			}
+		}
+		return false;
+	}
 	public BlockSelection getAftonSurface(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -488,16 +499,6 @@ public class YamlReader {
 			}
 		}
 		return null;
-	}
-	public boolean setAftonSurface(String mapName, String roomName, BlockSelection bs) {
-		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		if (roomConfig != null) {
-			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName+".aftonSurface", bs);
-				return true;
-			}
-		}
-		return false;
 	}
 	public BlockSelection getAftonOutline(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -508,16 +509,6 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public boolean setAftonOutline(String mapName, String roomName, BlockSelection bs) {
-		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		if (roomConfig != null) {
-			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName+".aftonOutline", bs);
-				return true;
-			}
-		}
-		return false;
-	}
 	public BlockSelection getGuardOutline(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -527,16 +518,6 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public boolean setGuardOutline(String mapName, String roomName, BlockSelection bs) {
-		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		if (roomConfig != null) {
-			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName+".guardOutline", bs);
-				return true;
-			}
-		}
-		return false;
-	}
 	public BlockSelection getGuardSurface(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
@@ -545,16 +526,6 @@ public class YamlReader {
 			}
 		}
 		return null;
-	}
-	public boolean setGuardSurface(String mapName, String roomName, BlockSelection bs) {
-		YamlConfiguration roomConfig = getRoomConfig(mapName);
-		if (roomConfig != null) {
-			if(roomExist(mapName, roomName)) {
-				roomConfig.set(roomName+".guardSurface", bs);
-				return true;
-			}
-		}
-		return false;
 	}
 	public boolean removeRoom(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);

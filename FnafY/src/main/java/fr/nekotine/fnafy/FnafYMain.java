@@ -9,6 +9,7 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
+import fr.nekotine.fnafy.commands.OutlineCreator;
 import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.room.RoomManager;
 import fr.nekotine.fnafy.utils.BlockSelection;
@@ -51,6 +52,9 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public ComAnim getAnimManager() {
 		return animManager;
+	}
+	public void registerEventOutline(OutlineCreator oc) {
+		Bukkit.getPluginManager().registerEvents(oc, this);
 	}
 	public YamlReader getYamlReader() {
 		return yamlReader;

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.util.Vector;
 @SerializableAs("BlockSelectionPart")
 public class BlockSelectionPart implements ConfigurationSerializable{
 	
@@ -35,6 +36,9 @@ public class BlockSelectionPart implements ConfigurationSerializable{
 		loc.add(x, y, z);
 	}
 
+	public Vector toVector() {
+		return new Vector(x,y,z);
+	}
 	@Override
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> serialized = new HashMap<String, Object>();

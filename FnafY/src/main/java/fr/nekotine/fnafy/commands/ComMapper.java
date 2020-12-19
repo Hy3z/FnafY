@@ -1,15 +1,20 @@
 package fr.nekotine.fnafy.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
@@ -21,10 +26,14 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.doors.DoorType;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.RoomType;
+import fr.nekotine.fnafy.utils.BlockSelection;
+import fr.nekotine.fnafy.utils.BlockSelectionPart;
 
-public class ComMapper {
+public class ComMapper{
 	private FnafYMain main;
 	private List<String> mapArray = new ArrayList<String>();
+	private HashMap<Player, OutlineCreator> outlineContainer = new HashMap<>();
+	private String[] outlinePaths = {"aftonOutline","aftonSurface","guardOutline","guardSurface"};
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 	}
@@ -102,6 +111,9 @@ public class ComMapper {
 	private void setFlatArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("arg", new StringArgument());
 	}
+	private void setOutlineArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("outlinePaths", new StringArgument().overrideSuggestions(outlinePaths));
+	}
 	private void sendDoorInfo(CommandSender sender, String mapName, String doorName) {
 		sender.sendMessage(ChatColor.WHITE+"-- INFORMATIONS FOR ["+ChatColor.GOLD+doorName+ChatColor.WHITE+"] --");
 		sender.sendMessage(ChatColor.WHITE+"doorType: "+ChatColor.GOLD+main.getYamlReader().getDoorType(mapName, doorName).toString());
@@ -131,6 +143,18 @@ public class ComMapper {
 		for(Animatronic anim : Animatronic.values()) {
 			sender.sendMessage(ChatColor.WHITE+"Animation."+anim+": "+ChatColor.GOLD+main.getYamlReader().getRoomAnimation(mapName, roomName, anim));
 		}
+	}
+	public void registerOutline(String mapName, String roomName, String outline, Location baseLoc, LinkedList<BlockSelectionPart> parts, Player p) {
+		main.getYamlReader().setBlockSelection(mapName, roomName, outline, new BlockSelection(baseLoc,parts));
+		stopOutlineCreator(p);
+	}
+	public void stopOutlineCreator(Player p) {
+		HandlerList.unregisterAll(outlineContainer.get(p));
+		outlineContainer.remove(p);
+		p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+	}
+	public FnafYMain getMain() {
+		return main;
 	}
 	public void registerMapperCommands() {
 		main.getLogger().info("Registering Mapper commands");
@@ -420,6 +444,28 @@ public class ComMapper {
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
 			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setOutline");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setOutlineArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(!outlineContainer.containsKey((Player)sender)){
+				if(main.getYamlReader().roomExist((String)args[0], (String)args[1])) {
+					OutlineCreator oc = new OutlineCreator(this, (String)args[0], (String)args[1], (String)args[2], (Player)sender);
+					main.registerEventOutline(oc);
+					outlineContainer.put((Player)sender, oc);
+					((Player)sender).getInventory().setItemInMainHand(new ItemStack(Material.WOODEN_HOE));
+					return;
+				}
+				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'éxistent pas!");
+				return;
+			}
+			sender.sendMessage(ChatColor.RED+"Vous êtes déjà en train d'enregistrer une outline!");
 		}).register();
 		argument.clear();
 		

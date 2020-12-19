@@ -7,12 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.nekotine.fnafy.FnafYMain;
 
-public abstract class PlayerMoveHeadListener extends JavaPlugin implements Listener{
+public abstract class PlayerMoveHeadListener implements Listener{
 	private final FnafYMain main;
 	private final long REFRESHTICKTIMER=20;
 	private HashMap<Player, Location> eyeLocationPerPlayer = new HashMap<>();
@@ -29,7 +28,7 @@ public abstract class PlayerMoveHeadListener extends JavaPlugin implements Liste
 	}
 	private void scheduleEvent() {
 		BukkitScheduler scheduler = main.getServer().getScheduler();
-	    scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+	    scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
 	        @Override
 	        public void run() {
 	        	for(Player p : eyeLocationPerPlayer.keySet()) {

@@ -20,7 +20,7 @@ public class BlockSelection implements ConfigurationSerializable{
 	private final Location baseLoc;
 	private final LinkedList<BlockSelectionPart> parts = new LinkedList<BlockSelectionPart>();
 	
-	private BlockSelection(Location baseloc, LinkedList<BlockSelectionPart> parts) {
+	public BlockSelection(Location baseloc, LinkedList<BlockSelectionPart> parts) {
 		baseLoc = baseloc;
 		this.parts.addAll(parts);
 	}

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -428,11 +429,6 @@ public class YamlReader {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
 				Vector length = getDoorLength(main.getMapName(), doorName);
-				System.out.println("room1: "+getLinkedRoomName(main.getMapName(), doorName, 1));
-				System.out.println("room2: "+getLinkedRoomName(main.getMapName(), doorName, 2));
-				for(String room : rm.getRooms().keySet()) {
-					System.out.println(room);
-				}
 				Room room1 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 1));
 				Room room2 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 2));
 				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
@@ -722,7 +718,9 @@ public class YamlReader {
 					inMinimapAnimation.put(animatronic, tempList);
 				}
 				if(type!=RoomType.UNKNOWN && camLoc!=null && aO!=null && aS!=null && gO!=null && gS!=null){
-					rooms.put(roomName, new Room(roomName, type, camLoc, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
+					Room r = new Room(main, roomName, type, camLoc, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation);
+					Bukkit.getPluginManager().registerEvents(r, main);
+					rooms.put(roomName, r);
 				}else {
 					return null;
 				}

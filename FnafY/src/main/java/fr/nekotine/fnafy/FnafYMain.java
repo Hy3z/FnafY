@@ -1,5 +1,7 @@
 package fr.nekotine.fnafy;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,8 +11,11 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
-import fr.nekotine.fnafy.commands.OutlineCreator;
+import fr.nekotine.fnafy.doors.Door;
+import fr.nekotine.fnafy.doors.DoorManager;
 import fr.nekotine.fnafy.events.EventListener;
+import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
+import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomManager;
 import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
@@ -26,11 +31,14 @@ public class FnafYMain extends JavaPlugin {
 	private ComGame gameManager = new ComGame(this);
 	
 	private String mapName = "";
-	private RoomManager roomManager;
+	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener(this);
+	private RoomManager roomManager = new RoomManager(this);
+	private DoorManager doorManager = new DoorManager(this);
 	private boolean gameRunnig=false;
 	
 	public void onEnable() {
 		super.onEnable();
+		Bukkit.getPluginManager().registerEvents(headListener, this);
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
@@ -53,9 +61,6 @@ public class FnafYMain extends JavaPlugin {
 	public ComAnim getAnimManager() {
 		return animManager;
 	}
-	public void registerEventOutline(OutlineCreator oc) {
-		Bukkit.getPluginManager().registerEvents(oc, this);
-	}
 	public YamlReader getYamlReader() {
 		return yamlReader;
 	}
@@ -70,23 +75,31 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public boolean startGame() {
 		if(loadGame()) {
+			headListener.triggerSchedule();
 			return true;
 		}
 		return false;
 	}
 	private boolean loadGame() {
 		if(loadFiles()) {
-			//START GAME
+			headListener.trackPlayer(roomManager.getRooms().get("room1").getCamLocation().getWorld().getPlayers().get(0));
 			return true;
 		}
 		return false;
 	}
+	public PlayerMoveHeadListener getHeadListener() {
+		return headListener;
+	}
 	private boolean loadFiles() {
-		/*roomsHashMap = yamlReader.getRoomObjectsHash();
-		doorList = yamlReader.getDoorObjectList();
-		if(!roomsHashMap.isEmpty() && !doorList.isEmpty()) {
-			return true;
-		}*/
+		HashMap<String, Room> rooms = yamlReader.getRoomObjectsHash();
+		if(rooms!=null) {
+			roomManager.setRoomHash(rooms);
+			HashMap<String, Door> doors = yamlReader.getDoorObjectHash(roomManager);
+			if(doors!=null) {
+				doorManager.setDoorHash(doors);
+				return true;
+			}
+		}
 		return false;
 	}
 	@Override

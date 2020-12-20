@@ -3,6 +3,7 @@ package fr.nekotine.fnafy.events;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.nekotine.fnafy.FnafYMain;
 
-public abstract class PlayerMoveHeadListener implements Listener{
+public class PlayerMoveHeadListener implements Listener{
 	private final FnafYMain main;
 	private final long REFRESHTICKTIMER=1;
 	private HashMap<Player, Location> eyeLocationPerPlayer = new HashMap<>();
@@ -20,7 +21,6 @@ public abstract class PlayerMoveHeadListener implements Listener{
 	public PlayerMoveHeadListener(FnafYMain main) {
 		this.main=main;
 	}
-	public abstract void playerMoveHeadEvent(Player p);
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent e) {
 		if(eyeLocationPerPlayer.containsKey(e.getPlayer())) {
@@ -48,8 +48,14 @@ public abstract class PlayerMoveHeadListener implements Listener{
 	        	for(Player p : eyeLocationPerPlayer.keySet()) {
 	        		if(p.getEyeLocation().getYaw()!=eyeLocationPerPlayer.get(p).getYaw() || 
 	        		p.getEyeLocation().getPitch()!=eyeLocationPerPlayer.get(p).getPitch()) {
+	        			System.out.println("TRIGGER");
+	        			PlayerMoveHeadEvent e = new PlayerMoveHeadEvent(p, eyeLocationPerPlayer.get(p), p.getEyeLocation());
+	        			Bukkit.getPluginManager().callEvent(e);
+	        			if(e.isCancelled()) {
+	        				p.teleport(eyeLocationPerPlayer.get(p).subtract(0, 1, 0));
+	        				return;
+	        			}
 	        			eyeLocationPerPlayer.replace(p, p.getEyeLocation());
-	        			playerMoveHeadEvent(p);
 	        		}
 	        	}
 	        }

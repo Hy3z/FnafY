@@ -46,6 +46,7 @@ public class BlockSelection implements ConfigurationSerializable{
 	public boolean isOneSelected(Location loc) {
 		Block locb=loc.getBlock();
 		Location loca = baseLoc.clone();
+		if (loca.getBlock().equals(locb)) return true;
 		for (BlockSelectionPart pa : parts) {
 			pa.apply(loca);
 			if (loca.getBlock().equals(locb)) return true;

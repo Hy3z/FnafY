@@ -165,17 +165,7 @@ public class ComMapper{
 		main.getLogger().info("Registering Mapper commands");
 		LinkedHashMap<String, Argument> argument = new LinkedHashMap<String,Argument>();
 		
-		setAutoCompleteArgument(argument,"setMap");
-		setMapFinderArgument(argument);
-		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().mapExist((String)args[0])) {
-				main.setMapName((String)args[0]);
-				sender.sendMessage(ChatColor.GREEN+"Map set!");
-			}else {
-				sender.sendMessage(ChatColor.RED+"Cette map n'éxiste pas!");
-			}
-		}).register();
-		argument.clear();
+		
 		
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"create");

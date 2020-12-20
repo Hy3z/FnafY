@@ -7,12 +7,18 @@ import java.util.List;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 
+import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.enums.Animatronic;
+import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
-public class Room{
+public class Room implements Listener{
+	private final FnafYMain main;
 	private final String roomName;
 	private final RoomType roomType;
 	private final Location camLocation;
@@ -26,9 +32,10 @@ public class Room{
 	private List<Player> playerInAftonRoom = new ArrayList<>();
 	private List<Player> playerInGuardRoom = new ArrayList<>();
 	
-	public Room(String roomName, RoomType roomType, Location camLocation, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
+	public Room(FnafYMain main, String roomName, RoomType roomType, Location camLocation, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
 			BlockSelection AftonSurface, BlockSelection AftonOutline, BlockSelection GuardSurface, BlockSelection GuardOutline,
 			HashMap<Animatronic,List<ASAnimation>> MinimapPoses) {
+		this.main=main;
 		this.roomName = roomName;
 		this.roomType = roomType;
 		this.camLocation = camLocation;
@@ -52,7 +59,17 @@ public class Room{
 	public HashMap<Animatronic,List<ASAnimation>> getInRoomAnimations() {
 		return InRoomAnimations;
 	}
-	public void playerMoveHeadEvent(Player p) {
+	@EventHandler
+	public void playerMoveHeadEvent(PlayerMoveHeadEvent e) {
+		updateOutline(e.getPlayer());
+	}
+	@EventHandler
+	public void playerMoveEvent(PlayerMoveEvent e) {
+		if(main.getHeadListener().getTrackedPlayers().contains(e.getPlayer())){
+			updateOutline(e.getPlayer());
+		}
+	}
+	private void updateOutline(Player p) {
 		if(p.getTargetBlockExact(50, FluidCollisionMode.NEVER)!=null) {
 			if(playerInAftonRoom.contains(p)) {
 				if(!AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {

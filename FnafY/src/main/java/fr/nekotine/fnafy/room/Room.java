@@ -12,7 +12,7 @@ import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
-public class Room {
+public class Room{
 	private final String roomName;
 	private final RoomType roomType;
 	private final Location camLocation;
@@ -53,27 +53,29 @@ public class Room {
 		return InRoomAnimations;
 	}
 	public void playerMoveHeadEvent(Player p) {
-		if(playerInAftonRoom.contains(p)) {
-			if(!AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
-				AftonOutline.disOutline(p);
-				playerInAftonRoom.remove(p);
+		if(p.getTargetBlockExact(50, FluidCollisionMode.NEVER)!=null) {
+			if(playerInAftonRoom.contains(p)) {
+				if(!AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
+					AftonOutline.disOutline(p);
+					playerInAftonRoom.remove(p);
+				}
+				return;
+			}else if(AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
+				AftonOutline.outline(p);
+				playerInAftonRoom.add(p);
+				return;
 			}
-			return;
-		}else if(AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
-			AftonOutline.outline(p);
-			playerInAftonRoom.add(p);
-			return;
-		}
-		if(playerInGuardRoom.contains(p)) {
-			if(!GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
-				GuardOutline.disOutline(p);
-				playerInGuardRoom.remove(p);
+			if(playerInGuardRoom.contains(p)) {
+				if(!GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
+					GuardOutline.disOutline(p);
+					playerInGuardRoom.remove(p);
+				}
+				return;
+			}else if(GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
+				GuardOutline.outline(p);
+				playerInGuardRoom.add(p);
+				return;
 			}
-			return;
-		}else if(GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
-			GuardOutline.outline(p);
-			playerInGuardRoom.add(p);
-			return;
 		}
 	}
 	public List<ASAnimation> getAnimatronicAnimations(Animatronic anim){

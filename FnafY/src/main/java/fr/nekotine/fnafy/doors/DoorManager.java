@@ -3,7 +3,6 @@ package fr.nekotine.fnafy.doors;
 import java.util.HashMap;
 
 import fr.nekotine.fnafy.FnafYMain;
-import fr.nekotine.fnafy.room.Room;
 
 public class DoorManager {
 	private FnafYMain main;

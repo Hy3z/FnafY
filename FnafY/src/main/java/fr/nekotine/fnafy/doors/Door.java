@@ -11,7 +11,7 @@ import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
 
 public class Door {
-	private final String roomName;
+	private final String doorName;
 	private final DoorType doorType;
 	private final Location doorLoc;
 	private final Vector length;
@@ -22,10 +22,10 @@ public class Door {
 	
 	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom1=new HashMap<Animatronic,List<ASAnimation>>();
 	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom2=new HashMap<Animatronic,List<ASAnimation>>();
-	public Door(String roomName, DoorType doorType, Location doorLoc, Vector length, Room room1, Room room2,
+	public Door(String doorName, DoorType doorType, Location doorLoc, Vector length, Room room1, Room room2,
 			HashMap<Animatronic,List<ASAnimation>> animToRoom1, HashMap<Animatronic,List<ASAnimation>> animToRoom2,
 			HashMap<Animatronic,List<ASAnimation>> minimapToRoom1, HashMap<Animatronic,List<ASAnimation>> minimapToRoom2) {
-		this.roomName=roomName;
+		this.doorName=doorName;
 		this.doorType=doorType;
 		this.doorLoc=doorLoc;
 		this.length=length;
@@ -37,8 +37,8 @@ public class Door {
 		this.minimapToRoom2.putAll(minimapToRoom2);
 	}
 
-	public String getRoomName() {
-		return roomName;
+	public String getDoorName() {
+		return doorName;
 	}
 
 	public DoorType getDoorType() {

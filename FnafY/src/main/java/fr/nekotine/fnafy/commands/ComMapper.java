@@ -498,7 +498,6 @@ public class ComMapper{
 			if(!outlineContainer.containsKey((Player)sender)){
 				if(main.getYamlReader().roomExist((String)args[0], (String)args[1])) {
 					OutlineCreator oc = new OutlineCreator(this, (String)args[0], (String)args[1], (String)args[2], (Player)sender);
-					main.registerEventOutline(oc);
 					outlineContainer.put((Player)sender, oc);
 					((Player)sender).getInventory().setItemInMainHand(new ItemStack(Material.WOODEN_HOE));
 					return;

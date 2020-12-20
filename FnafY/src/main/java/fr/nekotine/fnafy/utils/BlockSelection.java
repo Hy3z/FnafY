@@ -27,6 +27,7 @@ public class BlockSelection implements ConfigurationSerializable{
 
 	public void outline(Player p) {
 		Location loc = baseLoc.clone();
+		p.sendBlockChange(loc,OUTLINE_ON);
 		for (BlockSelectionPart pa : parts) {
 			pa.apply(loc);
 			p.sendBlockChange(loc,OUTLINE_ON);
@@ -35,6 +36,7 @@ public class BlockSelection implements ConfigurationSerializable{
 	
 	public void disOutline(Player p) {
 		Location loc = baseLoc.clone();
+		p.sendBlockChange(loc,loc.getBlock().getBlockData());
 		for (BlockSelectionPart pa : parts) {
 			pa.apply(loc);
 			p.sendBlockChange(loc,loc.getBlock().getBlockData());
@@ -45,7 +47,7 @@ public class BlockSelection implements ConfigurationSerializable{
 		Block locb=loc.getBlock();
 		Location loca = baseLoc.clone();
 		for (BlockSelectionPart pa : parts) {
-			pa.apply(loc);
+			pa.apply(loca);
 			if (loca.getBlock().equals(locb)) return true;
 		}
 		return false;

@@ -1,6 +1,7 @@
 package fr.nekotine.fnafy.events;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import fr.nekotine.fnafy.FnafYMain;
 
 public abstract class PlayerMoveHeadListener implements Listener{
 	private final FnafYMain main;
-	private final long REFRESHTICKTIMER=20;
+	private final long REFRESHTICKTIMER=1;
 	private HashMap<Player, Location> eyeLocationPerPlayer = new HashMap<>();
 	private int scheduler;
 	private boolean schedulerRunning = false;
@@ -25,6 +26,9 @@ public abstract class PlayerMoveHeadListener implements Listener{
 		if(eyeLocationPerPlayer.containsKey(e.getPlayer())) {
 			eyeLocationPerPlayer.remove(e.getPlayer());
 		}
+	}
+	public Set<Player> getTrackedPlayers(){
+		return eyeLocationPerPlayer.keySet();
 	}
 	public boolean isScheduling() {
 		return schedulerRunning;
@@ -57,9 +61,6 @@ public abstract class PlayerMoveHeadListener implements Listener{
 			return true;
 		}
 		return false;
-	}
-	public PlayerMoveHeadListener getSuper() {
-		return this;
 	}
 	public boolean untrackPlayer(Player p) {
 		if(eyeLocationPerPlayer.containsKey(p)) {

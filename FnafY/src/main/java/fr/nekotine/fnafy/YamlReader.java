@@ -428,8 +428,13 @@ public class YamlReader {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
 				Vector length = getDoorLength(main.getMapName(), doorName);
-				Room room1 =rm.getRoom((getLinkedRoomName(main.getMapName(), doorName, 1)));
-				Room room2 =rm.getRoom((getLinkedRoomName(main.getMapName(), doorName, 2)));
+				System.out.println("room1: "+getLinkedRoomName(main.getMapName(), doorName, 1));
+				System.out.println("room2: "+getLinkedRoomName(main.getMapName(), doorName, 2));
+				for(String room : rm.getRooms().keySet()) {
+					System.out.println(room);
+				}
+				Room room1 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 1));
+				Room room2 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 2));
 				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> animToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> minimapToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
@@ -439,6 +444,7 @@ public class YamlReader {
 						List<ASAnimation> tempList = new ArrayList<>();
 						List<String> temp = getDoorRoomAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, x), animatronic);
 						if(temp.isEmpty()) {
+							System.out.println("InRoomPose was empty for room"+x);
 							return null;
 						}
 						for(String animation : temp) {
@@ -446,7 +452,6 @@ public class YamlReader {
 						}
 						if(x==1) {
 							animToRoom1.put(animatronic, tempList);
-							continue;
 						}else {
 							animToRoom2.put(animatronic, tempList);
 						}
@@ -454,6 +459,7 @@ public class YamlReader {
 						tempList.clear();
 						temp = getDoorRoomMinimapAnimation(main.getMapName(), doorName, getLinkedRoomName(main.getMapName(), doorName, x), animatronic);
 						if(temp.isEmpty()) {
+							System.out.println("MinimapPose was empty for room"+x);
 							return null;
 						}
 						for(String animation : temp) {
@@ -461,7 +467,6 @@ public class YamlReader {
 						}
 						if(x==1) {
 							minimapToRoom1.put(animatronic, tempList);
-							continue;
 						}else {
 							minimapToRoom2.put(animatronic, tempList);
 						}

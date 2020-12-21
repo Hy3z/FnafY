@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -14,8 +12,6 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 @SerializableAs("BlockSelection")
 public class BlockSelection implements ConfigurationSerializable{
-	
-	public static final BlockData OUTLINE_ON = Bukkit.createBlockData(Material.EMERALD_BLOCK);
 	
 	private final Location baseLoc;
 	private final LinkedList<BlockSelectionPart> parts = new LinkedList<BlockSelectionPart>();
@@ -25,12 +21,12 @@ public class BlockSelection implements ConfigurationSerializable{
 		this.parts.addAll(parts);
 	}
 
-	public void outline(Player p) {
+	public void outline(Player p, BlockData outline) {
 		Location loc = baseLoc.clone();
-		p.sendBlockChange(loc,OUTLINE_ON);
+		p.sendBlockChange(loc,outline);
 		for (BlockSelectionPart pa : parts) {
 			pa.apply(loc);
-			p.sendBlockChange(loc,OUTLINE_ON);
+			p.sendBlockChange(loc,outline);
 		}
 	}
 	

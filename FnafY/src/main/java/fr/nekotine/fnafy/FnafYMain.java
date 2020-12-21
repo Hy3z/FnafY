@@ -13,7 +13,6 @@ import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorManager;
-import fr.nekotine.fnafy.events.EventListener;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomManager;
@@ -24,7 +23,6 @@ import fr.nekotine.fnafy.utils.Posture;
 
 public class FnafYMain extends JavaPlugin {
 	
-	private EventListener eListener;
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
@@ -47,8 +45,6 @@ public class FnafYMain extends JavaPlugin {
 		ConfigurationSerialization.registerClass(ASAnimation.class, "ASAnimation");
 		ConfigurationSerialization.registerClass(ASAnimOrder.class, "ASAnimOrder");
 		//
-		eListener = new EventListener();
-		Bukkit.getPluginManager().registerEvents(eListener, this);
 		yamlReader = new YamlReader(this);
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
@@ -82,7 +78,6 @@ public class FnafYMain extends JavaPlugin {
 	}
 	private boolean loadGame() {
 		if(loadFiles()) {
-			headListener.trackPlayer(roomManager.getRooms().get("room1").getCamLocation().getWorld().getPlayers().get(0));
 			return true;
 		}
 		return false;

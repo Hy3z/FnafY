@@ -18,9 +18,6 @@ public class PlayerMoveHeadEvent extends Event implements Cancellable {
 		this.after=after;
 		this.isCancelled=false;
 	}
-	public static HandlerList getHandlerList() {
-		return HANDLERS_LIST;
-	}
 	public Location getBefore() {
 		return before;
 	}

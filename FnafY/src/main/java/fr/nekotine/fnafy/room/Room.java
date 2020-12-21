@@ -4,17 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.enums.Animatronic;
+import fr.nekotine.fnafy.enums.Team;
+import fr.nekotine.fnafy.events.ActionOnRoomEvent;
+import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
+import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
 public class Room implements Listener{
@@ -60,6 +68,14 @@ public class Room implements Listener{
 		return InRoomAnimations;
 	}
 	@EventHandler
+	public void playerInteractEvent(PlayerInteractEvent e) {
+		if(playerInAftonRoom.contains(e.getPlayer())) {
+			Bukkit.getPluginManager().callEvent(new ActionOnRoomEvent(e.getPlayer(), this, e.getAction(),Team.AFTON));
+		}else if(playerInGuardRoom.contains(e.getPlayer())) {
+			Bukkit.getPluginManager().callEvent(new ActionOnRoomEvent(e.getPlayer(), this, e.getAction(),Team.GUARD));
+		}
+	}
+	@EventHandler
 	public void playerMoveHeadEvent(PlayerMoveHeadEvent e) {
 		updateOutline(e.getPlayer());
 	}
@@ -69,27 +85,41 @@ public class Room implements Listener{
 			updateOutline(e.getPlayer());
 		}
 	}
+	public void drawGuardOutline(Player p, BlockData outline) {
+		GuardOutline.outline(p, outline);
+	}
+	public void hideGuardOutline(Player p) {
+		GuardOutline.disOutline(p);
+	}
+	public void drawAftonOutline(Player p, BlockData outline) {
+		AftonOutline.outline(p, outline);
+	}
+	public void hideAftonOutline(Player p, BlockData outline) {
+		AftonOutline.disOutline(p);
+	}
 	private void updateOutline(Player p) {
-		if(p.getTargetBlockExact(50, FluidCollisionMode.NEVER)!=null) {
+		Block block = p.getTargetBlockExact(50, FluidCollisionMode.NEVER);
+		if(block!=null) {
+			Location loc = block.getLocation();
 			if(playerInAftonRoom.contains(p)) {
-				if(!AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
-					AftonOutline.disOutline(p);
+				if(!AftonSurface.isOneSelected(loc)) {
+					Bukkit.getPluginManager().callEvent(new UnlookAtRoomEvent(p, this, Team.AFTON));
 					playerInAftonRoom.remove(p);
 				}
 				return;
-			}else if(AftonSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
-				AftonOutline.outline(p);
+			}else if(AftonSurface.isOneSelected(loc)){
+				Bukkit.getPluginManager().callEvent(new LookAtRoomEvent(p, this, Team.AFTON));
 				playerInAftonRoom.add(p);
 				return;
 			}
 			if(playerInGuardRoom.contains(p)) {
-				if(!GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())) {
-					GuardOutline.disOutline(p);
+				if(!GuardSurface.isOneSelected(loc)) {
+					Bukkit.getPluginManager().callEvent(new UnlookAtRoomEvent(p, this, Team.GUARD));
 					playerInGuardRoom.remove(p);
 				}
 				return;
-			}else if(GuardSurface.isOneSelected(p.getTargetBlockExact(50, FluidCollisionMode.NEVER).getLocation())){
-				GuardOutline.outline(p);
+			}else if(GuardSurface.isOneSelected(loc)){
+				Bukkit.getPluginManager().callEvent(new LookAtRoomEvent(p, this, Team.GUARD));
 				playerInGuardRoom.add(p);
 				return;
 			}

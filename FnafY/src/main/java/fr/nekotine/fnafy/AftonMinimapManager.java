@@ -78,7 +78,7 @@ public class AftonMinimapManager {
 					e.getRoom().drawAftonOutline(e.getPlayer(), OUTLINE_RED);
 				}
 			}else if(true) {
-				//si on peut déplacer l'animatronic dans la salle en question en fonction de la laine. Method: door.canMoveFromTo
+				//si on peut déplacer l'animatronic dans la salle en question en fonction de la laine. Method: door.canMoveFromTo()
 				e.getRoom().drawAftonOutline(e.getPlayer(), OUTLINE_GREEN);
 			}
 		}

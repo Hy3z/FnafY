@@ -1,13 +1,11 @@
 package fr.nekotine.fnafy.task;
 
-public abstract class BaseTask {
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
+public abstract class BaseTask implements ConfigurationSerializable{
 	
-	private final TaskManager taskManager;
+	private TaskManager taskManager;
 	private boolean isAsked=false;
-	
-	public BaseTask(TaskManager mnger) {
-		taskManager=mnger;
-	}
 	
 	public enum Difficulty{
 		COMMON,
@@ -16,17 +14,19 @@ public abstract class BaseTask {
 		LEGENDARY;
 	}
 	
+	public void setTaskManager(TaskManager mnger) {
+		taskManager=mnger;
+	}
+	
 	public abstract Difficulty getDifficulty();
 	
 	public void complete() {
-		taskManager.completeTask(this);
+		if (taskManager!=null) {
+			taskManager.completeTask(this);
+		}
 	}
 	
 	public abstract void setup();
-
-	public TaskManager getTaskManager() {
-		return taskManager;
-	}
 
 	public boolean isAsked() {
 		return isAsked;
@@ -37,5 +37,7 @@ public abstract class BaseTask {
 	}
 	
 	public abstract void reset();
+	
+	public static void registerSerialisable(){};
 	
 }

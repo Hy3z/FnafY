@@ -32,6 +32,8 @@ public class FnafYMain extends JavaPlugin {
 	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener(this);
 	private RoomManager roomManager = new RoomManager(this);
 	private DoorManager doorManager = new DoorManager(this);
+	public final TeamGuard teamguard = new TeamGuard();
+	public final TeamAfton teamafton = new TeamAfton();
 	private boolean gameRunnig=false;
 	
 	public void onEnable() {

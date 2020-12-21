@@ -60,4 +60,14 @@ public class Door {
 	public Room getRoom2() {
 		return room2;
 	}
+	
+	public boolean canMoveFromTo(Room previous, Room next) {
+		if(room1.getRoomName()==previous.getRoomName() && room2.getRoomName()==next.getRoomName()) {
+			return true;
+		}
+		if(room2.getRoomName()==previous.getRoomName() && room1.getRoomName()==next.getRoomName()) {
+			return true;
+		}
+		return false;
+	}
 }

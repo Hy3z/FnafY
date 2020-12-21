@@ -85,6 +85,9 @@ public class FnafYMain extends JavaPlugin {
 	public PlayerMoveHeadListener getHeadListener() {
 		return headListener;
 	}
+	public RoomManager getRoomManager() {
+		return roomManager;
+	}
 	private boolean loadFiles() {
 		HashMap<String, Room> rooms = yamlReader.getRoomObjectsHash();
 		if(rooms!=null) {

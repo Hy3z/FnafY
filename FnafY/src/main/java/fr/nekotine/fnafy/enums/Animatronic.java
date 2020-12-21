@@ -1,10 +1,19 @@
 package fr.nekotine.fnafy.enums;
 
+import org.bukkit.Material;
+
 public enum Animatronic {
-	BONNIE,
-	FREDDY,
-	CHICA,
-	FOXY,
-	MANGLE,
-	SPRINGTRAP;
+	BONNIE(Material.BLUE_WOOL),
+	FREDDY(Material.BROWN_WOOL),
+	CHICA(Material.YELLOW_WOOL),
+	FOXY(Material.RED_WOOL),
+	MANGLE(Material.PINK_WOOL),
+	SPRINGTRAP(Material.GREEN_WOOL);
+	Animatronic(Material wool) {
+		this.wool=wool;
+	}
+	private final Material wool;
+	public Material getWool(Animatronic anim) {
+		return wool;
+	}
 }

@@ -44,6 +44,9 @@ public class ComMapper{
 		for(String s : main.getYamlReader().getMapList()) {
 			mapArray.add(s);
 		}
+		if(mapArray.size()>0) {
+			main.setMapName(mapArray.get(0));
+		}
 	}
 	private void setRoomFinderFromDoorArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomsFromDoor", new StringArgument().overrideSuggestions((sender, args) -> {

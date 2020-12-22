@@ -1,6 +1,7 @@
 package fr.nekotine.fnafy.task;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,7 +42,59 @@ public class TaskManager implements Listener {
 	}
 	
 	private boolean loadTasks() {
-		return false;
+		return TaskLoader.load(main.getYamlReader().getConfig(main.getMapName(), "tasks"),tasklist);
+	}
+	
+	private void shuffleAskedTasks() {
+		byte nbCommon=0;
+		byte nbRare=0;
+		byte nbEpic=0;
+		byte nbLegendary=0;
+		for (BaseTask t : tasklist) {
+			switch (t.getDifficulty()) {
+			case COMMON:
+				nbCommon++;
+				break;
+			case EPIC:
+				nbEpic++;
+				break;
+			case LEGENDARY:
+				nbLegendary++;
+				break;
+			case RARE:
+				nbRare++;
+				break;
+			default:
+				break;
+			}
+		}
+		byte askedNbCommon=(byte)(nbCommon/2);
+		byte askedNbRare=(byte)(nbRare/2);
+		byte askedNbEpic=(byte)(nbEpic/2);
+		byte askedNbLegendary=(byte)(nbLegendary/2);
+		Random r = new Random(System.currentTimeMillis());
+		for (BaseTask t : tasklist) {
+			switch (t.getDifficulty()) {
+			case COMMON:
+				t.setAsked(r.nextInt(1000)<=1000*(askedNbCommon/nbCommon));
+				nbCommon--;
+				break;
+			case EPIC:
+				t.setAsked(r.nextInt(1000)<=1000*(askedNbEpic/nbEpic));
+				nbEpic--;
+				break;
+			case LEGENDARY:
+				t.setAsked(r.nextInt(1000)<=1000*(askedNbLegendary/nbLegendary));
+				nbLegendary--;
+				break;
+			case RARE:
+				t.setAsked(r.nextInt(1000)<=1000*(askedNbRare/nbRare));
+				nbRare--;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	private void tasksCheck() {
@@ -91,6 +144,7 @@ public class TaskManager implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent evt) {
 		if (loadTasks()) {
+			shuffleAskedTasks();
 			commonComplete=false;
 			epicComplete=false;
 			legendaryComplete=false;

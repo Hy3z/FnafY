@@ -30,8 +30,8 @@ import fr.nekotine.fnafy.utils.BlockSelection;
 public class YamlReader {
 	private FnafYMain main;
 	private File mapFolder;
-	private final String roomConfigName = "roomConfig";
-	private final String doorConfigName = "doorConfig";
+	private static final String roomConfigName = "roomConfig";
+	private static final String doorConfigName = "doorConfig";
 	public YamlReader(FnafYMain _main) {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
@@ -41,7 +41,7 @@ public class YamlReader {
 		 }
 	}
 	//--------------------------------------------------------------------------------------
-	private YamlConfiguration getConfig(String mapName, String configName) {
+	public YamlConfiguration getConfig(String mapName, String configName) {
 		if(mapExist(mapName)) {
 			File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 			if(f.exists()) {
@@ -56,7 +56,7 @@ public class YamlReader {
 		}
 		return null;
 	}
-	private boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
+	public boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
 		File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 		try {
 			config.save(f);

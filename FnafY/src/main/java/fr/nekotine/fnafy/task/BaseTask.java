@@ -1,8 +1,15 @@
 package fr.nekotine.fnafy.task;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+
+import fr.nekotine.fnafy.task.tasks.Task_unclogToilet;
 
 public abstract class BaseTask implements ConfigurationSerializable{
+	
+	public static void registerSerialisables(){
+		ConfigurationSerialization.registerClass(Task_unclogToilet.class, "Task_unclogToilet");
+	};
 	
 	private TaskManager taskManager;
 	private boolean isAsked=false;
@@ -26,6 +33,10 @@ public abstract class BaseTask implements ConfigurationSerializable{
 		}
 	}
 	
+	public TaskManager getTaskManager() {
+		return taskManager;
+	}
+	
 	public abstract void setup();
 
 	public boolean isAsked() {
@@ -37,7 +48,5 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	}
 	
 	public abstract void reset();
-	
-	public static void registerSerialisable(){};
 	
 }

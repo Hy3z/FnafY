@@ -12,7 +12,6 @@ import fr.nekotine.fnafy.events.GameStopEvent;
 
 public class TaskManager implements Listener {
 	
-	@SuppressWarnings("unused")
 	private final FnafYMain main;
 	private final ArrayList<BaseTask> tasklist=new ArrayList<BaseTask>();
 	private boolean commonComplete=false;

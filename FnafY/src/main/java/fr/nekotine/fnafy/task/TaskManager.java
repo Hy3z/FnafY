@@ -104,6 +104,10 @@ public class TaskManager implements Listener {
 		setTasksDone(commonComplete && epicComplete && legendaryComplete && rareComplete);
 	}
 	
+	private void showScoreboard() {
+		
+	}
+	
 	public void completeTask(BaseTask task) {
 		switch (task.getDifficulty()) {
 		case COMMON:

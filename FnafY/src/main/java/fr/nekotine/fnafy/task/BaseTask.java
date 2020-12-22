@@ -49,4 +49,6 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	
 	public abstract void reset();
 	
+	public abstract String getDisplayerName();
+	
 }

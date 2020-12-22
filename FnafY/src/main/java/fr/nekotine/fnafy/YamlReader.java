@@ -30,8 +30,8 @@ import fr.nekotine.fnafy.utils.BlockSelection;
 public class YamlReader {
 	private FnafYMain main;
 	private File mapFolder;
-	private static final String roomConfigName = "roomConfig";
-	private static final String doorConfigName = "doorConfig";
+	private final String roomConfigName = "roomConfig";
+	private final String doorConfigName = "doorConfig";
 	public YamlReader(FnafYMain _main) {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
@@ -56,7 +56,7 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
+	private boolean saveConfig(String mapName, String configName, YamlConfiguration config) {
 		File f = new File(mapFolder.getPath()+"/"+mapName,configName+".yml");
 		try {
 			config.save(f);
@@ -551,6 +551,10 @@ public class YamlReader {
 			if(!roomExist(mapName,roomName)) {
 				roomConfig.set(roomName+".roomType", RoomType.UNKNOWN.toString());
 				roomConfig.set(roomName+".camLoc", "");
+				
+				roomConfig.set(roomName+".defaultGuardCamera", false);
+				roomConfig.set(roomName+".aftonCameraPackage", 0);
+				
 				for (Animatronic anim : Animatronic.values()){
 					roomConfig.set(roomName+".animPose."+anim.toString(), new String[0]);
 				}
@@ -562,6 +566,48 @@ public class YamlReader {
 					roomConfig.set(roomName+".minimapPose."+anim.toString(), new String[0]);
 				}
 				saveRoomConfig(mapName,roomConfig);
+				return true;
+			}
+		}
+		return false;
+	}
+	public int getAftonCameraPackage(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return roomConfig.getInt(roomName+".aftonCameraPackage");
+			}
+		}
+		return 0;
+	}
+	public boolean setAftonCameraPackage(String mapName, String roomName, int p) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				if(p>0 && p<=6) {
+					roomConfig.set(roomName+".aftonCameraPackage", p);
+					saveRoomConfig(mapName, roomConfig);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public boolean getIfDefaultGuardCamera(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				return roomConfig.getBoolean(roomName+".defaultGuardCamera");
+			}
+		}
+		return false;
+	}
+	public boolean setIfDefaultGuardCamera(String mapName, String roomName, boolean b) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			if(roomExist(mapName, roomName)) {
+				roomConfig.set(roomName+".defaultGuardCamera", b);
+				saveRoomConfig(mapName, roomConfig);
 				return true;
 			}
 		}
@@ -690,6 +736,8 @@ public class YamlReader {
 			for(String roomName : getRoomList(main.getMapName())) {
 				RoomType type = getRoomType(main.getMapName(), roomName);
 				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				boolean isDefaultGuardCamera = getIfDefaultGuardCamera(main.getMapName(), roomName);
+				int aftonCameraPackage = getAftonCameraPackage(main.getMapName(), roomName);
 				BlockSelection aO = getAftonOutline(main.getMapName(), roomName);
 				BlockSelection aS = getAftonSurface(main.getMapName(), roomName);
 				BlockSelection gO = getGuardOutline(main.getMapName(), roomName);
@@ -717,8 +765,8 @@ public class YamlReader {
 					}
 					inMinimapAnimation.put(animatronic, tempList);
 				}
-				if(type!=RoomType.UNKNOWN && camLoc!=null && aO!=null && aS!=null && gO!=null && gS!=null){
-					Room r = new Room(main, roomName, type, camLoc, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation);
+				if(type!=RoomType.UNKNOWN && camLoc!=null && aftonCameraPackage>0 && aO!=null && aS!=null && gO!=null && gS!=null){
+					Room r = new Room(main, roomName, type, camLoc, isDefaultGuardCamera, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation);
 					Bukkit.getPluginManager().registerEvents(r, main);
 					rooms.put(roomName, r);
 				}else {

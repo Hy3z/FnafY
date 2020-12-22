@@ -32,6 +32,8 @@ public class FnafYMain extends JavaPlugin {
 	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener(this);
 	private RoomManager roomManager = new RoomManager(this);
 	private DoorManager doorManager = new DoorManager(this);
+	private AftonMinimapManager aftonMinimapManager = new AftonMinimapManager(this);
+	private GuardMinimapManager guardMinimapManager = new GuardMinimapManager(this);
 	public final TeamGuard teamguard = new TeamGuard();
 	public final TeamAfton teamafton = new TeamAfton();
 	private boolean gameRunnig=false;
@@ -39,6 +41,8 @@ public class FnafYMain extends JavaPlugin {
 	public void onEnable() {
 		super.onEnable();
 		Bukkit.getPluginManager().registerEvents(headListener, this);
+		Bukkit.getPluginManager().registerEvents(aftonMinimapManager, this);
+		Bukkit.getPluginManager().registerEvents(guardMinimapManager, this);
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
@@ -71,6 +75,9 @@ public class FnafYMain extends JavaPlugin {
 	public boolean isGameRunning() {
 		return gameRunnig;
 	}
+	public AftonMinimapManager getAftonMinimapManager() {
+		return aftonMinimapManager;
+	}
 	public boolean startGame() {
 		if(loadGame()) {
 			headListener.triggerSchedule();
@@ -90,6 +97,15 @@ public class FnafYMain extends JavaPlugin {
 	public RoomManager getRoomManager() {
 		return roomManager;
 	}
+	public TeamAfton getTeamAfton() {
+		return teamafton;
+	}
+	public TeamGuard getTeamGuard() {
+		return teamguard;
+	}
+	public DoorManager getDoorManager() {
+		return doorManager;
+	}
 	private boolean loadFiles() {
 		HashMap<String, Room> rooms = yamlReader.getRoomObjectsHash();
 		if(rooms!=null) {
@@ -106,5 +122,8 @@ public class FnafYMain extends JavaPlugin {
 	public void onDisable() {
 		super.onDisable();
 		animManager.disable();
+	}
+	public GuardMinimapManager getGuardMinimapManager() {
+		return guardMinimapManager;
 	}
 }

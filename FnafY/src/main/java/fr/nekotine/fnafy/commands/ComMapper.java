@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -102,6 +103,12 @@ public class ComMapper{
 	}
 	private void set1Or2Argument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2"}));
+	}
+	private void set1To6Argument(LinkedHashMap<String, Argument> argument) {
+		argument.put("aftonPackageNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2","3","4","5","6"}));
+	}
+	private void setTrueOrFalseArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("aftonPackageNumber", new IntegerArgument().overrideSuggestions(new String[]{"true","false"}));
 	}
 	private void setDoorFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("doorList", new StringArgument().overrideSuggestions((sender, args) -> {
@@ -491,6 +498,7 @@ public class ComMapper{
 			if(!outlineContainer.containsKey((Player)sender)){
 				if(main.getYamlReader().roomExist((String)args[0], (String)args[1])) {
 					OutlineCreator oc = new OutlineCreator(this, (String)args[0], (String)args[1], (String)args[2], (Player)sender);
+					Bukkit.getPluginManager().registerEvents(oc, main);
 					outlineContainer.put((Player)sender, oc);
 					((Player)sender).getInventory().setItemInMainHand(new ItemStack(Material.WOODEN_HOE));
 					return;
@@ -499,6 +507,40 @@ public class ComMapper{
 				return;
 			}
 			sender.sendMessage(ChatColor.RED+"Vous êtes déjà en train d'enregistrer une outline!");
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setAftonCameraPackage");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		set1To6Argument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().setAftonCameraPackage((String)args[0], (String)args[1], (int)args[0])) {
+				sender.sendMessage(ChatColor.GREEN+"Camera package set!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'éxistent pas, ou le chiffre n'est pas compris entre 1 et 6!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setIfDefaultGuardCamera");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setTrueOrFalseArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if((String)args[2]=="true" || (String)args[2]=="false") {
+				if(main.getYamlReader().setIfDefaultGuardCamera((String)args[0], (String)args[1], (boolean)args[2])) {
+					sender.sendMessage(ChatColor.GREEN+"Camera fait maintenant partie des caméras de base gardes!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'éxistent pas!");
+				}
+			}else {
+				sender.sendMessage(ChatColor.RED+"Il faut renseigner 'true'(oui) ou 'false'(non)!");
+			}
 		}).register();
 		argument.clear();
 		

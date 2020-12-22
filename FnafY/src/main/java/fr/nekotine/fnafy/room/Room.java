@@ -37,10 +37,14 @@ public class Room implements Listener{
 	private final BlockSelection GuardOutline;
 	private final BlockSelection GuardSurface;
 	private final HashMap<Animatronic,List<ASAnimation>> MinimapPoses=new HashMap<Animatronic,List<ASAnimation>>();
-	private List<Player> playerInAftonRoom = new ArrayList<>();
-	private List<Player> playerInGuardRoom = new ArrayList<>();
 	
-	public Room(FnafYMain main, String roomName, RoomType roomType, Location camLocation, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
+	private List<Player> lookingAtAfton = new ArrayList<>();
+	private List<Player> lookingAtGuard = new ArrayList<>();
+	
+	private boolean unlockedByGuard;
+	private int aftonCameraPackage;
+	
+	public Room(FnafYMain main, String roomName, RoomType roomType, Location camLocation, boolean unlockedByGuard, int aftonCameraPackage, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
 			BlockSelection AftonSurface, BlockSelection AftonOutline, BlockSelection GuardSurface, BlockSelection GuardOutline,
 			HashMap<Animatronic,List<ASAnimation>> MinimapPoses) {
 		this.main=main;
@@ -54,6 +58,9 @@ public class Room implements Listener{
 		this.GuardOutline=GuardOutline;
 		this.GuardSurface=GuardSurface;
 		this.MinimapPoses.putAll(MinimapPoses);
+		
+		this.unlockedByGuard=unlockedByGuard;
+		this.aftonCameraPackage=aftonCameraPackage;
 	}
 	public String getRoomName() {
 		return roomName;
@@ -69,15 +76,24 @@ public class Room implements Listener{
 	}
 	@EventHandler
 	public void playerInteractEvent(PlayerInteractEvent e) {
-		if(playerInAftonRoom.contains(e.getPlayer())) {
+		if(lookingAtAfton.contains(e.getPlayer())) {
 			Bukkit.getPluginManager().callEvent(new ActionOnRoomEvent(e.getPlayer(), this, e.getAction(),Team.AFTON));
-		}else if(playerInGuardRoom.contains(e.getPlayer())) {
+		}else if(lookingAtGuard.contains(e.getPlayer())) {
 			Bukkit.getPluginManager().callEvent(new ActionOnRoomEvent(e.getPlayer(), this, e.getAction(),Team.GUARD));
 		}
 	}
 	@EventHandler
 	public void playerMoveHeadEvent(PlayerMoveHeadEvent e) {
 		updateOutline(e.getPlayer());
+	}
+	public int getAftonCameraPackage() {
+		return aftonCameraPackage;
+	}
+	public boolean isUnlockedByGuard() {
+		return unlockedByGuard;
+	}
+	public void setUnlockedByGuard(boolean b) {
+		unlockedByGuard=b;
 	}
 	@EventHandler
 	public void playerMoveEvent(PlayerMoveEvent e) {
@@ -101,26 +117,26 @@ public class Room implements Listener{
 		Block block = p.getTargetBlockExact(50, FluidCollisionMode.NEVER);
 		if(block!=null) {
 			Location loc = block.getLocation();
-			if(playerInAftonRoom.contains(p)) {
+			if(lookingAtAfton.contains(p)) {
 				if(!AftonSurface.isOneSelected(loc)) {
 					Bukkit.getPluginManager().callEvent(new UnlookAtRoomEvent(p, this, Team.AFTON));
-					playerInAftonRoom.remove(p);
+					lookingAtAfton.remove(p);
 				}
 				return;
 			}else if(AftonSurface.isOneSelected(loc)){
 				Bukkit.getPluginManager().callEvent(new LookAtRoomEvent(p, this, Team.AFTON));
-				playerInAftonRoom.add(p);
+				lookingAtAfton.add(p);
 				return;
 			}
-			if(playerInGuardRoom.contains(p)) {
+			if(lookingAtGuard.contains(p)) {
 				if(!GuardSurface.isOneSelected(loc)) {
 					Bukkit.getPluginManager().callEvent(new UnlookAtRoomEvent(p, this, Team.GUARD));
-					playerInGuardRoom.remove(p);
+					lookingAtGuard.remove(p);
 				}
 				return;
 			}else if(GuardSurface.isOneSelected(loc)){
 				Bukkit.getPluginManager().callEvent(new LookAtRoomEvent(p, this, Team.GUARD));
-				playerInGuardRoom.add(p);
+				lookingAtGuard.add(p);
 				return;
 			}
 		}

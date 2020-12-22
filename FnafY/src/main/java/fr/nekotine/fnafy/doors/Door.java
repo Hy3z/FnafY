@@ -61,7 +61,7 @@ public class Door {
 		return room2;
 	}
 	
-	public boolean canMoveFromTo(Room previous, Room next) {
+	public boolean canMoveFromToBoolean(Room previous, Room next) {
 		if(room1.getRoomName()==previous.getRoomName() && room2.getRoomName()==next.getRoomName()) {
 			return true;
 		}
@@ -69,5 +69,14 @@ public class Door {
 			return true;
 		}
 		return false;
+	}
+	public Room canMoveTo(Room from) {
+		if(room1.getRoomName()==from.getRoomName()) {
+			return room2;
+		}
+		if(room2.getRoomName()==from.getRoomName()) {
+			return room1;
+		}
+		return null;
 	}
 }

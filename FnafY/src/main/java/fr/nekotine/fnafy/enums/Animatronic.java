@@ -13,7 +13,15 @@ public enum Animatronic {
 		this.wool=wool;
 	}
 	private final Material wool;
-	public Material getWool(Animatronic anim) {
+	public Material getWool() {
 		return wool;
+	}
+	public static Animatronic getFromWool(Material wool) {
+		for(Animatronic a : values()) {
+			if(a.wool==wool) {
+				return a;
+			}
+		}
+		return null;
 	}
 }

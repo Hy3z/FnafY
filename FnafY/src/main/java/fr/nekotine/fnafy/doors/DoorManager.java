@@ -1,5 +1,6 @@
 package fr.nekotine.fnafy.doors;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import fr.nekotine.fnafy.FnafYMain;
@@ -13,5 +14,8 @@ public class DoorManager {
 	public void setDoorHash(HashMap<String, Door> doors) {
 		doors.clear();
 		this.doors.putAll(doors);
+	}
+	public Collection<Door> getAllDoors(){
+		return doors.values();
 	}
 }

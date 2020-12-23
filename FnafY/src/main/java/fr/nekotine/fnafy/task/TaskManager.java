@@ -41,7 +41,7 @@ public class TaskManager implements Listener {
 	}
 	
 	private boolean loadTasks() {
-		return TaskLoader.load(main.getYamlReader().getConfig(main.getMapName(), "tasks"),tasklist);
+		return TaskLoader.load(main.getYamlReader().getConfig(main.getMapName(), "tasks"),this);
 	}
 	
 	private void shuffleAskedTasks() {

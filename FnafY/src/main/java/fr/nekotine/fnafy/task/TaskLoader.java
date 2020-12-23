@@ -1,20 +1,22 @@
 package fr.nekotine.fnafy.task;
 
-import java.util.ArrayList;
-
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TaskLoader {
 	
-	public static final boolean load(YamlConfiguration config, ArrayList<BaseTask> tasklist) {
+	public static final boolean load(YamlConfiguration config, TaskManager mnger) {
 		final int nb = config.getInt("numberOfTasks", 0);
-		for (BaseTask t : tasklist) {
+		for (BaseTask t : mnger.tasklist) {
 			t.reset();
 		}
-		tasklist.clear();
+		mnger.tasklist.clear();
 		for (int i=0;i<nb;i++) {
 			Object t = config.get("task_"+i);
-			if (t!=null) {tasklist.add((BaseTask)t);}
+			if (t!=null) {
+				BaseTask bt = (BaseTask)t;
+				mnger.tasklist.add(bt);
+				bt.setTaskManager(mnger);
+			}
 		}
 		return false;
 	}

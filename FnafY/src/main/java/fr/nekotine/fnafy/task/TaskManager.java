@@ -13,7 +13,7 @@ import fr.nekotine.fnafy.events.GameStopEvent;
 public class TaskManager implements Listener {
 	
 	private final FnafYMain main;
-	private final ArrayList<BaseTask> tasklist=new ArrayList<BaseTask>();
+	public final ArrayList<BaseTask> tasklist=new ArrayList<BaseTask>();
 	private boolean commonComplete=false;
 	private boolean epicComplete=false;
 	private boolean legendaryComplete=false;

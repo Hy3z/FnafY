@@ -41,8 +41,6 @@ public class FnafYMain extends JavaPlugin {
 	public void onEnable() {
 		super.onEnable();
 		Bukkit.getPluginManager().registerEvents(headListener, this);
-		Bukkit.getPluginManager().registerEvents(aftonMinimapManager, this);
-		Bukkit.getPluginManager().registerEvents(guardMinimapManager, this);
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");

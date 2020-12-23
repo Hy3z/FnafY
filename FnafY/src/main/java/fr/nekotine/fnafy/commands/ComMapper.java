@@ -544,6 +544,76 @@ public class ComMapper{
 		}).register();
 		argument.clear();
 		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setGuardRoomLocation");
+		setMapFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				if(main.getYamlReader().setGuardRoomLocation((String)args[0], ((Player) sender).getLocation())) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Position de la téleportation en salle de garde mise à jour!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map n'existe pas!");
+				}
+				return;
+			}
+			sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setCameraBlockLocation");
+		setMapFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				Block b = ((Player) sender).getTargetBlockExact(10, FluidCollisionMode.NEVER);
+				if(b!=null) {
+					if(main.getYamlReader().setGuardRoomLocation((String)args[0], b.getLocation())) {
+						sender.sendMessage(ChatColor.DARK_GREEN+"Block d'ouverture de caméra mis à jour!!");
+					}else {
+						sender.sendMessage(ChatColor.RED+"Cette map n'existe pas!");
+					}
+					sender.sendMessage(ChatColor.RED+"Regardez le block où vous voulez posez l'emplacement!");
+					return;
+				}
+			}
+			sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+		}).register();
+		argument.clear();
+		//--------------------------------------------------------------------------------------
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"setGuardCameraBaseLocation");
+		setMapFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				if(main.getYamlReader().setGuardCameraBaseLocation((String)args[0], ((Player) sender).getLocation())) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Position de la téleportation en caméra de garde mise à jour!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map n'existe pas!");
+				}
+				return;
+			}
+			sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"setAftonCameraBaseLocation");
+		setMapFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				if(main.getYamlReader().setAftonCameraBaseLocation((String)args[0], ((Player) sender).getLocation())) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Position de la téleportation en caméra d'afton mise à jour!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map n'existe pas!");
+				}
+				return;
+			}
+			sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+		}).register();
+		argument.clear();
+		
 		main.getLogger().info("Mapper Commands registered");
 	}
 }

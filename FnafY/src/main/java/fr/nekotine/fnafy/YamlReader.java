@@ -32,6 +32,7 @@ public class YamlReader {
 	private File mapFolder;
 	private final String roomConfigName = "roomConfig";
 	private final String doorConfigName = "doorConfig";
+	private final String minimapConfigName = "minimapConfig";
 	public YamlReader(FnafYMain _main) {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
@@ -72,16 +73,23 @@ public class YamlReader {
 	private YamlConfiguration getDoorConfig(String mapName) {
 		return getConfig(mapName,doorConfigName);
 	}
+	private YamlConfiguration getMinimapConfig(String mapName) {
+		return getConfig(mapName,minimapConfigName);
+	}
 	private boolean saveDoorConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, doorConfigName, config);
 	}
 	private boolean saveRoomConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, roomConfigName, config);
 	}
+	private boolean saveMinimapConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, minimapConfigName, config);
+	}
 	public boolean configFilesExists(String mapName) {
 		File room = new File(mapFolder.getPath()+"/"+mapName,roomConfigName+".yml");
 		File door = new File(mapFolder.getPath()+"/"+mapName,doorConfigName+".yml");
-		if(room.exists() && door.exists()) {
+		File minimap = new File(mapFolder.getPath()+"/"+mapName,minimapConfigName+".yml");
+		if(room.exists() && door.exists() && minimap.exists()) {
 			return true;
 		}
 		return false;
@@ -94,6 +102,7 @@ public class YamlReader {
 			try {
 				new File(mapConfigFolder,"roomConfig.yml").createNewFile();
 				new File(mapConfigFolder,"doorConfig.yml").createNewFile();
+				new File(mapConfigFolder,"minimapConfig.yml").createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -775,5 +784,70 @@ public class YamlReader {
 			}
 		}
 		return rooms;
+	}
+	public boolean setGuardRoomLocation(String mapName, Location loc) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("guardRoomLocation", loc);
+			saveMinimapConfig(mapName, minimapConfig);
+			return true;
+		}
+		return false;
+	}
+	public Location getGuardRoomLocation(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			return minimapConfig.getLocation("guardRoomLocation");
+		}
+		return null;
+	}
+	//--------------------------------------------------------------------------------------
+	public boolean setGuardCameraBlockLocation(String mapName, Location loc) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("guardCameraBlockLocation", loc);
+			saveMinimapConfig(mapName, minimapConfig);
+			return true;
+		}
+		return false;
+	}
+	public Location getGuardCameraBlockLocation(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			return minimapConfig.getLocation("guardCameraBlockLocation");
+		}
+		return null;
+	}
+	public boolean setGuardCameraBaseLocation(String mapName, Location loc) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("guardCameraBaseLocation", loc);
+			saveMinimapConfig(mapName, minimapConfig);
+			return true;
+		}
+		return false;
+	}
+	public Location getGuardCameraBaseLocation(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			return minimapConfig.getLocation("guardCameraBaseLocation");
+		}
+		return null;
+	}
+	public boolean setAftonCameraBaseLocation(String mapName, Location loc) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("aftonCameraBaseLocation", loc);
+			saveMinimapConfig(mapName, minimapConfig);
+			return true;
+		}
+		return false;
+	}
+	public Location getAftonCameraBaseLocation(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			return minimapConfig.getLocation("aftonCameraBaseLocation");
+		}
+		return null;
 	}
 }

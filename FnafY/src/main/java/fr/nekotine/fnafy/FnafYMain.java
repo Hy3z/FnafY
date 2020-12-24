@@ -16,6 +16,7 @@ import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorManager;
+import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.room.Room;
@@ -87,8 +88,15 @@ public class FnafYMain extends JavaPlugin {
 	public boolean startGame() {
 		if (gameRunning) {
 			Bukkit.getPluginManager().callEvent(new GameStopEvent());
+			gameRunning=false;
 		}
 		if(loadGame()) {
+			GameStartEvent evt = new GameStartEvent();
+			Bukkit.getPluginManager().callEvent(evt);
+			if (evt.isCancelled()) {
+				return false;
+			}
+			gameRunning=true;
 			headListener.triggerSchedule();
 			return true;
 		}

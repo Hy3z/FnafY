@@ -1,7 +1,6 @@
 package fr.nekotine.fnafy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -32,7 +31,6 @@ import fr.nekotine.fnafy.room.Room;
 
 public class AftonMinimapManager implements Listener{
 	private final FnafYMain main;
-	private List<Player> inCameraPlayers = new ArrayList<>();
 	private static final BlockData OUTLINE_GREEN = Bukkit.createBlockData(Material.EMERALD_BLOCK);
 	private static final BlockData OUTLINE_RED = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 	private static final BlockData OUTLINE_GOLD = Bukkit.createBlockData(Material.GOLD_BLOCK);
@@ -68,28 +66,16 @@ public class AftonMinimapManager implements Listener{
 		return p.getInventory().getItemInMainHand().getType();
 	}
 	public boolean isCameraUnlocked(Room r) {
-		return main.getTeamAfton().getUnlockedPackages().contains(r.getAftonCameraPackage());
+		return main.teamafton.getUnlockedPackages().contains(r.getAftonCameraPackage());
 	}
 	public Room getRoomFromWool(Player p) {
-		return main.getRoomManager().getRoom(main.getTeamAfton().getAnimatronicRoomLocationName(Animatronic.getFromWool(getPlayerMaterialInHand(p))));
+		return main.getRoomManager().getRoom(main.teamafton.getAnimatronicRoomLocationName(Animatronic.getFromWool(getPlayerMaterialInHand(p))));
 	}
 	public boolean canMoveFromTo(Room prev, Room next) {
 		return main.getRoomManager().canMoveFromToBool(prev,next);
 	}
 	public void drawAftonOutline(Room r, Player p, BlockData outline) {
 		r.drawAftonOutline(p, outline);
-	}
-	public boolean enterCamera(Player player) {
-		if(inCameraPlayers.contains(player)) return false;
-		inCameraPlayers.add(player);
-		main.getHeadListener().trackPlayer(player);
-		return true;
-	}
-	public boolean leaveCamera(Player player) {
-		if(!inCameraPlayers.contains(player)) return false;
-		inCameraPlayers.remove(player);
-		main.getHeadListener().untrackPlayer(player);
-		return true;
 	}
 	@EventHandler
 	public void itemHeldEvent(PlayerItemHeldEvent e) {

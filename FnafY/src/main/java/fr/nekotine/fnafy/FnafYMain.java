@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -19,6 +20,7 @@ import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorManager;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
+import fr.nekotine.fnafy.events.GameTickEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomManager;
@@ -35,7 +37,7 @@ public class FnafYMain extends JavaPlugin {
 	private ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 	
 	private String mapName = "";
-	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener(this);
+	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener();
 	private RoomManager roomManager = new RoomManager(this);
 	private DoorManager doorManager = new DoorManager(this);
 	private AftonMinimapManager aftonMinimapManager = new AftonMinimapManager(this);
@@ -44,6 +46,7 @@ public class FnafYMain extends JavaPlugin {
 	public TeamAfton teamafton;
 	private boolean gameRunning=false;
 	
+	private int scheduler;
 	public void onEnable() {
 		super.onEnable();
 		Bukkit.getPluginManager().registerEvents(headListener, this);
@@ -102,10 +105,14 @@ public class FnafYMain extends JavaPlugin {
 				return false;
 			}
 			gameRunning=true;
-			headListener.triggerSchedule();
+			tick();
 			return true;
 		}
 		return false;
+	}
+	@EventHandler
+	public void onGameEnd(GameStopEvent e) {
+		getServer().getScheduler().cancelTask(scheduler);
 	}
 	private boolean loadGame() {
 		if(loadFiles()) {
@@ -142,5 +149,14 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public GuardMinimapManager getGuardMinimapManager() {
 		return guardMinimapManager;
+	}
+	private void tick() {
+		scheduler = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+	        @Override
+	        public void run() {
+	        	GameTickEvent e = new GameTickEvent();
+    			Bukkit.getPluginManager().callEvent(e);
+	        }
+	    }, 0, 1);
 	}
 }

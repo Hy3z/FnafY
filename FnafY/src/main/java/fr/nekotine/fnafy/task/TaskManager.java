@@ -109,11 +109,11 @@ public class TaskManager implements Listener {
 	private void setupScoreboard() {
 		main.teamguard.resetScoreboardEntries();
 		for (BaseTask task : tasklist) {
-			TeamGuard.taskobjective.getScore(task.getDisplayName())
+			main.teamguard.taskobjective.getScore(task.getDisplayName())
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
 		}
 		for (GuardWrapper p : TeamGuard.playerList) {
-			p.player.setScoreboard(TeamGuard.scoreboard);
+			p.player.setScoreboard(main.teamguard.scoreboard);
 		}
 	}
 	

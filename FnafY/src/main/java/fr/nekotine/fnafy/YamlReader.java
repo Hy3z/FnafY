@@ -602,11 +602,9 @@ public class YamlReader {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
 		if (roomConfig != null) {
 			if(roomExist(mapName, roomName)) {
-				if(p>0 && p<=6) {
-					roomConfig.set(roomName+".aftonCameraPackage", p);
-					saveRoomConfig(mapName, roomConfig);
-					return true;
-				}
+				roomConfig.set(roomName+".aftonCameraPackage", p);
+				saveRoomConfig(mapName, roomConfig);
+				return true;
 			}
 		}
 		return false;

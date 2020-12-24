@@ -32,6 +32,9 @@ public class GuardMinimapManager implements Listener{
 	public void setCameraBlockLocation(Location loc) {
 		cameraBlockLocation=loc;
 	}
+	public Location getCameraBaseLocation() {
+		return cameraBaseLocation;
+	}
 	public void setCameraBaseLocation(Location loc) {
 		cameraBaseLocation=loc;
 	}
@@ -54,14 +57,16 @@ public class GuardMinimapManager implements Listener{
 		if(inCameraPlayers.contains(player)) return false;
 		inCameraPlayers.add(player);
 		main.getHeadListener().trackPlayer(player);
-		player.getPlayer().teleport(cameraBaseLocation);
-		player.getPlayer().setAllowFlight(true);
+		player.teleport(cameraBaseLocation);
+		player.setAllowFlight(true);
+		player.setFlying(true);
 		return true;
 	}
 	public boolean leaveCamera(Player player) {
 		if(!inCameraPlayers.contains(player)) return false;
 		inCameraPlayers.remove(player);
 		main.getHeadListener().untrackPlayer(player);
+		player.setFlying(false);
 		player.getPlayer().setAllowFlight(false);
 		player.getPlayer().teleport(guardRoomLocation);
 		return true;
@@ -75,8 +80,7 @@ public class GuardMinimapManager implements Listener{
 	@EventHandler
 	public void onLookAtRoom(LookAtRoomEvent e) {
 		if(e.getTeam()==Team.GUARD) {
-			if(true) {
-				//Le test si les guard possèdent cette caméra
+			if(main.teamguard.unlockedCameras.contains(e.getRoom().getRoomName())) {
 				e.getRoom().drawGuardOutline(e.getPlayer(), OUTLINE_GREEN);
 			}else {
 				e.getRoom().drawGuardOutline(e.getPlayer(), OUTLINE_RED);
@@ -86,9 +90,8 @@ public class GuardMinimapManager implements Listener{
 	@EventHandler
 	public void onPlayerActionRoom(ActionOnRoomEvent e) {
 		if(e.getTeam()==Team.GUARD) {
-			if(true) {
-				//Le test si les guard possèdent cette caméra
-				//accéder à la caméra
+			if(main.teamguard.unlockedCameras.contains(e.getRoom().getRoomName())) {
+				Bukkit.getPluginManager().registerEvents(new Camera(main, e.getRoom().getCamLocation(), e.getPlayer(), Team.GUARD), main);
 			}else {
 				//message de refus
 			}

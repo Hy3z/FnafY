@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -35,6 +36,9 @@ public class ComMapper{
 	private List<String> mapArray = new ArrayList<String>();
 	private HashMap<Player, OutlineCreator> outlineContainer = new HashMap<>();
 	private String[] outlinePaths = {"aftonOutline","aftonSurface","guardOutline","guardSurface"};
+	private String[] animString;
+	private String[] doorTypeString;
+	private String[] roomTypeString;
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 	}
@@ -70,13 +74,7 @@ public class ComMapper{
 		}));
 	}
 	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
-		String[] animatronic = new String[Animatronic.values().length];
-		int x=-1;
-		for(Animatronic anim : Animatronic.values()) {
-			x++;
-			animatronic[x] = anim.toString();
-		}
-		argument.put("animatronic", new StringArgument().overrideSuggestions(animatronic));
+		argument.put("animatronic", new StringArgument().overrideSuggestions(animString));
 	}
 	private void setAnimationArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("animationList", new StringArgument().overrideSuggestions((sender, args) -> {
@@ -84,31 +82,19 @@ public class ComMapper{
 		}));
 	}
 	private void setDoorTypeArgument(LinkedHashMap<String, Argument> argument) {
-		String[] doorType = new String[DoorType.values().length];
-		int x=-1;
-		for(DoorType type : DoorType.values()) {
-			x++;
-			doorType[x] = type.toString();
-		}
-		argument.put("doorType", new StringArgument().overrideSuggestions(doorType));
+		argument.put("doorType", new StringArgument().overrideSuggestions(doorTypeString));
 	}
 	private void setRoomTypeArgument(LinkedHashMap<String, Argument> argument) {
-		String[] roomType = new String[RoomType.values().length];
-		int x=-1;
-		for(RoomType type : RoomType.values()) {
-			x++;
-			roomType[x] = type.toString();
-		}
-		argument.put("roomType", new StringArgument().overrideSuggestions(roomType));
+		argument.put("roomType", new StringArgument().overrideSuggestions(roomTypeString));
 	}
 	private void set1Or2Argument(LinkedHashMap<String, Argument> argument) {
-		argument.put("roomNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2"}));
+		argument.put("roomNumber", new IntegerArgument(1,2));
 	}
 	private void set1To6Argument(LinkedHashMap<String, Argument> argument) {
-		argument.put("aftonPackageNumber", new IntegerArgument().overrideSuggestions(new String[]{"1","2","3","4","5","6"}));
+		argument.put("aftonPackageNumber", new IntegerArgument(0,6));
 	}
 	private void setTrueOrFalseArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("aftonPackageNumber", new IntegerArgument().overrideSuggestions(new String[]{"true","false"}));
+		argument.put("aftonPackageNumber", new BooleanArgument());
 	}
 	private void setDoorFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("doorList", new StringArgument().overrideSuggestions((sender, args) -> {
@@ -172,11 +158,27 @@ public class ComMapper{
 		return main;
 	}
 	public void registerMapperCommands() {
+		animString = new String[Animatronic.values().length];
+		int x=-1;
+		for(Animatronic anim : Animatronic.values()) {
+			x++;
+			animString[x] = anim.toString();
+		}
+		doorTypeString = new String[DoorType.values().length];
+		x=-1;
+		for(DoorType type : DoorType.values()) {
+			x++;
+			doorTypeString[x] = type.toString();
+		}
+		roomTypeString = new String[RoomType.values().length];
+		x=-1;
+		for(RoomType type : RoomType.values()) {
+			x++;
+			roomTypeString[x] = type.toString();
+		}
+		
 		main.getLogger().info("Registering Mapper commands");
 		LinkedHashMap<String, Argument> argument = new LinkedHashMap<String,Argument>();
-		
-		
-		
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"create");
 		setFlatArgument(argument);

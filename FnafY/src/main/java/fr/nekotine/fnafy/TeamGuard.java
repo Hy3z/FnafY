@@ -1,6 +1,7 @@
 package fr.nekotine.fnafy;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ public class TeamGuard {
 	public static final ArrayList<GuardWrapper> playerList = new ArrayList<GuardWrapper>();
 	public final Scoreboard scoreboard;
 	public final Objective taskobjective;
+	public List<String> unlockedCameras = new ArrayList<>();
 	
 	public TeamGuard() {
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();

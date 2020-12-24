@@ -1,22 +1,18 @@
 package fr.nekotine.fnafy;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher.Registry;
 
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.animation.ASAnimator;
@@ -28,13 +24,14 @@ import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
 import fr.nekotine.fnafy.room.Room;
+import ru.xezard.glow.data.glow.Glow;
 
 public class AftonMinimapManager implements Listener{
 	private final FnafYMain main;
 	private static final BlockData OUTLINE_GREEN = Bukkit.createBlockData(Material.EMERALD_BLOCK);
 	private static final BlockData OUTLINE_RED = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 	private static final BlockData OUTLINE_GOLD = Bukkit.createBlockData(Material.GOLD_BLOCK);
-	
+	private Location cameraBaseLocation;
 	private ArmorStand bonnie;
 	private ASAnimator bonnieAnimator;
 	private ArmorStand freddy;
@@ -47,6 +44,7 @@ public class AftonMinimapManager implements Listener{
 	private ASAnimator mangleAnimator;
 	private ArmorStand springtrap;
 	private ASAnimator springtrapAnimator;
+	Glow glow = Glow.builder().animatedColor(ChatColor.WHITE).name("minimapGlow").build();
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
 		bonnieAnimator = new ASAnimator(main, bonnie);
@@ -61,6 +59,12 @@ public class AftonMinimapManager implements Listener{
 		mangleAnimator.setLooping(true);
 		springtrapAnimator = new ASAnimator(main, springtrap);
 		springtrapAnimator.setLooping(true);
+	}
+	public void setCameraBaseLocation(Location loc) {
+		cameraBaseLocation=loc;
+	}
+	public Location getCameraBaseLocation() {
+		return cameraBaseLocation;
 	}
 	public Material getPlayerMaterialInHand(Player p) {
 		return p.getInventory().getItemInMainHand().getType();
@@ -83,12 +87,14 @@ public class AftonMinimapManager implements Listener{
 		Material newMat = e.getPlayer().getInventory().getItem(e.getNewSlot()).getType();
 		if(previousMat!=newMat) {
 			clearAllOutline(e.getPlayer());
-			packetUnglow(e.getPlayer(), getAnimatronic(Animatronic.getFromWool(previousMat)));
+			glow.removeHolders(getAnimatronic(Animatronic.getFromWool(previousMat)));
 			if(!newMat.equals(Material.AIR)) {
-				packetGlow(e.getPlayer(), getAnimatronic(Animatronic.getFromWool(newMat)));
+				glow.addHolders(getAnimatronic(Animatronic.getFromWool(newMat)));
+				
+				glow.display(e.getPlayer()); //display au début de la game plutot
+				
 				Room r = getRoomFromWool(e.getPlayer());
 				drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
-				
 				for(Room room : main.getRoomManager().cannotMoveFromList(r)) {
 					drawAftonOutline(room, e.getPlayer(), OUTLINE_RED);
 				}
@@ -129,7 +135,7 @@ public class AftonMinimapManager implements Listener{
 		if(e.getTeam()==Team.AFTON) {
 			if(getPlayerMaterialInHand(e.getPlayer()).equals(Material.AIR)) {
 				if(isCameraUnlocked(e.getRoom())) {
-					//entrer dans la caméra
+					Bukkit.getPluginManager().registerEvents(new Camera(main, e.getRoom().getCamLocation(), e.getPlayer(), Team.AFTON), main);
 				}else {
 					//message de refus
 				}
@@ -148,38 +154,6 @@ public class AftonMinimapManager implements Listener{
 		if(animation.getAnimSize()==1) {
 			getAnimatronicAnimator(anim).pause();
 		}
-	}
-	private boolean packetGlow(Player player,Entity glowed) {
-		com.comphenix.protocol.events.PacketContainer packet = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-	     packet.getIntegers().write(0, glowed.getEntityId()); //Set packet's entity id
-	     com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(); //Create data watcher, the Entity Metadata packet requires this
-	     com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer serializer = Registry.get(Byte.class); //Found this through google, needed for some stupid reason
-	     watcher.setEntity(player); //Set the new data watcher's target
-	     watcher.setObject(0, serializer, (byte) (0x40)); //Set status to glowing, found on protocol page
-	     packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects()); //Make the packet's datawatcher the one we created
-	     try {
-	    	 main.getProtocolManager().sendServerPacket(player, packet);
-	         return true;
-	     } catch (InvocationTargetException e) {
-	         e.printStackTrace();
-	         return false;
-	     }
-	}
-	private boolean packetUnglow(Player player,Entity glowed) {
-		com.comphenix.protocol.events.PacketContainer packet = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-	     packet.getIntegers().write(0, glowed.getEntityId()); //Set packet's entity id
-	     com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(); //Create data watcher, the Entity Metadata packet requires this
-	     com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer serializer = Registry.get(Byte.class); //Found this through google, needed for some stupid reason
-	     watcher.setEntity(player); //Set the new data watcher's target
-	     watcher.setObject(0, serializer, (byte) (0x00)); //Set status to glowing, found on protocol page
-	     packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects()); //Make the packet's datawatcher the one we created
-	     try {
-	    	 main.getProtocolManager().sendServerPacket(player, packet);
-	         return true;
-	     } catch (InvocationTargetException e) {
-	         e.printStackTrace();
-	         return false;
-	     }
 	}
 	private ASAnimation getRandomAnimatronicBaseAnimation(Animatronic anim) {
 		String roomName = main.getYamlReader().getAnimatronicBaseRoomName(main.getMapName(), anim);

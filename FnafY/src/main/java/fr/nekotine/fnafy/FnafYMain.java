@@ -40,8 +40,8 @@ public class FnafYMain extends JavaPlugin {
 	private DoorManager doorManager = new DoorManager(this);
 	private AftonMinimapManager aftonMinimapManager = new AftonMinimapManager(this);
 	private GuardMinimapManager guardMinimapManager = new GuardMinimapManager(this);
-	public final TeamGuard teamguard = new TeamGuard();
-	public final TeamAfton teamafton = new TeamAfton();
+	public TeamGuard teamguard;
+	public TeamAfton teamafton;
 	private boolean gameRunning=false;
 	
 	public void onEnable() {
@@ -56,6 +56,8 @@ public class FnafYMain extends JavaPlugin {
 		ConfigurationSerialization.registerClass(ASAnimOrder.class, "ASAnimOrder");
 		//
 		yamlReader = new YamlReader(this);
+		teamguard = new TeamGuard();
+		teamafton = new TeamAfton();
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
 		mapManager.registerMapperCommands();

@@ -3,8 +3,6 @@ package fr.nekotine.fnafy;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;

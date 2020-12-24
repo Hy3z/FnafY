@@ -9,20 +9,12 @@ import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import fr.nekotine.fnafy.FnafYMain;
 
-public class ComGame {
-	FnafYMain main;
-	public ComGame(FnafYMain _main) {
-		main=_main;
-	}
-	private void setAutoCompleteArgument(LinkedHashMap<String, Argument> argument, String hinted) {
-		argument.put(hinted, new LiteralArgument(hinted));
-	}
-	public void registerGameCommands() {
+public final class ComGame {
+	public static void registerGameCommands(FnafYMain main) {
 		main.getLogger().info("Registering Game commands");
 		LinkedHashMap<String, Argument> argument = new LinkedHashMap<String,Argument>();
-		
-		setAutoCompleteArgument(argument,"game");
-		setAutoCompleteArgument(argument,"start");
+		argument.put("game", new LiteralArgument("game"));
+		argument.put("start", new LiteralArgument("start"));
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.startGame()) {
 				sender.sendMessage(ChatColor.GREEN+"Game started!");
@@ -32,8 +24,8 @@ public class ComGame {
 		}).register();
 		argument.clear();
 		
-		setAutoCompleteArgument(argument,"game");
-		setAutoCompleteArgument(argument,"getMap");
+		argument.put("game", new LiteralArgument("game"));
+		argument.put("getMap", new LiteralArgument("getMap"));
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			sender.sendMessage("Current Map: "+ChatColor.GOLD+main.getMapName());
 		}).register();

@@ -31,7 +31,6 @@ public class FnafYMain extends JavaPlugin {
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
-	private ComGame gameManager = new ComGame(this);
 	private ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 	
 	private String mapName = "";
@@ -61,7 +60,7 @@ public class FnafYMain extends JavaPlugin {
 		//---COMMANDS---//
 		animManager.registerAnimCommands();
 		mapManager.registerMapperCommands();
-		gameManager.registerGameCommands();
+		ComGame.registerGameCommands(this);
 		//
 		animManager.reloadASAnims();
 		mapManager.searchForMaps();

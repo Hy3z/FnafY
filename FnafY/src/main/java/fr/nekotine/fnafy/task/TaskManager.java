@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.GuardWrapper;
 import fr.nekotine.fnafy.TeamGuard;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
@@ -111,6 +113,9 @@ public class TaskManager implements Listener {
 		for (BaseTask task : tasklist) {
 			TeamGuard.taskobjective.getScore(ChatColor.RED+task.getDisplayName())
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
+		}
+		for (GuardWrapper p : TeamGuard.playerList) {
+			p.player.setScoreboard(TeamGuard.scoreboard);
 		}
 	}
 	

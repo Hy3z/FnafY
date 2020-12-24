@@ -1,15 +1,20 @@
 package fr.nekotine.fnafy;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher.Registry;
 
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.enums.Team;
@@ -24,6 +29,13 @@ public class AftonMinimapManager implements Listener{
 	private static final BlockData OUTLINE_GREEN = Bukkit.createBlockData(Material.EMERALD_BLOCK);
 	private static final BlockData OUTLINE_RED = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 	private static final BlockData OUTLINE_GOLD = Bukkit.createBlockData(Material.GOLD_BLOCK);
+	
+	private ArmorStand bonnie;
+	private ArmorStand freddy;
+	private ArmorStand chica;
+	private ArmorStand foxy;
+	private ArmorStand mangle;
+	private ArmorStand springtrap;
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
 	}
@@ -60,6 +72,7 @@ public class AftonMinimapManager implements Listener{
 		Material newMat = e.getPlayer().getInventory().getItem(e.getNewSlot()).getType();
 		if(previousMat!=newMat) {
 			clearAllOutline(e.getPlayer());
+			//unglow all anim
 			if(!newMat.equals(Material.AIR)) {
 				Room r = getRoomFromWool(e.getPlayer());
 				drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
@@ -115,5 +128,58 @@ public class AftonMinimapManager implements Listener{
 			}
 		}
 	}
-	
+	public boolean packetGlowPlayer(Player player,Player glowed) {
+		com.comphenix.protocol.events.PacketContainer packet = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+	     packet.getIntegers().write(0, glowed.getEntityId()); //Set packet's entity id
+	     com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(); //Create data watcher, the Entity Metadata packet requires this
+	     com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer serializer = Registry.get(Byte.class); //Found this through google, needed for some stupid reason
+	     watcher.setEntity(player); //Set the new data watcher's target
+	     watcher.setObject(0, serializer, (byte) (0x40)); //Set status to glowing, found on protocol page
+	     packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects()); //Make the packet's datawatcher the one we created
+	     try {
+	    	 main.getProtocolManager().sendServerPacket(player, packet);
+	         return true;
+	     } catch (InvocationTargetException e) {
+	         e.printStackTrace();
+	         return false;
+	     }
+	     //MERCI INTERNET PUTAIN
+	}
+	public boolean packetUnGlowPlayer(Player player,Player glowed) {
+		com.comphenix.protocol.events.PacketContainer packet = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+	     packet.getIntegers().write(0, glowed.getEntityId()); //Set packet's entity id
+	     com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(); //Create data watcher, the Entity Metadata packet requires this
+	     com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer serializer = Registry.get(Byte.class); //Found this through google, needed for some stupid reason
+	     watcher.setEntity(player); //Set the new data watcher's target
+	     watcher.setObject(0, serializer, (byte) (0x00)); //Set status to glowing, found on protocol page
+	     packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects()); //Make the packet's datawatcher the one we created
+	     try {
+	    	 main.getProtocolManager().sendServerPacket(player, packet);
+	         return true;
+	     } catch (InvocationTargetException e) {
+	         e.printStackTrace();
+	         return false;
+	     }
+	}
+	public void spawnAnimatronics() {
+		ombreRef = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+	}
+	public ArmorStand getBonnie() {
+		return bonnie;
+	}
+	public ArmorStand getFreddy() {
+		return freddy;
+	}
+	public ArmorStand getChica() {
+		return chica;
+	}
+	public ArmorStand getFoxy() {
+		return foxy;
+	}
+	public ArmorStand getMangle() {
+		return mangle;
+	}
+	public ArmorStand getSpringtrap() {
+		return springtrap;
+	}
 }

@@ -33,6 +33,7 @@ public class YamlReader {
 	private final String roomConfigName = "roomConfig";
 	private final String doorConfigName = "doorConfig";
 	private final String minimapConfigName = "minimapConfig";
+	private final String animatronicConfigName = "animatronicConfig";
 	public YamlReader(FnafYMain _main) {
 		main=_main;
 		mapFolder = new File(main.getDataFolder(),"Maps");
@@ -76,6 +77,9 @@ public class YamlReader {
 	private YamlConfiguration getMinimapConfig(String mapName) {
 		return getConfig(mapName,minimapConfigName);
 	}
+	private YamlConfiguration getAnimatronicConfig(String mapName) {
+		return getConfig(mapName,animatronicConfigName);
+	}
 	private boolean saveDoorConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, doorConfigName, config);
 	}
@@ -85,11 +89,15 @@ public class YamlReader {
 	private boolean saveMinimapConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, minimapConfigName, config);
 	}
+	private boolean saveAnimatrnicConfig(String mapName, YamlConfiguration config) {
+		return saveConfig(mapName, animatronicConfigName, config);
+	}
 	public boolean configFilesExists(String mapName) {
 		File room = new File(mapFolder.getPath()+"/"+mapName,roomConfigName+".yml");
 		File door = new File(mapFolder.getPath()+"/"+mapName,doorConfigName+".yml");
 		File minimap = new File(mapFolder.getPath()+"/"+mapName,minimapConfigName+".yml");
-		if(room.exists() && door.exists() && minimap.exists()) {
+		File animatronic = new File(mapFolder.getPath()+"/"+mapName,animatronicConfigName+".yml");
+		if(room.exists() && door.exists() && minimap.exists() && animatronic.exists()) {
 			return true;
 		}
 		return false;
@@ -103,6 +111,7 @@ public class YamlReader {
 				new File(mapConfigFolder,"roomConfig.yml").createNewFile();
 				new File(mapConfigFolder,"doorConfig.yml").createNewFile();
 				new File(mapConfigFolder,"minimapConfig.yml").createNewFile();
+				new File(mapConfigFolder,"animatronicConfig.yml").createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -847,6 +856,23 @@ public class YamlReader {
 		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
 		if (minimapConfig != null) {
 			return minimapConfig.getLocation("aftonCameraBaseLocation");
+		}
+		return null;
+	}
+	//--------------------------------------------------------------------------------------
+	public boolean setAnimatronicBaseRoomName(String mapName, String roomName, Animatronic anim) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			animatronicConfig.set("baseRoom."+anim.toString(), roomName);
+			saveAnimatrnicConfig(mapName, animatronicConfig);
+			return true;
+		}
+		return false;
+	}
+	public String getAnimatronicBaseRoomName(String mapName, Animatronic anim) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			return animatronicConfig.getString("baseRoom."+anim.toString());
 		}
 		return null;
 	}

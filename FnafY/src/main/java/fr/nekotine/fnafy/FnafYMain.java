@@ -6,6 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
@@ -28,6 +31,7 @@ public class FnafYMain extends JavaPlugin {
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
 	private ComGame gameManager = new ComGame(this);
+	private ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 	
 	private String mapName = "";
 	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener(this);
@@ -61,6 +65,9 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public ComAnim getAnimManager() {
 		return animManager;
+	}
+	public ProtocolManager getProtocolManager() {
+		return protocolManager;
 	}
 	public YamlReader getYamlReader() {
 		return yamlReader;

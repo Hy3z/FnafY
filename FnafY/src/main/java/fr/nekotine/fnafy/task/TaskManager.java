@@ -3,6 +3,8 @@ package fr.nekotine.fnafy.task;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -113,7 +115,10 @@ public class TaskManager implements Listener {
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
 		}
 		for (GuardWrapper p : TeamGuard.playerList) {
-			p.player.setScoreboard(main.teamguard.scoreboard);
+			Player pp = Bukkit.getPlayer(p.playerid);
+			if (pp!=null) {
+				pp.setScoreboard(main.teamguard.scoreboard);
+			}
 		}
 	}
 	

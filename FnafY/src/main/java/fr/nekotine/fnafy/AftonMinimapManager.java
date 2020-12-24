@@ -40,7 +40,7 @@ public class AftonMinimapManager implements Listener{
 	private ArmorStand bonnie;
 	private ASAnimator bonnieAnimator;
 	private ArmorStand freddy;
-	private ASAnimator freddyAnimator ;
+	private ASAnimator freddyAnimator;
 	private ArmorStand chica;
 	private ASAnimator chicaAnimator;
 	private ArmorStand foxy;
@@ -52,11 +52,17 @@ public class AftonMinimapManager implements Listener{
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
 		bonnieAnimator = new ASAnimator(main, bonnie);
+		bonnieAnimator.setLooping(true);
 		freddyAnimator = new ASAnimator(main, freddy);
+		freddyAnimator.setLooping(true);
 		chicaAnimator = new ASAnimator(main, chica);
+		chicaAnimator.setLooping(true);
 		foxyAnimator = new ASAnimator(main, foxy);
+		foxyAnimator.setLooping(true);
 		mangleAnimator = new ASAnimator(main, mangle);
+		mangleAnimator.setLooping(true);
 		springtrapAnimator = new ASAnimator(main, springtrap);
+		springtrapAnimator.setLooping(true);
 	}
 	public Material getPlayerMaterialInHand(Player p) {
 		return p.getInventory().getItemInMainHand().getType();
@@ -142,8 +148,8 @@ public class AftonMinimapManager implements Listener{
 					//message de refus
 				}
 			}else if(canMoveFromTo(getRoomFromWool(e.getPlayer()),e.getRoom())) {
-				List<String> animations = main.getYamlReader().getRoomMinimapAnimation(main.getMapName(), e.getRoom().getRoomName(), Animatronic.getFromWool(getPlayerMaterialInHand(e.getPlayer())));
-				//deplacer animatronic
+				moveAnimatronic(e.getPlayer(), e.getRoom(), Animatronic.getFromWool(getPlayerMaterialInHand(e.getPlayer())));
+				//deplacer animatronic irl
 			}else {
 				//message de refus
 			}
@@ -152,6 +158,10 @@ public class AftonMinimapManager implements Listener{
 	private void moveAnimatronic(Player p, Room r, Animatronic anim) {
 		List<String> animations = main.getYamlReader().getRoomMinimapAnimation(main.getMapName(), r.getRoomName(), Animatronic.getFromWool(getPlayerMaterialInHand(p)));
 		ASAnimation animation = main.getAnimManager().getAsanims().get(animations.get((int)Math.random()*animations.size()));
+		getAnimatronicAnimator(anim).play(animation);
+		if(animation.getAnimSize()==1) {
+			getAnimatronicAnimator(anim).pause();
+		}
 	}
 	private boolean packetGlow(Player player,Entity glowed) {
 		com.comphenix.protocol.events.PacketContainer packet = main.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
@@ -196,6 +206,9 @@ public class AftonMinimapManager implements Listener{
 		bonnie = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		bonnieAnimator.setArmorStand(bonnie);
 		bonnieAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			bonnieAnimator.pause();
+		}
 	}
 	private void spawnFreddy() {
 		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.FREDDY);
@@ -203,6 +216,9 @@ public class AftonMinimapManager implements Listener{
 		freddy = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		freddyAnimator.setArmorStand(freddy);
 		freddyAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			freddyAnimator.pause();
+		}
 	}
 	private void spawnChica() {
 		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.CHICA);
@@ -210,6 +226,9 @@ public class AftonMinimapManager implements Listener{
 		chica = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		chicaAnimator.setArmorStand(chica);
 		chicaAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			chicaAnimator.pause();
+		}
 	}
 	private void spawnFoxy() {
 		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.FOXY);
@@ -217,6 +236,9 @@ public class AftonMinimapManager implements Listener{
 		foxy = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		foxyAnimator.setArmorStand(foxy);
 		foxyAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			foxyAnimator.pause();
+		}
 	}
 	private void spawnMangle() {
 		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.MANGLE);
@@ -224,6 +246,9 @@ public class AftonMinimapManager implements Listener{
 		mangle = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		mangleAnimator.setArmorStand(mangle);
 		mangleAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			mangleAnimator.pause();
+		}
 	}
 	private void spawnSpringtrap() {
 		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.SPRINGTRAP);
@@ -231,6 +256,9 @@ public class AftonMinimapManager implements Listener{
 		springtrap = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
 		springtrapAnimator.setArmorStand(springtrap);
 		springtrapAnimator.play(animation);
+		if(animation.getAnimSize()==1) {
+			springtrapAnimator.pause();
+		}
 	}
 	@EventHandler
 	public void onGameStart(GameStartEvent e) {

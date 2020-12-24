@@ -13,6 +13,7 @@ import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
 import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.doors.DoorManager;
+import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.room.Room;
 import fr.nekotine.fnafy.room.RoomManager;
@@ -36,7 +37,7 @@ public class FnafYMain extends JavaPlugin {
 	private GuardMinimapManager guardMinimapManager = new GuardMinimapManager(this);
 	public final TeamGuard teamguard = new TeamGuard();
 	public final TeamAfton teamafton = new TeamAfton();
-	private boolean gameRunnig=false;
+	private boolean gameRunning=false;
 	
 	public void onEnable() {
 		super.onEnable();
@@ -71,12 +72,15 @@ public class FnafYMain extends JavaPlugin {
 		mapName=_mapName;
 	}
 	public boolean isGameRunning() {
-		return gameRunnig;
+		return gameRunning;
 	}
 	public AftonMinimapManager getAftonMinimapManager() {
 		return aftonMinimapManager;
 	}
 	public boolean startGame() {
+		if (gameRunning) {
+			Bukkit.getPluginManager().callEvent(new GameStopEvent());
+		}
 		if(loadGame()) {
 			headListener.triggerSchedule();
 			return true;
@@ -118,8 +122,9 @@ public class FnafYMain extends JavaPlugin {
 	}
 	@Override
 	public void onDisable() {
-		super.onDisable();
+		Bukkit.getPluginManager().callEvent(new GameStopEvent());
 		animManager.disable();
+		super.onDisable();
 	}
 	public GuardMinimapManager getGuardMinimapManager() {
 		return guardMinimapManager;

@@ -3,10 +3,12 @@ package fr.nekotine.fnafy.task;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.TeamGuard;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 
@@ -104,8 +106,12 @@ public class TaskManager implements Listener {
 		setTasksDone(commonComplete && epicComplete && legendaryComplete && rareComplete);
 	}
 	
-	private void showScoreboard() {
-		
+	private void setupScoreboard() {
+		main.teamguard.resetScoreboardEntries();
+		for (BaseTask task : tasklist) {
+			TeamGuard.taskobjective.getScore(ChatColor.RED+task.getDisplayName())
+			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
+		}
 	}
 	
 	public void completeTask(BaseTask task) {
@@ -148,6 +154,7 @@ public class TaskManager implements Listener {
 	public void onGameStart(GameStartEvent evt) {
 		if (loadTasks()) {
 			shuffleAskedTasks();
+			setupScoreboard();
 			commonComplete=false;
 			epicComplete=false;
 			legendaryComplete=false;

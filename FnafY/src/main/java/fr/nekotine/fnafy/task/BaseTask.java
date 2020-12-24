@@ -15,10 +15,17 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	private boolean isAsked=false;
 	
 	public enum Difficulty{
-		COMMON,
-		RARE,
-		EPIC,
-		LEGENDARY;
+		COMMON((byte)1),
+		RARE((byte)2),
+		EPIC((byte)3),
+		LEGENDARY((byte)4);
+		private byte displayPower;
+		private Difficulty(byte pow) {
+			displayPower=pow;
+		}
+		public byte getDisplayPower() {
+			return displayPower;
+		}
 	}
 	
 	public void setTaskManager(TaskManager mnger) {
@@ -49,6 +56,6 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	
 	public abstract void reset();
 	
-	public abstract String getDisplayerName();
+	public abstract String getDisplayName();
 	
 }

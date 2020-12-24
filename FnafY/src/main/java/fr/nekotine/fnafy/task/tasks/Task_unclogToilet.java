@@ -23,5 +23,14 @@ public class Task_unclogToilet extends BaseTask {
 	public Map<String, Object> serialize() {
 		return null;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return "Unclog the toilets";
+	}
+	
+	public static Task_unclogToilet deserialize(Map<String, Object> args) {
+		return new Task_unclogToilet();
+	}
 	
 }

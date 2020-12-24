@@ -3,7 +3,6 @@ package fr.nekotine.fnafy.task;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -110,7 +109,7 @@ public class TaskManager implements Listener {
 	private void setupScoreboard() {
 		main.teamguard.resetScoreboardEntries();
 		for (BaseTask task : tasklist) {
-			TeamGuard.taskobjective.getScore(ChatColor.RED+task.getDisplayName())
+			TeamGuard.taskobjective.getScore(task.getDisplayName())
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
 		}
 		for (GuardWrapper p : TeamGuard.playerList) {

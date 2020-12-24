@@ -1,5 +1,6 @@
 package fr.nekotine.fnafy.task;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
@@ -15,16 +16,21 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	private boolean isAsked=false;
 	
 	public enum Difficulty{
-		COMMON((byte)1),
-		RARE((byte)2),
-		EPIC((byte)3),
-		LEGENDARY((byte)4);
+		COMMON((byte)1,ChatColor.GREEN),
+		RARE((byte)2,ChatColor.AQUA),
+		EPIC((byte)3,ChatColor.DARK_PURPLE),
+		LEGENDARY((byte)4,ChatColor.GOLD);
 		private byte displayPower;
-		private Difficulty(byte pow) {
+		private ChatColor displayColor;
+		private Difficulty(byte pow,ChatColor c) {
 			displayPower=pow;
+			displayColor=c;
 		}
 		public byte getDisplayPower() {
 			return displayPower;
+		}
+		public ChatColor getDisplayColor() {
+			return displayColor;
 		}
 	}
 	

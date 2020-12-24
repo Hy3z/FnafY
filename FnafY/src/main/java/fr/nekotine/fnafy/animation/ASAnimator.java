@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ASAnimator {
 	
-	private final ArmorStand as;
+	private ArmorStand as;
 	private final JavaPlugin plugin;
 	private int currentFrame=0;
 	private ASAnimation currentAnim=null;
@@ -23,6 +23,10 @@ public class ASAnimator {
 		currentFrame=0;
 		currentAnim=anim;
 		resume();
+	}
+	
+	public void setArmorStand(ArmorStand a) {
+		as=a;
 	}
 	
 	public void resume() {

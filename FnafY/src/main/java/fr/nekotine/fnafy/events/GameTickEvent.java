@@ -5,6 +5,7 @@ import org.bukkit.event.HandlerList;
 
 public class GameTickEvent extends Event{
 	private static final HandlerList HANDLERS_LIST = new HandlerList();
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS_LIST;
 	}

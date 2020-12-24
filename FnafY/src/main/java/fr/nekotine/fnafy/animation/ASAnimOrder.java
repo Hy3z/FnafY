@@ -60,7 +60,6 @@ public class ASAnimOrder implements ConfigurationSerializable{
 		boolean rel=value.isRelative();
 		double val=value.getValue();
 		CustomEulerAngle angle=CustomEulerAngle.zero();
-		System.out.println("base angle"+angle);
 		switch (key) {
 		case "body":
 			if (ax.contains(Axis.X)) {

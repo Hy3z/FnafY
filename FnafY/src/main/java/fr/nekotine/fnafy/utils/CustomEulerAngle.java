@@ -34,7 +34,6 @@ public class CustomEulerAngle extends EulerAngle implements ConfigurationSeriali
 			 zz=(double)args.get("z");
 		 }
 		 CustomEulerAngle toReturn = new CustomEulerAngle(xx, yy, zz);
-		 System.out.println("deserialized euleur angle as: "+toReturn);
 		 return toReturn;
 	 }
 	

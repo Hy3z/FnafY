@@ -26,13 +26,6 @@ public class Posture implements ConfigurationSerializable {
 		this.rightLeg=rightLeg;
 		this.head=head;
 		this.location=loc;
-		System.out.println("Posture created-------");
-		System.out.println("body="+body);
-		System.out.println("leftArm="+leftArm);
-		System.out.println("rightArm="+rightArm);
-		System.out.println("leftLeg="+leftLeg);
-		System.out.println("rightLeg="+rightLeg);
-		System.out.println("head="+head);
 	}
 	
 	@Override

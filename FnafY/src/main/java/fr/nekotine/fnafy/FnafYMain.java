@@ -1,6 +1,7 @@
 package fr.nekotine.fnafy;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -86,6 +87,9 @@ public class FnafYMain extends JavaPlugin {
 	public AftonMinimapManager getAftonMinimapManager() {
 		return aftonMinimapManager;
 	}
+	public boolean isPlayerInGame(UUID id) {
+		return teamguard.isPlayerInGame(id) || teamafton.isPlayerInGame(id);
+	}
 	public boolean startGame() {
 		if (gameRunning) {
 			Bukkit.getPluginManager().callEvent(new GameStopEvent());
@@ -114,12 +118,6 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public RoomManager getRoomManager() {
 		return roomManager;
-	}
-	public TeamAfton getTeamAfton() {
-		return teamafton;
-	}
-	public TeamGuard getTeamGuard() {
-		return teamguard;
 	}
 	public DoorManager getDoorManager() {
 		return doorManager;

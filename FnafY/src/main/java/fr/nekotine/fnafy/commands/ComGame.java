@@ -23,14 +23,17 @@ public final class ComGame {
 			}
 		}).register();
 		argument.clear();
-		
 		argument.put("game", new LiteralArgument("game"));
 		argument.put("getMap", new LiteralArgument("getMap"));
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			sender.sendMessage("Current Map: "+ChatColor.GOLD+main.getMapName());
 		}).register();
 		argument.clear();
-		
+		argument.put("game", new LiteralArgument("game"));
+		argument.put("join", new LiteralArgument("join"));
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			sender.sendMessage("Current Map: "+ChatColor.GOLD+main.getMapName());
+		}).register();
 		main.getLogger().info("Game Commands registered");
 	}
 }

@@ -1,6 +1,7 @@
 package fr.nekotine.fnafy;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Objective;
@@ -21,6 +22,15 @@ public class TeamGuard {
 		for (String entry : scoreboard.getEntries()) {
 			scoreboard.resetScores(entry);
 		}
+	}
+	
+	public boolean isPlayerInGame(UUID id) {
+		for (GuardWrapper w : playerList) {
+			if (w.playerid.equals(id)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

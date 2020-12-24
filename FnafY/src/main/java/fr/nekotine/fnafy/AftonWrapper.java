@@ -1,12 +1,12 @@
 package fr.nekotine.fnafy;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 public class AftonWrapper {
 	
-	public final Player player;
+	public final UUID playerid;
 	
-	public AftonWrapper(Player p) {
-		player=p;
+	public AftonWrapper(UUID playerid) {
+		this.playerid=playerid;
 	}
 }

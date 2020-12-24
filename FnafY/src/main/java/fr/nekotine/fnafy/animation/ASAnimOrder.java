@@ -12,7 +12,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import fr.nekotine.fnafy.commands.DoubleAddOrSet;
-import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 @SerializableAs("ASAnimOrder")
 public class ASAnimOrder implements ConfigurationSerializable{
@@ -59,7 +58,6 @@ public class ASAnimOrder implements ConfigurationSerializable{
 	public void modify(String key, EnumSet<Axis> ax, DoubleAddOrSet value) {
 		boolean rel=value.isRelative();
 		double val=value.getValue();
-		CustomEulerAngle angle=CustomEulerAngle.zero();
 		switch (key) {
 		case "body":
 			if (ax.contains(Axis.X)) {

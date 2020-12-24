@@ -3,6 +3,7 @@ package fr.nekotine.fnafy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.room.Room;
@@ -17,6 +18,16 @@ public class TeamAfton {
 		unlockedPackages.add(p);
 		return true;
 	}
+	
+	public boolean isPlayerInGame(UUID id) {
+		for (GuardWrapper w : playerList) {
+			if (w.playerid.equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public List<Integer> getUnlockedPackages(){
 		return unlockedPackages;
 	}

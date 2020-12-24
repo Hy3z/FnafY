@@ -1,13 +1,13 @@
 package fr.nekotine.fnafy;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 public class GuardWrapper {
 
-	public final Player player;
+	public final UUID playerid;
 	
-	public GuardWrapper(Player p) {
-		player=p;
+	public GuardWrapper(UUID playerid) {
+		this.playerid=playerid;
 	}
 	
 }

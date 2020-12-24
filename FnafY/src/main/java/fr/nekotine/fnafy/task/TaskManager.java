@@ -115,10 +115,7 @@ public class TaskManager implements Listener {
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
 		}
 		for (GuardWrapper p : TeamGuard.playerList) {
-			Player pp = Bukkit.getPlayer(p.playerid);
-			if (pp!=null) {
-				pp.setScoreboard(main.teamguard.scoreboard);
-			}
+			p.showScoreboard(main.teamguard.scoreboard);
 		}
 	}
 	

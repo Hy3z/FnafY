@@ -31,6 +31,12 @@ public final class ComGame {
 		argument.clear();
 		argument.put("game", new LiteralArgument("game"));
 		argument.put("join", new LiteralArgument("join"));
+		new CommandAPICommand("fnafy").withArguments(argument).executesPlayer((player,args)->{
+			main.addPlayer(player.getUniqueId());
+		}).register();
+		argument.clear();
+		argument.put("game", new LiteralArgument("game"));
+		argument.put("join", new LiteralArgument("join"));
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			sender.sendMessage("Current Map: "+ChatColor.GOLD+main.getMapName());
 		}).register();

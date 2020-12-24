@@ -24,13 +24,26 @@ public class TeamGuard {
 		}
 	}
 	
-	public boolean isPlayerInGame(UUID id) {
+	public boolean isPlayerInTeam(UUID id) {
 		for (GuardWrapper w : playerList) {
 			if (w.playerid.equals(id)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public GuardWrapper getWrapper(UUID id) {
+		for (GuardWrapper w : playerList) {
+			if (w.playerid.equals(id)){
+				return w;
+			}
+		}
+		return null;
+	}
+
+	public void addPlayer(GuardWrapper guardWrapper) {
+		playerList.add(guardWrapper);
 	}
 	
 }

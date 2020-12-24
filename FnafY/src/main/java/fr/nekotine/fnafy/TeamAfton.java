@@ -10,7 +10,7 @@ import fr.nekotine.fnafy.room.Room;
 
 public class TeamAfton {
 
-	public static final ArrayList<GuardWrapper> playerList = new ArrayList<GuardWrapper>();
+	public static final ArrayList<AftonWrapper> playerList = new ArrayList<AftonWrapper>();
 	private List<Integer> unlockedPackages = new ArrayList<>();
 	private HashMap<Animatronic, String> animatronicLocation = new HashMap<>();
 	public boolean unlockPackage(int p) {
@@ -19,13 +19,22 @@ public class TeamAfton {
 		return true;
 	}
 	
-	public boolean isPlayerInGame(UUID id) {
-		for (GuardWrapper w : playerList) {
+	public boolean isPlayerInTeam(UUID id) {
+		for (AftonWrapper w : playerList) {
 			if (w.playerid.equals(id)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public AftonWrapper getWrapper(UUID id) {
+		for (AftonWrapper w : playerList) {
+			if (w.playerid.equals(id)){
+				return w;
+			}
+		}
+		return null;
 	}
 	
 	public List<Integer> getUnlockedPackages(){

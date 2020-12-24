@@ -3,9 +3,12 @@ package fr.nekotine.fnafy;
 import java.util.HashMap;
 import java.util.UUID;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -84,6 +87,11 @@ public class FnafYMain extends JavaPlugin {
 	public void setMapName(String _mapName) {
 		mapName=_mapName;
 	}
+	public boolean addPlayer(UUID id) {
+		if (isPlayerInGame(id)) return false;
+		teamguard.addPlayer(new GuardWrapper(id));
+		return true;
+	}
 	public boolean isGameRunning() {
 		return gameRunning;
 	}
@@ -91,7 +99,7 @@ public class FnafYMain extends JavaPlugin {
 		return aftonMinimapManager;
 	}
 	public boolean isPlayerInGame(UUID id) {
-		return teamguard.isPlayerInGame(id) || teamafton.isPlayerInGame(id);
+		return teamguard.isPlayerInTeam(id) || teamafton.isPlayerInTeam(id);
 	}
 	public boolean startGame() {
 		if (gameRunning) {
@@ -109,6 +117,17 @@ public class FnafYMain extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent evt) {
+		UUID id = evt.getPlayer().getUniqueId();
+		if (isPlayerInGame(id) && gameRunning) {
+			if (teamafton.isPlayerInTeam(id)){
+				//START FOR PLAYER
+			}else {
+				teamguard.getWrapper(id).showScoreboard(teamguard.scoreboard);
+			}
+		}
 	}
 	@EventHandler
 	public void onGameEnd(GameStopEvent e) {

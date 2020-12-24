@@ -140,7 +140,6 @@ public class AftonMinimapManager implements Listener{
 					//message de refus
 				}
 			}else if(canMoveFromTo(getRoomFromWool(e.getPlayer()),e.getRoom())) {
-				moveAnimatronic(e.getPlayer(), e.getRoom(), Animatronic.getFromWool(getPlayerMaterialInHand(e.getPlayer())));
 				//deplacer animatronic irl
 			}else {
 				//message de refus

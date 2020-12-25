@@ -7,19 +7,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.animation.ASAnimator;
+import fr.nekotine.fnafy.doors.Door;
 import fr.nekotine.fnafy.enums.Animatronic;
 import fr.nekotine.fnafy.enums.Team;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
-import fr.nekotine.fnafy.events.GameStartEvent;
+import fr.nekotine.fnafy.events.AnimatronicMoveAtDoorEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
@@ -32,33 +29,15 @@ public class AftonMinimapManager implements Listener{
 	private static final BlockData OUTLINE_RED = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 	private static final BlockData OUTLINE_GOLD = Bukkit.createBlockData(Material.GOLD_BLOCK);
 	private Location cameraBaseLocation;
-	private ArmorStand bonnie;
-	private ASAnimator bonnieAnimator;
-	private ArmorStand freddy;
-	private ASAnimator freddyAnimator;
-	private ArmorStand chica;
-	private ASAnimator chicaAnimator;
-	private ArmorStand foxy;
-	private ASAnimator foxyAnimator;
-	private ArmorStand mangle;
-	private ASAnimator mangleAnimator;
-	private ArmorStand springtrap;
-	private ASAnimator springtrapAnimator;
+	private MinimapAnimatronic bonnie;
+	private MinimapAnimatronic freddy;
+	private MinimapAnimatronic chica;
+	private MinimapAnimatronic foxy;
+	private MinimapAnimatronic mangle;
+	private MinimapAnimatronic springtrap;
 	Glow glow = Glow.builder().animatedColor(ChatColor.WHITE).name("minimapGlow").build();
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
-		bonnieAnimator = new ASAnimator(main, bonnie);
-		bonnieAnimator.setLooping(true);
-		freddyAnimator = new ASAnimator(main, freddy);
-		freddyAnimator.setLooping(true);
-		chicaAnimator = new ASAnimator(main, chica);
-		chicaAnimator.setLooping(true);
-		foxyAnimator = new ASAnimator(main, foxy);
-		foxyAnimator.setLooping(true);
-		mangleAnimator = new ASAnimator(main, mangle);
-		mangleAnimator.setLooping(true);
-		springtrapAnimator = new ASAnimator(main, springtrap);
-		springtrapAnimator.setLooping(true);
 	}
 	public void setCameraBaseLocation(Location loc) {
 		cameraBaseLocation=loc;
@@ -73,11 +52,12 @@ public class AftonMinimapManager implements Listener{
 		return main.teamafton.getUnlockedPackages().contains(r.getAftonCameraPackage());
 	}
 	public Room getRoomFromWool(Player p) {
-		return main.getRoomManager().getRoom(main.teamafton.getAnimatronicRoomLocationName(Animatronic.getFromWool(getPlayerMaterialInHand(p))));
+		return main.getRoomManager().getRoom(main.teamafton.getAnimatronic(Animatronic.getFromWool(getPlayerMaterialInHand(p))).currentRoom);
 	}
 	public boolean canMoveFromTo(Room prev, Room next) {
 		return main.getRoomManager().canMoveFromToBool(prev,next);
 	}
+	
 	public void drawAftonOutline(Room r, Player p, BlockData outline) {
 		r.drawAftonOutline(p, outline);
 	}
@@ -87,12 +67,10 @@ public class AftonMinimapManager implements Listener{
 		Material newMat = e.getPlayer().getInventory().getItem(e.getNewSlot()).getType();
 		if(previousMat!=newMat) {
 			clearAllOutline(e.getPlayer());
-			glow.removeHolders(getAnimatronic(Animatronic.getFromWool(previousMat)));
+			glow.removeHolders(getAnimatronic(Animatronic.getFromWool(previousMat)).animator.as);
 			if(!newMat.equals(Material.AIR)) {
-				glow.addHolders(getAnimatronic(Animatronic.getFromWool(newMat)));
-				
-				glow.display(e.getPlayer()); //display au début de la game plutot
-				
+				glow.addHolders(getAnimatronic(Animatronic.getFromWool(newMat)).animator.as);
+				glow.display(e.getPlayer());
 				Room r = getRoomFromWool(e.getPlayer());
 				drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
 				for(Room room : main.getRoomManager().cannotMoveFromList(r)) {
@@ -133,118 +111,33 @@ public class AftonMinimapManager implements Listener{
 	@EventHandler
 	public void onPlayerActionRoom(ActionOnRoomEvent e) {
 		if(e.getTeam()==Team.AFTON) {
-			if(getPlayerMaterialInHand(e.getPlayer()).equals(Material.AIR)) {
+			Material inHand = getPlayerMaterialInHand(e.getPlayer());
+			if(inHand.equals(Material.AIR)) {
 				if(isCameraUnlocked(e.getRoom())) {
 					Bukkit.getPluginManager().registerEvents(new Camera(main, e.getRoom().getCamLocation(), e.getPlayer(), Team.AFTON), main);
 				}else {
 					//message de refus
 				}
 			}else if(canMoveFromTo(getRoomFromWool(e.getPlayer()),e.getRoom())) {
-				//deplacer animatronic irl
+				Animatronic anim = Animatronic.getFromWool(inHand);
+				List<Door> canMoveUsing = main.getRoomManager().canMoveFromToDoorList(main.getRoomManager().getRoom(main.teamafton.getAnimatronic(anim).currentRoom), e.getRoom());
+				int chosenDoor = (int)Math.random()*canMoveUsing.size();
+				Bukkit.getPluginManager().callEvent(new AnimatronicMoveAtDoorEvent(canMoveUsing.get(chosenDoor), anim, e.getRoom()));
 			}else {
 				//message de refus
 			}
 		}
 	}
-	private void moveAnimatronic(Player p, Room r, Animatronic anim) {
-		List<String> animations = main.getYamlReader().getRoomMinimapAnimation(main.getMapName(), r.getRoomName(), Animatronic.getFromWool(getPlayerMaterialInHand(p)));
-		ASAnimation animation = main.getAnimManager().getAsanims().get(animations.get((int)Math.random()*animations.size()));
-		getAnimatronicAnimator(anim).play(animation);
-		if(animation.getAnimSize()==1) {
-			getAnimatronicAnimator(anim).pause();
-		}
-	}
-	private ASAnimation getRandomAnimatronicBaseAnimation(Animatronic anim) {
-		String roomName = main.getYamlReader().getAnimatronicBaseRoomName(main.getMapName(), anim);
-		List<String> animations = main.getYamlReader().getRoomMinimapAnimation(main.getMapName(), roomName, anim);
-		return main.getAnimManager().getAsanims().get(animations.get((int)Math.random()*animations.size()));
-	}
-	private void spawnBonnie() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.BONNIE);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		bonnie = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		bonnieAnimator.setArmorStand(bonnie);
-		bonnieAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			bonnieAnimator.pause();
-		}
-	}
-	private void spawnFreddy() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.FREDDY);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		freddy = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		freddyAnimator.setArmorStand(freddy);
-		freddyAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			freddyAnimator.pause();
-		}
-	}
-	private void spawnChica() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.CHICA);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		chica = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		chicaAnimator.setArmorStand(chica);
-		chicaAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			chicaAnimator.pause();
-		}
-	}
-	private void spawnFoxy() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.FOXY);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		foxy = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		foxyAnimator.setArmorStand(foxy);
-		foxyAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			foxyAnimator.pause();
-		}
-	}
-	private void spawnMangle() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.MANGLE);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		mangle = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		mangleAnimator.setArmorStand(mangle);
-		mangleAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			mangleAnimator.pause();
-		}
-	}
-	private void spawnSpringtrap() {
-		ASAnimation animation = getRandomAnimatronicBaseAnimation(Animatronic.SPRINGTRAP);
-		Location animLoc = animation.getFrameOrder(0).pose.location;
-		springtrap = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
-		springtrapAnimator.setArmorStand(springtrap);
-		springtrapAnimator.play(animation);
-		if(animation.getAnimSize()==1) {
-			springtrapAnimator.pause();
-		}
-	}
-	@EventHandler
-	public void onGameStart(GameStartEvent e) {
-		spawnBonnie();
-		spawnFreddy();
-		spawnChica();
-		spawnFoxy();
-		spawnMangle();
-		spawnSpringtrap();
-	}
 	@EventHandler
 	public void onGameEnd(GameStopEvent e) {
-		bonnieAnimator.stop();
-		freddyAnimator.stop();
-		chicaAnimator.stop();
-		foxyAnimator.stop();
-		mangleAnimator.stop();
-		springtrapAnimator.stop();
-		
-		bonnie.remove();
-		freddy.remove();
-		chica.remove();
-		foxy.remove();
-		mangle.remove();
-		springtrap.remove();
+		bonnie=null;
+		freddy=null;
+		chica=null;
+		foxy=null;
+		mangle=null;
+		springtrap=null;
 	}
-	private ArmorStand getAnimatronic(Animatronic anim) {
+	public MinimapAnimatronic getAnimatronic(Animatronic anim) {
 		switch(anim) {
 		case BONNIE: return bonnie;
 		case FREDDY:return freddy;
@@ -252,17 +145,6 @@ public class AftonMinimapManager implements Listener{
 		case FOXY: return foxy;
 		case MANGLE: return mangle;
 		case SPRINGTRAP: return springtrap;
-		default: return null;
-		}
-	}
-	private ASAnimator getAnimatronicAnimator(Animatronic anim) {
-		switch(anim) {
-		case BONNIE: return bonnieAnimator;
-		case FREDDY:return freddyAnimator;
-		case CHICA: return chicaAnimator;
-		case FOXY: return foxyAnimator;
-		case MANGLE: return mangleAnimator;
-		case SPRINGTRAP: return springtrapAnimator;
 		default: return null;
 		}
 	}

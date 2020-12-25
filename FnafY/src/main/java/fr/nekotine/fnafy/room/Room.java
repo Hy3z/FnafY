@@ -141,7 +141,10 @@ public class Room implements Listener{
 			}
 		}
 	}
-	public List<ASAnimation> getAnimatronicAnimations(Animatronic anim){
+	public List<ASAnimation> getMinimapAnimations(Animatronic anim){
 		return MinimapPoses.get(anim);
+	}
+	public List<ASAnimation> getAnimations(Animatronic anim){
+		return InRoomAnimations.get(anim);
 	}
 }

@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.doors.Door;
+import fr.nekotine.fnafy.enums.Animatronic;
 
 public class RoomManager{
 	private final FnafYMain main;
@@ -51,5 +53,28 @@ public class RoomManager{
 			}
 		}
 		return false;
+	}
+	public List<Door> canMoveFromToDoorList(Room prev, Room next) {
+		List<Door> doorList = new ArrayList<>();
+		for(Door d : main.getDoorManager().getAllDoors()) {
+			if(d.canMoveFromToBoolean(prev, next)) {
+				doorList.add(d);
+			}
+		}
+		return doorList;
+	}
+	public List<ASAnimation> getDoorAnimationFromRoomToRoom(Room prev, Room next, Animatronic anim){
+		List<Door> doorList = canMoveFromToDoorList(prev, next);
+		if(doorList.size()>0) {
+			return doorList.get((int)Math.random()*doorList.size()).getDoorAnimationsToRoom(next, anim);
+		}
+		return null;
+	}
+	public List<ASAnimation> getDoorMinimapAnimationFromRoomToRoom(Room prev, Room next, Animatronic anim){
+		List<Door> doorList = canMoveFromToDoorList(prev, next);
+		if(doorList.size()>0) {
+			return doorList.get((int)Math.random()*doorList.size()).getMinimapDoorAnimationsToRoom(next, anim);
+		}
+		return null;
 	}
 }

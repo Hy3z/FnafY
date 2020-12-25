@@ -36,6 +36,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Hyez/Desktop/XGlow-1.0.2.jar"/>
-	<classpathentry kind="lib" path="E:/MinecraftServer/Programation1.16.3/plugins/XGlow-1.0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

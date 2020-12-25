@@ -60,7 +60,20 @@ public class Door {
 	public Room getRoom2() {
 		return room2;
 	}
-	
+	public List<ASAnimation> getDoorAnimationsToRoom(Room r, Animatronic anim){
+		if(r.getRoomName()==room1.getRoomName()) {
+			return animToRoom1.get(anim);
+		}else {
+			return animToRoom2.get(anim);
+		}
+	}
+	public List<ASAnimation> getMinimapDoorAnimationsToRoom(Room r, Animatronic anim){
+		if(r.getRoomName()==room1.getRoomName()) {
+			return minimapToRoom1.get(anim);
+		}else {
+			return minimapToRoom2.get(anim);
+		}
+	}
 	public boolean canMoveFromToBoolean(Room previous, Room next) {
 		if(room1.getRoomName()==previous.getRoomName() && room2.getRoomName()==next.getRoomName()) {
 			return true;

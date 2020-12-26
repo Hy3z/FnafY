@@ -33,6 +33,8 @@ public class Door implements Listener{
 	
 	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom1=new HashMap<Animatronic,List<ASAnimation>>();
 	private final HashMap<Animatronic,List<ASAnimation>> minimapToRoom2=new HashMap<Animatronic,List<ASAnimation>>();
+	
+	public boolean isClosed = false;
 	public Door(FnafYMain main, String doorName, DoorType doorType, Location doorLoc, Vector length, Room room1, Room room2,
 			HashMap<Animatronic,List<ASAnimation>> animToRoom1, HashMap<Animatronic,List<ASAnimation>> animToRoom2,
 			HashMap<Animatronic,List<ASAnimation>> minimapToRoom1, HashMap<Animatronic,List<ASAnimation>> minimapToRoom2) {
@@ -56,22 +58,26 @@ public class Door implements Listener{
 	}
 	@EventHandler
 	public void playerAction(PlayerInteractEvent e) {
-		if(e.getAction()==Action.LEFT_CLICK_BLOCK||e.getAction()==Action.RIGHT_CLICK_BLOCK) {
-			GuardWrapper pwrapper = main.teamguard.getWrapper(e.getPlayer().getUniqueId());
-			if(pwrapper!=null){
-				Block b = e.getClickedBlock();
-				if(b.getX()>=doorLoc.getX() && b.getX()<=doorLoc.getX()+length.getX()) {
-					if(b.getY()>=doorLoc.getY() && b.getY()<=doorLoc.getY()+length.getY()) {
-						if(b.getZ()>=doorLoc.getZ() && b.getZ()<=doorLoc.getZ()+length.getZ()) {
-							if(canMoveTo(pwrapper.currentRoom).canGuardEnterRoom) {
-								Bukkit.getPluginManager().callEvent(new PlayerMoveToRoomEvent(pwrapper.currentRoom, e.getPlayer(), canMoveTo(pwrapper.currentRoom)));
-							}else {
-								//message "Access denied!"
+		if(!isClosed) {
+			if(e.getAction()==Action.LEFT_CLICK_BLOCK||e.getAction()==Action.RIGHT_CLICK_BLOCK) {
+				GuardWrapper pwrapper = main.teamguard.getWrapper(e.getPlayer().getUniqueId());
+				if(pwrapper!=null){
+					Block b = e.getClickedBlock();
+					if(b.getX()>=doorLoc.getX() && b.getX()<=doorLoc.getX()+length.getX()) {
+						if(b.getY()>=doorLoc.getY() && b.getY()<=doorLoc.getY()+length.getY()) {
+							if(b.getZ()>=doorLoc.getZ() && b.getZ()<=doorLoc.getZ()+length.getZ()) {
+								if(canMoveTo(pwrapper.currentRoom).canGuardEnterRoom) {
+									Bukkit.getPluginManager().callEvent(new PlayerMoveToRoomEvent(pwrapper.currentRoom, e.getPlayer(), canMoveTo(pwrapper.currentRoom)));
+								}else {
+									//message "Access denied!"
+								}
 							}
 						}
 					}
 				}
 			}
+		}else {
+			//message "La porte semble être fermée par un mécanisme coupe-feux!"
 		}
 	}
 	public String getDoorName() {

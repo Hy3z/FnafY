@@ -23,6 +23,15 @@ public class DoorRoomContainer {
 	public HashMap<String, Room> getRooms(){
 		return rooms;
 	}
+	public List<Door> getCoupeFeuxDoors(){
+		List<Door> l = new ArrayList<>();
+		for(Door d : doors.values()) {
+			if(d.getDoorType()==DoorType.COUPEFEUX) {
+				l.add(d);
+			}
+		}
+		return l;
+	}
 	public List<Room> canMoveFromList(Room r){
 		List<Room> canMoveFromTo = new ArrayList<>();
 		for(Door d : doors.values()) {

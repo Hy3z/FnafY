@@ -487,6 +487,13 @@ public class YamlReader {
 					}
 				}
 				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null){
+					System.out.println("Loaded door: "+doorName);
+					System.out.println("DoorType: "+type);
+					System.out.println("DoorLoc: "+doorLoc);
+					System.out.println("DoorLength: "+length);
+					System.out.println("Room1: "+room1.getRoomName());
+					System.out.println("Room2: "+room2.getRoomName());
+					System.out.println("");
 					doors.put(doorName, new Door(main, doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
 				}else {
 					return null;
@@ -570,6 +577,8 @@ public class YamlReader {
 				roomConfig.set(roomName+".roomType", RoomType.UNKNOWN.toString());
 				roomConfig.set(roomName+".camLoc", "");
 				
+				roomConfig.set(roomName+".canGuardUnlockCamera", true);
+				roomConfig.set(roomName+".canGuardEnterRoom", true);
 				roomConfig.set(roomName+".defaultGuardCamera", false);
 				roomConfig.set(roomName+".aftonCameraPackage", 0);
 				
@@ -586,6 +595,38 @@ public class YamlReader {
 				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}
+		}
+		return false;
+	}
+	public boolean canGuardUnlockCamera(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return roomConfig.getBoolean(roomName+".canGuardUnlockCamera");
+		}
+		return true;
+	}
+	public boolean setCanGuardUnlockCamera(String mapName, String roomName, boolean b) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".canGuardUnlockCamera", b);
+			saveRoomConfig(mapName, roomConfig);
+			return true;
+		}
+		return false;
+	}
+	public boolean canGuardEnterRoom(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return roomConfig.getBoolean(roomName+".canGuardEnterRoom");
+		}
+		return true;
+	}
+	public boolean setCanGuardEnterRoom(String mapName, String roomName, boolean b) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".canGuardEnterRoom", b);
+			saveRoomConfig(mapName, roomConfig);
+			return true;
 		}
 		return false;
 	}
@@ -752,6 +793,8 @@ public class YamlReader {
 			for(String roomName : getRoomList(main.getMapName())) {
 				RoomType type = getRoomType(main.getMapName(), roomName);
 				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				boolean canGuardUnlockCamera = canGuardUnlockCamera(main.getMapName(), roomName);
+				boolean canGuardEnterRoom = canGuardEnterRoom(main.getMapName(), roomName);
 				boolean isDefaultGuardCamera = getIfDefaultGuardCamera(main.getMapName(), roomName);
 				int aftonCameraPackage = getAftonCameraPackage(main.getMapName(), roomName);
 				BlockSelection aO = getAftonOutline(main.getMapName(), roomName);
@@ -781,8 +824,16 @@ public class YamlReader {
 					}
 					inMinimapAnimation.put(animatronic, tempList);
 				}
-				if(type!=RoomType.UNKNOWN && camLoc!=null && aftonCameraPackage>0 && aO!=null && aS!=null && gO!=null && gS!=null){
-					rooms.put(roomName, new Room(main, roomName, type, camLoc, isDefaultGuardCamera, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
+				if(type!=RoomType.UNKNOWN && camLoc!=null && aO!=null && aS!=null && gO!=null && gS!=null){
+					System.out.println("Loaded room: "+roomName);
+					System.out.println("RoomType: "+type);
+					System.out.println("camLoc: "+camLoc);
+					System.out.println("canGuardUnlockCamera: "+canGuardUnlockCamera);
+					System.out.println("canGuardEnterRoom: "+canGuardEnterRoom);
+					System.out.println("isDefaultGuardCamera: "+isDefaultGuardCamera);
+					System.out.println("aftonCameraPackage: "+aftonCameraPackage);
+					System.out.println("");
+					rooms.put(roomName, new Room(main, roomName, type, camLoc, isDefaultGuardCamera, canGuardUnlockCamera, canGuardEnterRoom, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
 				}else {
 					return null;
 				}

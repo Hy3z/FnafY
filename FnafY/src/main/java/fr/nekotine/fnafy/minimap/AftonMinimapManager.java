@@ -39,7 +39,7 @@ public class AftonMinimapManager implements Listener{
 	private MinimapAnimatronic foxy;
 	private MinimapAnimatronic mangle;
 	private MinimapAnimatronic springtrap;
-	Glow glow = Glow.builder().animatedColor(ChatColor.WHITE).name("minimapGlow").build();
+	private final Glow glow = new Glow(ChatColor.WHITE, "animatronicGlow");
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
 		Bukkit.getPluginManager().registerEvents(this, main);
@@ -68,18 +68,20 @@ public class AftonMinimapManager implements Listener{
 	}
 	@EventHandler
 	public void itemHeldEvent(PlayerItemHeldEvent e) {
-		Material previousMat = e.getPlayer().getInventory().getItem(e.getPreviousSlot()).getType();
-		Material newMat = e.getPlayer().getInventory().getItem(e.getNewSlot()).getType();
-		if(previousMat!=newMat) {
-			clearAllOutline(e.getPlayer());
-			glow.removeHolders(getAnimatronic(Animatronic.getFromWool(previousMat)).animator.as);
-			if(!newMat.equals(Material.AIR)) {
-				glow.addHolders(getAnimatronic(Animatronic.getFromWool(newMat)).animator.as);
-				glow.display(e.getPlayer());
-				Room r = getRoomFromWool(e.getPlayer());
-				drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
-				for(Room room : main.doorRoomContainer.cannotMoveFromList(r)) {
-					drawAftonOutline(room, e.getPlayer(), OUTLINE_RED);
+		if(main.teamafton.isPlayerInTeam(e.getPlayer().getUniqueId())) {
+			Material previousMat = e.getPlayer().getInventory().getItem(e.getPreviousSlot()).getType();
+			Material newMat = e.getPlayer().getInventory().getItem(e.getNewSlot()).getType();
+			if(previousMat!=newMat) {
+				clearAllOutline(e.getPlayer());
+				glow.removeHolders(getAnimatronic(Animatronic.getFromWool(previousMat)).animator.as);
+				if(!newMat.equals(Material.AIR)) {
+					glow.addHolders(getAnimatronic(Animatronic.getFromWool(newMat)).animator.as);
+					glow.display(e.getPlayer());
+					Room r = getRoomFromWool(e.getPlayer());
+					drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
+					for(Room room : main.doorRoomContainer.cannotMoveFromList(r)) {
+						drawAftonOutline(room, e.getPlayer(), OUTLINE_RED);
+					}
 				}
 			}
 		}

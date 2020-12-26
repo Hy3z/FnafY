@@ -63,7 +63,11 @@ public class Door implements Listener{
 				if(b.getX()>=doorLoc.getX() && b.getX()<=doorLoc.getX()+length.getX()) {
 					if(b.getY()>=doorLoc.getY() && b.getY()<=doorLoc.getY()+length.getY()) {
 						if(b.getZ()>=doorLoc.getZ() && b.getZ()<=doorLoc.getZ()+length.getZ()) {
-							Bukkit.getPluginManager().callEvent(new PlayerMoveToRoomEvent(pwrapper.currentRoom, e.getPlayer(), canMoveTo(pwrapper.currentRoom)));
+							if(canMoveTo(pwrapper.currentRoom).canGuardEnterRoom) {
+								Bukkit.getPluginManager().callEvent(new PlayerMoveToRoomEvent(pwrapper.currentRoom, e.getPlayer(), canMoveTo(pwrapper.currentRoom)));
+							}else {
+								//message "Access denied!"
+							}
 						}
 					}
 				}

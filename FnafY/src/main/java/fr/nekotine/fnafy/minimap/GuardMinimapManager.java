@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
@@ -49,11 +50,15 @@ public class GuardMinimapManager implements Listener{
 	}
 	@EventHandler
 	public void playerInteractEvent(PlayerInteractEvent e) {
-		if(!inCameraPlayers.contains(e.getPlayer())) {
-			if(e.getClickedBlock().getLocation().distanceSquared(cameraBlockLocation)<=1) {
-				enterCamera(e.getPlayer());
+		if(e.getAction()==Action.LEFT_CLICK_BLOCK||e.getAction()==Action.RIGHT_CLICK_BLOCK) {
+			if(main.teamguard.isPlayerInTeam(e.getPlayer().getUniqueId())) {
+				if(!inCameraPlayers.contains(e.getPlayer())) {
+					if(e.getClickedBlock().getLocation().distanceSquared(cameraBlockLocation)<=1) {
+						enterCamera(e.getPlayer());
+					}
+				}
 			}
-		}
+		}	
 	}
 	@EventHandler
 	public void playerToggleFlight(PlayerToggleFlightEvent e) {
@@ -91,7 +96,7 @@ public class GuardMinimapManager implements Listener{
 		if(e.getTeam()==Team.GUARD) {
 			if(main.teamguard.unlockedCameras.contains(e.getRoom().getRoomName())) {
 				e.getRoom().drawGuardOutline(e.getPlayer(), OUTLINE_GREEN);
-			}else {
+			}else if(e.getRoom().canGuardUnlockCamera) {
 				e.getRoom().drawGuardOutline(e.getPlayer(), OUTLINE_RED);
 			}
 		}
@@ -101,8 +106,10 @@ public class GuardMinimapManager implements Listener{
 		if(e.getTeam()==Team.GUARD) {
 			if(main.teamguard.unlockedCameras.contains(e.getRoom().getRoomName())) {
 				Bukkit.getPluginManager().registerEvents(new Camera(main, e.getRoom().getCamLocation(), e.getPlayer(), Team.GUARD), main);
+			}else if(e.getRoom().canGuardUnlockCamera) {
+				//message de refus en mode "vous n'avez pas débloqué cette cam"
 			}else {
-				//message de refus
+				//message de refus en mode "caméra non accessible"
 			}
 		}
 	}

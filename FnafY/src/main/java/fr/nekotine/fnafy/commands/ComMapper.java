@@ -386,6 +386,36 @@ public class ComMapper{
 		//--------------------------------------------------------------------------------------
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setCanGuardUnlockCamera");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setTrueOrFalseArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().setCanGuardUnlockCamera((String)args[0], (String)args[1], (boolean)args[2])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Cette caméra est désormais accesible par les gardes?: "+(boolean)args[2]);
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la salle ou le vrai/faux n'éxistent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setCanGuardEnterRoom");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setTrueOrFalseArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().setCanGuardEnterRoom((String)args[0], (String)args[1], (boolean)args[2])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Cette salle est désormais accesible par les gardes?: "+(boolean)args[2]);
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la salle ou le vrai/faux n'éxistent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
 		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
 		setFlatArgument(argument);

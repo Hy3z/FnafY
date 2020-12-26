@@ -43,10 +43,12 @@ public class Room implements Listener{
 	private List<Player> lookingAtAfton = new ArrayList<>();
 	private List<Player> lookingAtGuard = new ArrayList<>();
 	
+	public final boolean canGuardUnlockCamera;
+	public final boolean canGuardEnterRoom;
 	private boolean unlockedByGuard;
-	private int aftonCameraPackage;
+	private final int aftonCameraPackage;
 	
-	public Room(FnafYMain main, String roomName, RoomType roomType, Location camLocation, boolean unlockedByGuard, int aftonCameraPackage, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
+	public Room(FnafYMain main, String roomName, RoomType roomType, Location camLocation, boolean canGuardUnlockCamera, boolean canGuardEnterRoom, boolean unlockedByGuard, int aftonCameraPackage, HashMap<Animatronic,List<ASAnimation>> InRoomAnimations,
 			BlockSelection AftonSurface, BlockSelection AftonOutline, BlockSelection GuardSurface, BlockSelection GuardOutline,
 			HashMap<Animatronic,List<ASAnimation>> MinimapPoses) {
 		this.main=main;
@@ -61,6 +63,8 @@ public class Room implements Listener{
 		this.GuardSurface=GuardSurface;
 		this.MinimapPoses.putAll(MinimapPoses);
 		
+		this.canGuardEnterRoom=canGuardEnterRoom;
+		this.canGuardUnlockCamera=canGuardUnlockCamera;
 		this.unlockedByGuard=unlockedByGuard;
 		this.aftonCameraPackage=aftonCameraPackage;
 		

@@ -17,6 +17,7 @@ import fr.nekotine.fnafy.events.AnimatronicEnterRoomEvent;
 import fr.nekotine.fnafy.events.AnimatronicMoveAtDoorEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.GameTickEvent;
+import fr.nekotine.fnafy.events.PlayerMoveToRoomEvent;
 
 public class InGameAnimatronic implements Listener{
 	public final FnafYMain main;
@@ -55,6 +56,20 @@ public class InGameAnimatronic implements Listener{
 				Bukkit.getPluginManager().callEvent(new AnimatronicEnterRoomEvent(main.doorRoomContainer.getRoom(currentRoom), anim));
 				List<ASAnimation> animations = main.doorRoomContainer.getRoom(currentRoom).getAnimations(anim);
 				playAnimation(animations.get((int)Math.random()*animations.size()));
+			}
+		}
+	}
+	@EventHandler
+	public void playerEnterRoom(PlayerMoveToRoomEvent e) {
+		if(e.getGoingTo().getRoomName()==currentRoom) {
+			if(isAtDoor) {
+				if(e.getRoomFrom().getRoomName()==movingTo) {
+					//scream
+				}else {
+					//bruits de pas puis scream au bout de x secondes
+				}
+			}else {
+				//scream
 			}
 		}
 	}

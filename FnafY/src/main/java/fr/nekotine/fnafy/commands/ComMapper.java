@@ -73,6 +73,11 @@ public class ComMapper{
 			return main.getYamlReader().getRoomAnimation((String)args[3], (String)args[4], Animatronic.valueOf((String)args[5])).toArray(new String[0]);
 		}));
 	}
+	private void setScreamAnimationFinderFromAnimatrnicArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("screamFromAnim", new StringArgument().overrideSuggestions((sender, args) -> {
+			return main.getYamlReader().getAnimatronicScreamAnimation((String)args[2], Animatronic.valueOf((String)args[3])).toArray(new String[0]);
+		}));
+	}
 	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("animatronic", new StringArgument().overrideSuggestions(animString));
 	}
@@ -120,7 +125,7 @@ public class ComMapper{
 		sender.sendMessage(ChatColor.WHITE+"doorType: "+ChatColor.GOLD+main.getYamlReader().getDoorType(mapName, doorName).toString());
 		Location doorLoc = main.getYamlReader().getDoorLocation(mapName, doorName);
 		if(doorLoc!=null) {
-			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+main.getYamlReader().getDoorLocation(mapName, doorName).toVector());
+			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+doorLoc.toVector());
 		}else {
 			sender.sendMessage(ChatColor.WHITE+"doorLoc: "+ChatColor.GOLD+"null");
 		}
@@ -613,6 +618,34 @@ public class ComMapper{
 				return;
 			}
 			sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"addScream");
+		setMapFinderArgument(argument);
+		setAnimatronicArgument(argument);
+		setAnimationArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().addScreamAnimation((String)args[0], Animatronic.valueOf((String)args[1]), (String)args[2])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Scream ajouté!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, l'animatronic ou l'animation n'existent pas!");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"removeScream");
+		setMapFinderArgument(argument);
+		setAnimatronicArgument(argument);
+		setScreamAnimationFinderFromAnimatrnicArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().removeScreamAnimation((String)args[0], Animatronic.valueOf((String)args[1]), (String)args[2])) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Scream retiré!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, l'animatronic ou l'animation n'existent pas!");
+			}
 		}).register();
 		argument.clear();
 		

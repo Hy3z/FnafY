@@ -113,7 +113,6 @@ public class FnafYMain extends JavaPlugin {
 			if (evt.isCancelled()) {
 				return false;
 			}
-			//new
 			headListener = new PlayerMoveHeadListener();
 			Bukkit.getPluginManager().registerEvents(headListener, this);
 			aftonMinimapManager = new AftonMinimapManager(this);

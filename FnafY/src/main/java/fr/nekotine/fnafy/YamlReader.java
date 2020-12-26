@@ -485,7 +485,7 @@ public class YamlReader {
 					}
 				}
 				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null){
-					doors.put(doorName, new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
+					doors.put(doorName, new Door(main, doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
 				}else {
 					return null;
 				}

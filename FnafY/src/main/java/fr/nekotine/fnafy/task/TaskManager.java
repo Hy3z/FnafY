@@ -7,10 +7,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.FnafYMain;
-import fr.nekotine.fnafy.GuardWrapper;
-import fr.nekotine.fnafy.TeamGuard;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
+import team.GuardWrapper;
+import team.TeamGuard;
 
 public class TaskManager implements Listener {
 	

@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.Action;
 
-import fr.nekotine.fnafy.enums.Team;
-import fr.nekotine.fnafy.room.Room;
+import doorRoom.Room;
+import team.Team;
 
 public class ActionOnRoomEvent extends Event{
 	private static final HandlerList HANDLERS_LIST = new HandlerList();

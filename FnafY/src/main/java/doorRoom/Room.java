@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy.room;
+package doorRoom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,19 +11,21 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import animatronic.Animatronic;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.enums.Team;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
+import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
 import fr.nekotine.fnafy.utils.BlockSelection;
+import team.Team;
 
 public class Room implements Listener{
 	private final FnafYMain main;
@@ -61,6 +63,12 @@ public class Room implements Listener{
 		
 		this.unlockedByGuard=unlockedByGuard;
 		this.aftonCameraPackage=aftonCameraPackage;
+		
+		Bukkit.getPluginManager().registerEvents(this, main);
+	}
+	@EventHandler
+	public void onGameStop(GameStopEvent e) {
+		HandlerList.unregisterAll(this);
 	}
 	public String getRoomName() {
 		return roomName;

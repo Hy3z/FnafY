@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy.doors;
+package doorRoom;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,9 +6,8 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import animatronic.Animatronic;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.room.Room;
 
 public class Door {
 	private final String doorName;

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,14 +16,13 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
+import animatronic.Animatronic;
+import doorRoom.Door;
+import doorRoom.DoorType;
+import doorRoom.Room;
+import doorRoom.RoomType;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.doors.Door;
-import fr.nekotine.fnafy.doors.DoorType;
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.room.Room;
-import fr.nekotine.fnafy.room.RoomManager;
-import fr.nekotine.fnafy.room.RoomType;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
 public class YamlReader {
@@ -440,15 +438,15 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public HashMap<String, Door> getDoorObjectHash(RoomManager rm){
+	public HashMap<String, Door> getDoorObjectHash(HashMap<String, Room> rm){
 		HashMap<String, Door> doors = new HashMap<>();
 		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
 			for(String doorName : getDoorList(main.getMapName())) {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
 				Vector length = getDoorLength(main.getMapName(), doorName);
-				Room room1 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 1));
-				Room room2 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 2));
+				Room room1 =rm.get(getLinkedRoomName(main.getMapName(), doorName, 1));
+				Room room2 =rm.get(getLinkedRoomName(main.getMapName(), doorName, 2));
 				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> animToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> minimapToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
@@ -782,9 +780,7 @@ public class YamlReader {
 					inMinimapAnimation.put(animatronic, tempList);
 				}
 				if(type!=RoomType.UNKNOWN && camLoc!=null && aftonCameraPackage>0 && aO!=null && aS!=null && gO!=null && gS!=null){
-					Room r = new Room(main, roomName, type, camLoc, isDefaultGuardCamera, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation);
-					Bukkit.getPluginManager().registerEvents(r, main);
-					rooms.put(roomName, r);
+					rooms.put(roomName, new Room(main, roomName, type, camLoc, isDefaultGuardCamera, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
 				}else {
 					return null;
 				}

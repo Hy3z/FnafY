@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy;
+package team;
 
 import java.util.ArrayList;
 import java.util.List;

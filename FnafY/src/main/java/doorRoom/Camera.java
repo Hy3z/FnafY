@@ -1,5 +1,6 @@
-package fr.nekotine.fnafy;
+package doorRoom;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,8 +8,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import fr.nekotine.fnafy.enums.Team;
+import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
+import team.Team;
 
 public class Camera implements Listener{
 	private final Player player;
@@ -19,6 +21,7 @@ public class Camera implements Listener{
 		this.main = main;
 		this.team=team;
 		player.teleport(camLoc);
+		Bukkit.getPluginManager().registerEvents(this, main);
 	}
 	@EventHandler
 	public void playerMoveHead(PlayerMoveHeadEvent e) {

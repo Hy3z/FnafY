@@ -1,25 +1,22 @@
-package fr.nekotine.fnafy.room;
+package doorRoom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.nekotine.fnafy.FnafYMain;
+import animatronic.Animatronic;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.doors.Door;
-import fr.nekotine.fnafy.enums.Animatronic;
 
-public class RoomManager{
-	private final FnafYMain main;
+public class DoorRoomContainer {
 	private final HashMap<String, Room> rooms = new HashMap<>();
-	public RoomManager(FnafYMain main) {
-		this.main=main;
-	}
-	public void setRoomHash(HashMap<String, Room> rooms){
-		this.rooms.clear();
+	private final HashMap<String, Door> doors = new HashMap<>();
+	public DoorRoomContainer(HashMap<String, Room> rooms, HashMap<String, Door> doors) {
 		this.rooms.putAll(rooms);
+		this.doors.putAll(doors);
 	}
-
+	public Door getDoor(String doorName) {
+		return doors.get(doorName);
+	}
 	public Room getRoom(String roomName) {
 		return rooms.get(roomName);
 	}
@@ -28,7 +25,7 @@ public class RoomManager{
 	}
 	public List<Room> canMoveFromList(Room r){
 		List<Room> canMoveFromTo = new ArrayList<>();
-		for(Door d : main.getDoorManager().getAllDoors()) {
+		for(Door d : doors.values()) {
 			Room newRoom = d.canMoveTo(r);
 			if(newRoom!=null) {
 				canMoveFromTo.add(newRoom);
@@ -47,7 +44,7 @@ public class RoomManager{
 		return cannotMoveFromTo;
 	}
 	public boolean canMoveFromToBool(Room prev, Room next) {
-		for(Door d : main.getDoorManager().getAllDoors()) {
+		for(Door d : doors.values()) {
 			if(d.canMoveFromToBoolean(prev, next)) {
 				return true;
 			}
@@ -56,7 +53,7 @@ public class RoomManager{
 	}
 	public List<Door> canMoveFromToDoorList(Room prev, Room next) {
 		List<Door> doorList = new ArrayList<>();
-		for(Door d : main.getDoorManager().getAllDoors()) {
+		for(Door d : doors.values()) {
 			if(d.canMoveFromToBoolean(prev, next)) {
 				doorList.add(d);
 			}

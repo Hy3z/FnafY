@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy.enums;
+package animatronic;
 
 import org.bukkit.Material;
 

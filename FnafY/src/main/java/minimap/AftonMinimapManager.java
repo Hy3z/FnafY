@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy;
+package minimap;
 
 import java.util.List;
 
@@ -9,19 +9,23 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-import fr.nekotine.fnafy.doors.Door;
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.enums.Team;
+import animatronic.Animatronic;
+import animatronic.MinimapAnimatronic;
+import doorRoom.Camera;
+import doorRoom.Door;
+import doorRoom.Room;
+import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
 import fr.nekotine.fnafy.events.AnimatronicMoveAtDoorEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
-import fr.nekotine.fnafy.room.Room;
 import ru.xezard.glow.data.glow.Glow;
+import team.Team;
 
 public class AftonMinimapManager implements Listener{
 	private final FnafYMain main;
@@ -38,6 +42,7 @@ public class AftonMinimapManager implements Listener{
 	Glow glow = Glow.builder().animatedColor(ChatColor.WHITE).name("minimapGlow").build();
 	public AftonMinimapManager(FnafYMain main) {
 		this.main=main;
+		Bukkit.getPluginManager().registerEvents(this, main);
 	}
 	public void setCameraBaseLocation(Location loc) {
 		cameraBaseLocation=loc;
@@ -52,10 +57,10 @@ public class AftonMinimapManager implements Listener{
 		return main.teamafton.getUnlockedPackages().contains(r.getAftonCameraPackage());
 	}
 	public Room getRoomFromWool(Player p) {
-		return main.getRoomManager().getRoom(main.teamafton.getAnimatronic(Animatronic.getFromWool(getPlayerMaterialInHand(p))).currentRoom);
+		return main.doorRoomContainer.getRoom(main.teamafton.getAnimatronic(Animatronic.getFromWool(getPlayerMaterialInHand(p))).currentRoom);
 	}
 	public boolean canMoveFromTo(Room prev, Room next) {
-		return main.getRoomManager().canMoveFromToBool(prev,next);
+		return main.doorRoomContainer.canMoveFromToBool(prev,next);
 	}
 	
 	public void drawAftonOutline(Room r, Player p, BlockData outline) {
@@ -73,14 +78,14 @@ public class AftonMinimapManager implements Listener{
 				glow.display(e.getPlayer());
 				Room r = getRoomFromWool(e.getPlayer());
 				drawAftonOutline(r, e.getPlayer(), OUTLINE_GOLD);
-				for(Room room : main.getRoomManager().cannotMoveFromList(r)) {
+				for(Room room : main.doorRoomContainer.cannotMoveFromList(r)) {
 					drawAftonOutline(room, e.getPlayer(), OUTLINE_RED);
 				}
 			}
 		}
 	}
 	private void clearAllOutline(Player p) {
-		for(Room r : main.getRoomManager().getRooms().values()) {
+		for(Room r : main.doorRoomContainer.getRooms().values()) {
 			r.hideGuardOutline(p);
 		}
 	}
@@ -120,7 +125,7 @@ public class AftonMinimapManager implements Listener{
 				}
 			}else if(canMoveFromTo(getRoomFromWool(e.getPlayer()),e.getRoom())) {
 				Animatronic anim = Animatronic.getFromWool(inHand);
-				List<Door> canMoveUsing = main.getRoomManager().canMoveFromToDoorList(main.getRoomManager().getRoom(main.teamafton.getAnimatronic(anim).currentRoom), e.getRoom());
+				List<Door> canMoveUsing = main.doorRoomContainer.canMoveFromToDoorList(main.doorRoomContainer.getRoom(main.teamafton.getAnimatronic(anim).currentRoom), e.getRoom());
 				int chosenDoor = (int)Math.random()*canMoveUsing.size();
 				Bukkit.getPluginManager().callEvent(new AnimatronicMoveAtDoorEvent(canMoveUsing.get(chosenDoor), anim, e.getRoom()));
 			}else {
@@ -136,6 +141,7 @@ public class AftonMinimapManager implements Listener{
 		foxy=null;
 		mangle=null;
 		springtrap=null;
+		HandlerList.unregisterAll(this);
 	}
 	public MinimapAnimatronic getAnimatronic(Animatronic anim) {
 		switch(anim) {

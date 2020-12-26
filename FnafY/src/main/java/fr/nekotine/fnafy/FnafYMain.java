@@ -6,29 +6,34 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 
+import doorRoom.Door;
+import doorRoom.DoorRoomContainer;
+import doorRoom.Room;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
-import fr.nekotine.fnafy.doors.Door;
-import fr.nekotine.fnafy.doors.DoorManager;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.GameTickEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
-import fr.nekotine.fnafy.room.Room;
-import fr.nekotine.fnafy.room.RoomManager;
 import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
+import minimap.AftonMinimapManager;
+import minimap.GuardMinimapManager;
+import team.GuardWrapper;
+import team.TeamAfton;
+import team.TeamGuard;
 
 public class FnafYMain extends JavaPlugin {
 	
@@ -38,11 +43,10 @@ public class FnafYMain extends JavaPlugin {
 	private ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 	
 	private String mapName = "";
-	private PlayerMoveHeadListener headListener = new PlayerMoveHeadListener();
-	private RoomManager roomManager = new RoomManager(this);
-	private DoorManager doorManager = new DoorManager(this);
-	private AftonMinimapManager aftonMinimapManager = new AftonMinimapManager(this);
-	private GuardMinimapManager guardMinimapManager = new GuardMinimapManager(this);
+	private PlayerMoveHeadListener headListener;
+	public DoorRoomContainer doorRoomContainer;
+	public AftonMinimapManager aftonMinimapManager;
+	public GuardMinimapManager guardMinimapManager;
 	public TeamGuard teamguard;
 	public TeamAfton teamafton;
 	private boolean gameRunning=false;
@@ -50,7 +54,6 @@ public class FnafYMain extends JavaPlugin {
 	private int scheduler;
 	public void onEnable() {
 		super.onEnable();
-		Bukkit.getPluginManager().registerEvents(headListener, this);
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
@@ -110,6 +113,11 @@ public class FnafYMain extends JavaPlugin {
 			if (evt.isCancelled()) {
 				return false;
 			}
+			//new
+			headListener = new PlayerMoveHeadListener();
+			Bukkit.getPluginManager().registerEvents(headListener, this);
+			aftonMinimapManager = new AftonMinimapManager(this);
+			guardMinimapManager = new GuardMinimapManager(this);
 			gameRunning=true;
 			tick();
 			return true;
@@ -129,6 +137,11 @@ public class FnafYMain extends JavaPlugin {
 	}
 	@EventHandler
 	public void onGameEnd(GameStopEvent e) {
+		gameRunning=false;
+		HandlerList.unregisterAll(headListener);
+		headListener=null;
+		aftonMinimapManager=null;
+		guardMinimapManager=null;
 		getServer().getScheduler().cancelTask(scheduler);
 	}
 	private boolean loadGame() {
@@ -140,19 +153,12 @@ public class FnafYMain extends JavaPlugin {
 	public PlayerMoveHeadListener getHeadListener() {
 		return headListener;
 	}
-	public RoomManager getRoomManager() {
-		return roomManager;
-	}
-	public DoorManager getDoorManager() {
-		return doorManager;
-	}
 	private boolean loadFiles() {
 		HashMap<String, Room> rooms = yamlReader.getRoomObjectsHash();
 		if(rooms!=null) {
-			roomManager.setRoomHash(rooms);
-			HashMap<String, Door> doors = yamlReader.getDoorObjectHash(roomManager);
+			HashMap<String, Door> doors = yamlReader.getDoorObjectHash(rooms);
 			if(doors!=null) {
-				doorManager.setDoorHash(doors);
+				doorRoomContainer = new DoorRoomContainer(rooms, doors);
 				return true;
 			}
 		}

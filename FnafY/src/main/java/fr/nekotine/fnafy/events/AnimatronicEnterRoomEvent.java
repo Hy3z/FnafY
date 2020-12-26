@@ -3,8 +3,8 @@ package fr.nekotine.fnafy.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.room.Room;
+import animatronic.Animatronic;
+import doorRoom.Room;
 
 public class AnimatronicEnterRoomEvent extends Event{
 	private final Room room;

@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy;
+package minimap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,18 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import fr.nekotine.fnafy.enums.Team;
+import doorRoom.Camera;
+import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
+import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
+import team.Team;
 
 public class GuardMinimapManager implements Listener{
 	private final FnafYMain main;
@@ -28,6 +32,11 @@ public class GuardMinimapManager implements Listener{
 	private static final BlockData OUTLINE_RED = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 	public GuardMinimapManager(FnafYMain main) {
 		this.main=main;
+		Bukkit.getPluginManager().registerEvents(this, main);
+	}
+	@EventHandler
+	public void onGameStop(GameStopEvent e) {
+		HandlerList.unregisterAll(this);
 	}
 	public void setCameraBlockLocation(Location loc) {
 		cameraBlockLocation=loc;

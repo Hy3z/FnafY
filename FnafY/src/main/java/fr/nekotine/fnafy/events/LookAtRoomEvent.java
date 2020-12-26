@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import fr.nekotine.fnafy.enums.Team;
-import fr.nekotine.fnafy.room.Room;
+import doorRoom.Room;
+import team.Team;
 
 public class LookAtRoomEvent extends Event{
 	private final Player player;

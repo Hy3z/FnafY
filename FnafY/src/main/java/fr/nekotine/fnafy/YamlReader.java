@@ -110,6 +110,7 @@ public class YamlReader {
 				new File(mapConfigFolder,"doorConfig.yml").createNewFile();
 				new File(mapConfigFolder,"minimapConfig.yml").createNewFile();
 				new File(mapConfigFolder,"animatronicConfig.yml").createNewFile();
+				fillMinimapYaml(mapName);
 				fillAnimatronicYaml(mapName);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -789,6 +790,17 @@ public class YamlReader {
 		}
 		return rooms;
 	}
+	//--------------------------------------------------------------------------------------
+	private void fillMinimapYaml(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("guardRoomLocation", "");
+			minimapConfig.set("guardCameraBlockLocation", "");
+			minimapConfig.set("guardCameraBaseLocation", "");
+			minimapConfig.set("aftonCameraBaseLocation", "");
+			saveMinimapConfig(mapName, minimapConfig);
+		}
+	}
 	public boolean setGuardRoomLocation(String mapName, Location loc) {
 		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
 		if (minimapConfig != null) {
@@ -805,7 +817,6 @@ public class YamlReader {
 		}
 		return null;
 	}
-	//--------------------------------------------------------------------------------------
 	public boolean setGuardCameraBlockLocation(String mapName, Location loc) {
 		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
 		if (minimapConfig != null) {
@@ -859,9 +870,10 @@ public class YamlReader {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
 			for(Animatronic anim : Animatronic.values()) {
-				animatronicConfig.set("baseRoom."+anim.toString(), "");
-				animatronicConfig.set("screamAnimation."+anim.toString(), "");
+				animatronicConfig.set("baseRoom."+anim.toString(), new String[0]);
+				animatronicConfig.set("screamAnimation."+anim.toString(), new String[0]);
 			}
+			saveAnimatronicConfig(mapName, animatronicConfig);
 		}
 	}
 	public boolean setAnimatronicBaseRoomName(String mapName, String roomName, Animatronic anim) {

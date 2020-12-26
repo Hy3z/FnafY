@@ -75,7 +75,7 @@ public class ComMapper{
 	}
 	private void setScreamAnimationFinderFromAnimatrnicArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("screamFromAnim", new StringArgument().overrideSuggestions((sender, args) -> {
-			return main.getYamlReader().getAnimatronicScreamAnimation((String)args[2], Animatronic.valueOf((String)args[3])).toArray(new String[0]);
+			return main.getYamlReader().getAnimatronicScreamAnimation((String)args[3], Animatronic.valueOf((String)args[4])).toArray(new String[0]);
 		}));
 	}
 	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
@@ -590,6 +590,7 @@ public class ComMapper{
 		argument.clear();
 		//--------------------------------------------------------------------------------------
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"minimap");
 		setAutoCompleteArgument(argument,"setGuardCameraBaseLocation");
 		setMapFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
@@ -606,6 +607,7 @@ public class ComMapper{
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"minimap");
 		setAutoCompleteArgument(argument,"setAftonCameraBaseLocation");
 		setMapFinderArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
@@ -622,7 +624,8 @@ public class ComMapper{
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
-		setAutoCompleteArgument(argument,"addScream");
+		setAutoCompleteArgument(argument,"scream");
+		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
 		setAnimatronicArgument(argument);
 		setAnimationArgument(argument);
@@ -636,7 +639,8 @@ public class ComMapper{
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
-		setAutoCompleteArgument(argument,"removeScream");
+		setAutoCompleteArgument(argument,"scream");
+		setAutoCompleteArgument(argument,"remove");
 		setMapFinderArgument(argument);
 		setAnimatronicArgument(argument);
 		setScreamAnimationFinderFromAnimatrnicArgument(argument);

@@ -20,6 +20,9 @@ public class ActionOnRoomEvent extends Event{
 		this.action=action;
 		this.team=team;
 	}
+	public static HandlerList getHandlerList() {
+		return HANDLERS_LIST;
+	}
 	public Room getRoom() {
 		return room;
 	}

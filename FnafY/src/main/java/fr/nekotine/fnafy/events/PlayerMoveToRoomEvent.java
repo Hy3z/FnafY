@@ -29,5 +29,7 @@ public class PlayerMoveToRoomEvent extends Event{
 	public Room getGoingTo() {
 		return goingTo;
 	}
-
+	public static HandlerList getHandlerList() {
+		return HANDLERS_LIST;
+	}
 }

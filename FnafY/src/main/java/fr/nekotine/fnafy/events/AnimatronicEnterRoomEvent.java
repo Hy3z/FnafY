@@ -14,6 +14,9 @@ public class AnimatronicEnterRoomEvent extends Event{
 		this.anim = anim;
 		
 	}
+	public static HandlerList getHandlerList() {
+		return HANDLERS_LIST;
+	}
 	private static final HandlerList HANDLERS_LIST = new HandlerList();
 	@Override
 	public HandlerList getHandlers() {

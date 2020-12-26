@@ -1,4 +1,4 @@
-package doorRoom;
+package fr.nekotine.fnafy.doorRoom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
-import team.Team;
+import fr.nekotine.fnafy.team.Team;
 
 public class Camera implements Listener{
 	private final Player player;

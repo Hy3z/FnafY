@@ -1,4 +1,4 @@
-package doorRoom;
+package fr.nekotine.fnafy.doorRoom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,16 +16,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import animatronic.Animatronic;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.animatronic.Animatronic;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
+import fr.nekotine.fnafy.team.Team;
 import fr.nekotine.fnafy.utils.BlockSelection;
-import team.Team;
 
 public class Room implements Listener{
 	private final FnafYMain main;

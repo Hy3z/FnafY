@@ -1,4 +1,4 @@
-package minimap;
+package fr.nekotine.fnafy.minimap;
 
 import java.util.List;
 
@@ -13,19 +13,19 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-import animatronic.Animatronic;
-import animatronic.MinimapAnimatronic;
-import doorRoom.Camera;
-import doorRoom.Door;
-import doorRoom.Room;
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.animatronic.MinimapAnimatronic;
+import fr.nekotine.fnafy.doorRoom.Camera;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.Room;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
 import fr.nekotine.fnafy.events.AnimatronicMoveAtDoorEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
+import fr.nekotine.fnafy.team.Team;
 import ru.xezard.glow.data.glow.Glow;
-import team.Team;
 
 public class AftonMinimapManager implements Listener{
 	private final FnafYMain main;

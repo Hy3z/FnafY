@@ -13,27 +13,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 
-import doorRoom.Door;
-import doorRoom.DoorRoomContainer;
-import doorRoom.Room;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.commands.ComAnim;
 import fr.nekotine.fnafy.commands.ComGame;
 import fr.nekotine.fnafy.commands.ComMapper;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.DoorRoomContainer;
+import fr.nekotine.fnafy.doorRoom.Room;
 import fr.nekotine.fnafy.events.GameStartEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.GameTickEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
+import fr.nekotine.fnafy.minimap.AftonMinimapManager;
+import fr.nekotine.fnafy.minimap.GuardMinimapManager;
+import fr.nekotine.fnafy.team.GuardWrapper;
+import fr.nekotine.fnafy.team.TeamAfton;
+import fr.nekotine.fnafy.team.TeamGuard;
 import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
-import minimap.AftonMinimapManager;
-import minimap.GuardMinimapManager;
-import team.GuardWrapper;
-import team.TeamAfton;
-import team.TeamGuard;
 
 public class FnafYMain extends JavaPlugin {
 	

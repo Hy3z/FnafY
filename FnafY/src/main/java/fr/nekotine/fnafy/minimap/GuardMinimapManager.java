@@ -1,4 +1,4 @@
-package minimap;
+package fr.nekotine.fnafy.minimap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +14,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import doorRoom.Camera;
 import fr.nekotine.fnafy.FnafYMain;
+import fr.nekotine.fnafy.doorRoom.Camera;
 import fr.nekotine.fnafy.events.ActionOnRoomEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
 import fr.nekotine.fnafy.events.LookAtRoomEvent;
 import fr.nekotine.fnafy.events.UnlookAtRoomEvent;
-import team.Team;
+import fr.nekotine.fnafy.team.Team;
 
 public class GuardMinimapManager implements Listener{
 	private final FnafYMain main;

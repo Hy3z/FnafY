@@ -3,9 +3,9 @@ package fr.nekotine.fnafy.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import animatronic.Animatronic;
-import doorRoom.Door;
-import doorRoom.Room;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.Room;
 
 public class AnimatronicMoveAtDoorEvent extends Event{
 	private final Door door;

@@ -1,11 +1,11 @@
-package team;
+package fr.nekotine.fnafy.team;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import animatronic.Animatronic;
-import animatronic.InGameAnimatronic;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.animatronic.InGameAnimatronic;
 
 public class TeamAfton {
 

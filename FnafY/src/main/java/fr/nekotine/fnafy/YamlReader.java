@@ -16,13 +16,13 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
-import animatronic.Animatronic;
-import doorRoom.Door;
-import doorRoom.DoorType;
-import doorRoom.Room;
-import doorRoom.RoomType;
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.DoorType;
+import fr.nekotine.fnafy.doorRoom.Room;
+import fr.nekotine.fnafy.doorRoom.RoomType;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
 public class YamlReader {

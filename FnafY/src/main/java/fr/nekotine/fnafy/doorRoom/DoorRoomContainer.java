@@ -1,11 +1,11 @@
-package doorRoom;
+package fr.nekotine.fnafy.doorRoom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import animatronic.Animatronic;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.animatronic.Animatronic;
 
 public class DoorRoomContainer {
 	private final HashMap<String, Room> rooms = new HashMap<>();

@@ -17,17 +17,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-import animatronic.Animatronic;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import doorRoom.DoorType;
-import doorRoom.RoomType;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.doorRoom.DoorType;
+import fr.nekotine.fnafy.doorRoom.RoomType;
 import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 

@@ -1,4 +1,4 @@
-package animatronic;
+package fr.nekotine.fnafy.animatronic;
 
 import org.bukkit.Material;
 

@@ -36,7 +36,7 @@ import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class FnafYMain extends JavaPlugin {
-	
+	//
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);

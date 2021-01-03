@@ -1,18 +1,22 @@
-package fr.nekotine.fnafy;
+package fr.nekotine.fnafy.team;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.room.Room;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.animatronic.InGameAnimatronic;
 
 public class TeamAfton {
 
 	public static final ArrayList<AftonWrapper> playerList = new ArrayList<AftonWrapper>();
 	private List<Integer> unlockedPackages = new ArrayList<>();
-	private HashMap<Animatronic, String> animatronicLocation = new HashMap<>();
+	private InGameAnimatronic bonnie;
+	private InGameAnimatronic freddy;
+	private InGameAnimatronic chica;
+	private InGameAnimatronic foxy;
+	private InGameAnimatronic mangle;
+	private InGameAnimatronic springtrap;
 	public boolean unlockPackage(int p) {
 		if(unlockedPackages.contains(p)) return false;
 		unlockedPackages.add(p);
@@ -40,10 +44,15 @@ public class TeamAfton {
 	public List<Integer> getUnlockedPackages(){
 		return unlockedPackages;
 	}
-	public String getAnimatronicRoomLocationName(Animatronic anim) {
-		return animatronicLocation.get(anim);
-	}
-	public void setAnimatronicRoomLocation(Animatronic anim, Room r) {
-		animatronicLocation.put(anim, r.getRoomName());
+	public InGameAnimatronic getAnimatronic(Animatronic anim) {
+		switch(anim) {
+		case BONNIE: return bonnie;
+		case FREDDY:return freddy;
+		case CHICA: return chica;
+		case FOXY: return foxy;
+		case MANGLE: return mangle;
+		case SPRINGTRAP: return springtrap;
+		default: return null;
+		}
 	}
 }

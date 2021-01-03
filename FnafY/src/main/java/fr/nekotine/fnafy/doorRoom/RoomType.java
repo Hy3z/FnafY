@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy.room;
+package fr.nekotine.fnafy.doorRoom;
 
 public enum RoomType {
 	UNKNOWN,

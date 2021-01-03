@@ -13,7 +13,9 @@ public class GameStartEvent extends Event implements Cancellable {
 	public boolean isCancelled() {
 		return cancel;
 	}
-
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 	@Override
 	public void setCancelled(boolean cancel) {
 		this.cancel=cancel;

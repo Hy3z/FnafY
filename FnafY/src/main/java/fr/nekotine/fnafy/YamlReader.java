@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
@@ -19,12 +19,11 @@ import org.bukkit.util.Vector;
 
 import fr.nekotine.fnafy.animation.ASAnimOrder;
 import fr.nekotine.fnafy.animation.ASAnimation;
-import fr.nekotine.fnafy.doors.Door;
-import fr.nekotine.fnafy.doors.DoorType;
-import fr.nekotine.fnafy.enums.Animatronic;
-import fr.nekotine.fnafy.room.Room;
-import fr.nekotine.fnafy.room.RoomManager;
-import fr.nekotine.fnafy.room.RoomType;
+import fr.nekotine.fnafy.animatronic.Animatronic;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.DoorType;
+import fr.nekotine.fnafy.doorRoom.Room;
+import fr.nekotine.fnafy.doorRoom.RoomType;
 import fr.nekotine.fnafy.utils.BlockSelection;
 
 public class YamlReader {
@@ -89,7 +88,7 @@ public class YamlReader {
 	private boolean saveMinimapConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, minimapConfigName, config);
 	}
-	private boolean saveAnimatrnicConfig(String mapName, YamlConfiguration config) {
+	private boolean saveAnimatronicConfig(String mapName, YamlConfiguration config) {
 		return saveConfig(mapName, animatronicConfigName, config);
 	}
 	public boolean configFilesExists(String mapName) {
@@ -112,6 +111,8 @@ public class YamlReader {
 				new File(mapConfigFolder,"doorConfig.yml").createNewFile();
 				new File(mapConfigFolder,"minimapConfig.yml").createNewFile();
 				new File(mapConfigFolder,"animatronicConfig.yml").createNewFile();
+				fillMinimapYaml(mapName);
+				fillAnimatronicYaml(mapName);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -440,15 +441,15 @@ public class YamlReader {
 		}
 		return null;
 	}
-	public HashMap<String, Door> getDoorObjectHash(RoomManager rm){
+	public HashMap<String, Door> getDoorObjectHash(HashMap<String, Room> rm){
 		HashMap<String, Door> doors = new HashMap<>();
 		if(mapExist(main.getMapName())&&configFilesExists(main.getMapName())) {
 			for(String doorName : getDoorList(main.getMapName())) {
 				DoorType type = getDoorType(main.getMapName(), doorName);
 				Location doorLoc = getDoorLocation(main.getMapName(), doorName);
 				Vector length = getDoorLength(main.getMapName(), doorName);
-				Room room1 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 1));
-				Room room2 =rm.getRoom(getLinkedRoomName(main.getMapName(), doorName, 2));
+				Room room1 =rm.get(getLinkedRoomName(main.getMapName(), doorName, 1));
+				Room room2 =rm.get(getLinkedRoomName(main.getMapName(), doorName, 2));
 				HashMap<Animatronic,List<ASAnimation>> animToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> animToRoom2 =new HashMap<Animatronic,List<ASAnimation>>();
 				HashMap<Animatronic,List<ASAnimation>> minimapToRoom1 =new HashMap<Animatronic,List<ASAnimation>>();
@@ -487,7 +488,14 @@ public class YamlReader {
 					}
 				}
 				if(type!=DoorType.UNKNOWN && doorLoc!=null && length!=null && room1!=null && room2!=null){
-					doors.put(doorName, new Door(doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
+					System.out.println("Loaded door: "+doorName);
+					System.out.println("DoorType: "+type);
+					System.out.println("DoorLoc: "+doorLoc);
+					System.out.println("DoorLength: "+length);
+					System.out.println("Room1: "+room1.getRoomName());
+					System.out.println("Room2: "+room2.getRoomName());
+					System.out.println("");
+					doors.put(doorName, new Door(main, doorName, type, doorLoc, length, room1, room2, animToRoom1, animToRoom2, minimapToRoom1, minimapToRoom2));
 				}else {
 					return null;
 				}
@@ -570,8 +578,12 @@ public class YamlReader {
 				roomConfig.set(roomName+".roomType", RoomType.UNKNOWN.toString());
 				roomConfig.set(roomName+".camLoc", "");
 				
+				roomConfig.set(roomName+".canGuardUnlockCamera", true);
+				roomConfig.set(roomName+".canGuardEnterRoom", true);
 				roomConfig.set(roomName+".defaultGuardCamera", false);
 				roomConfig.set(roomName+".aftonCameraPackage", 0);
+				
+				roomConfig.set(roomName+".roomMaterial", "PAPER");
 				
 				for (Animatronic anim : Animatronic.values()){
 					roomConfig.set(roomName+".animPose."+anim.toString(), new String[0]);
@@ -586,6 +598,54 @@ public class YamlReader {
 				saveRoomConfig(mapName,roomConfig);
 				return true;
 			}
+		}
+		return false;
+	}
+	public boolean setRoomMaterial(String mapName, String roomName, Material m) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".roomMaterial", m.toString());
+			saveRoomConfig(mapName, roomConfig);
+			return true;
+		}
+		return false;
+	}
+	public Material getRoomMaterial(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return Material.valueOf(roomConfig.getString(roomName+".roomMaterial"));
+		}
+		return null;
+	}
+	public boolean canGuardUnlockCamera(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return roomConfig.getBoolean(roomName+".canGuardUnlockCamera");
+		}
+		return true;
+	}
+	public boolean setCanGuardUnlockCamera(String mapName, String roomName, boolean b) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".canGuardUnlockCamera", b);
+			saveRoomConfig(mapName, roomConfig);
+			return true;
+		}
+		return false;
+	}
+	public boolean canGuardEnterRoom(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return roomConfig.getBoolean(roomName+".canGuardEnterRoom");
+		}
+		return true;
+	}
+	public boolean setCanGuardEnterRoom(String mapName, String roomName, boolean b) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".canGuardEnterRoom", b);
+			saveRoomConfig(mapName, roomConfig);
+			return true;
 		}
 		return false;
 	}
@@ -752,6 +812,9 @@ public class YamlReader {
 			for(String roomName : getRoomList(main.getMapName())) {
 				RoomType type = getRoomType(main.getMapName(), roomName);
 				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				Material roomMaterial = getRoomMaterial(main.getMapName(), roomName);
+				boolean canGuardUnlockCamera = canGuardUnlockCamera(main.getMapName(), roomName);
+				boolean canGuardEnterRoom = canGuardEnterRoom(main.getMapName(), roomName);
 				boolean isDefaultGuardCamera = getIfDefaultGuardCamera(main.getMapName(), roomName);
 				int aftonCameraPackage = getAftonCameraPackage(main.getMapName(), roomName);
 				BlockSelection aO = getAftonOutline(main.getMapName(), roomName);
@@ -781,16 +844,34 @@ public class YamlReader {
 					}
 					inMinimapAnimation.put(animatronic, tempList);
 				}
-				if(type!=RoomType.UNKNOWN && camLoc!=null && aftonCameraPackage>0 && aO!=null && aS!=null && gO!=null && gS!=null){
-					Room r = new Room(main, roomName, type, camLoc, isDefaultGuardCamera, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation);
-					Bukkit.getPluginManager().registerEvents(r, main);
-					rooms.put(roomName, r);
+				if(type!=RoomType.UNKNOWN && camLoc!=null && aO!=null && aS!=null && gO!=null && gS!=null){
+					System.out.println("Loaded room: "+roomName);
+					System.out.println("RoomType: "+type);
+					System.out.println("camLoc: "+camLoc);
+					System.out.println("roomMaterial: "+roomMaterial);
+					System.out.println("canGuardUnlockCamera: "+canGuardUnlockCamera);
+					System.out.println("canGuardEnterRoom: "+canGuardEnterRoom);
+					System.out.println("isDefaultGuardCamera: "+isDefaultGuardCamera);
+					System.out.println("aftonCameraPackage: "+aftonCameraPackage);
+					System.out.println("");
+					rooms.put(roomName, new Room(main, roomName, type, camLoc, roomMaterial, isDefaultGuardCamera, canGuardUnlockCamera, canGuardEnterRoom, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
 				}else {
 					return null;
 				}
 			}
 		}
 		return rooms;
+	}
+	//--------------------------------------------------------------------------------------
+	private void fillMinimapYaml(String mapName) {
+		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
+		if (minimapConfig != null) {
+			minimapConfig.set("guardRoomLocation", "");
+			minimapConfig.set("guardCameraBlockLocation", "");
+			minimapConfig.set("guardCameraBaseLocation", "");
+			minimapConfig.set("aftonCameraBaseLocation", "");
+			saveMinimapConfig(mapName, minimapConfig);
+		}
 	}
 	public boolean setGuardRoomLocation(String mapName, Location loc) {
 		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
@@ -808,7 +889,6 @@ public class YamlReader {
 		}
 		return null;
 	}
-	//--------------------------------------------------------------------------------------
 	public boolean setGuardCameraBlockLocation(String mapName, Location loc) {
 		YamlConfiguration minimapConfig = getMinimapConfig(mapName);
 		if (minimapConfig != null) {
@@ -858,11 +938,21 @@ public class YamlReader {
 		return null;
 	}
 	//--------------------------------------------------------------------------------------
+	private void fillAnimatronicYaml(String mapName) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			for(Animatronic anim : Animatronic.values()) {
+				animatronicConfig.set("baseRoom."+anim.toString(), new String[0]);
+				animatronicConfig.set("screamAnimation."+anim.toString(), new String[0]);
+			}
+			saveAnimatronicConfig(mapName, animatronicConfig);
+		}
+	}
 	public boolean setAnimatronicBaseRoomName(String mapName, String roomName, Animatronic anim) {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
 			animatronicConfig.set("baseRoom."+anim.toString(), roomName);
-			saveAnimatrnicConfig(mapName, animatronicConfig);
+			saveAnimatronicConfig(mapName, animatronicConfig);
 			return true;
 		}
 		return false;
@@ -871,6 +961,39 @@ public class YamlReader {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
 			return animatronicConfig.getString("baseRoom."+anim.toString());
+		}
+		return null;
+	}
+	public boolean addScreamAnimation(String mapName, Animatronic anim, String animation) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			List<String> str = animatronicConfig.getStringList("screamAnimation."+anim);
+			if(!str.contains(animation)) {
+				str.add(animation);
+				animatronicConfig.set("screamAnimation."+anim.toString(), str);
+				saveAnimatronicConfig(mapName, animatronicConfig);
+			}
+			return true;
+		}
+		return false;
+	}
+	public boolean removeScreamAnimation(String mapName, Animatronic anim, String animation) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			List<String> str = animatronicConfig.getStringList("screamAnimation."+anim);
+			if(str.contains(animation)) {
+				str.remove(animation);
+				animatronicConfig.set("screamAnimation."+anim.toString(), str);
+				saveAnimatronicConfig(mapName, animatronicConfig);
+			}
+			return true;
+		}
+		return false;
+	}
+	public List<String> getAnimatronicScreamAnimation(String mapName, Animatronic anim){
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			return animatronicConfig.getStringList("screamAnimation."+anim.toString());
 		}
 		return null;
 	}

@@ -7,11 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerMoveHeadListener implements Listener{
 	private HashMap<Player, Location> eyeLocationPerPlayer = new HashMap<>();
+	private static final HandlerList HANDLERS_LIST = new HandlerList();
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent e) {
 		if(eyeLocationPerPlayer.containsKey(e.getPlayer())) {
@@ -49,5 +51,8 @@ public class PlayerMoveHeadListener implements Listener{
 			return true;
 		}
 		return false;
+	}
+	public static HandlerList getHandlerList() {
+		return HANDLERS_LIST;
 	}
 }

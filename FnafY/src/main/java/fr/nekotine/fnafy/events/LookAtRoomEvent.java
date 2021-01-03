@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import fr.nekotine.fnafy.enums.Team;
-import fr.nekotine.fnafy.room.Room;
+import fr.nekotine.fnafy.doorRoom.Room;
+import fr.nekotine.fnafy.team.Team;
 
 public class LookAtRoomEvent extends Event{
 	private final Player player;
@@ -28,6 +28,9 @@ public class LookAtRoomEvent extends Event{
 	}
 	@Override
 	public HandlerList getHandlers() {
+		return HANDLERS_LIST;
+	}
+	public static HandlerList getHandlerList() {
 		return HANDLERS_LIST;
 	}
 }

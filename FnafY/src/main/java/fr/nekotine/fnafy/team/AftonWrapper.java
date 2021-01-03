@@ -1,4 +1,4 @@
-package fr.nekotine.fnafy;
+package fr.nekotine.fnafy.team;
 
 import java.util.UUID;
 

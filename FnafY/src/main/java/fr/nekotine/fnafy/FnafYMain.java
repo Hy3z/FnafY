@@ -36,7 +36,6 @@ import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
 
 public class FnafYMain extends JavaPlugin {
-	//
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
@@ -69,7 +68,7 @@ public class FnafYMain extends JavaPlugin {
 		animManager.registerAnimCommands();
 		mapManager.registerMapperCommands();
 		ComGame.registerGameCommands(this);
-		//
+		
 		animManager.reloadASAnims();
 		mapManager.searchForMaps();
 	}
@@ -157,7 +156,7 @@ public class FnafYMain extends JavaPlugin {
 		if(rooms!=null) {
 			HashMap<String, Door> doors = yamlReader.getDoorObjectHash(rooms);
 			if(doors!=null) {
-				doorRoomContainer = new DoorRoomContainer(rooms, doors);
+				doorRoomContainer = new DoorRoomContainer(this, rooms, doors);
 				return true;
 			}
 		}

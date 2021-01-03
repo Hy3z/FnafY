@@ -3,6 +3,7 @@ package fr.nekotine.fnafy.team;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,7 @@ public class GuardWrapper implements Listener{
 	//register event on game start
 	public final UUID playerid;
 	public Room currentRoom;
+	public Location beforeCameraLocation;
 	public GuardWrapper(UUID playerid) {
 		this.playerid=playerid;
 	}

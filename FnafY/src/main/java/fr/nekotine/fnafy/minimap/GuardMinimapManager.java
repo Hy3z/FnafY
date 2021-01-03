@@ -25,7 +25,6 @@ import fr.nekotine.fnafy.team.Team;
 
 public class GuardMinimapManager implements Listener{
 	private final FnafYMain main;
-	private Location guardRoomLocation;
 	private Location cameraBlockLocation;
 	private Location cameraBaseLocation;
 	private List<Player> inCameraPlayers = new ArrayList<>();
@@ -69,6 +68,7 @@ public class GuardMinimapManager implements Listener{
 	}
 	public boolean enterCamera(Player player) {
 		if(inCameraPlayers.contains(player)) return false;
+		main.teamguard.getWrapper(player.getUniqueId()).beforeCameraLocation = player.getLocation();
 		inCameraPlayers.add(player);
 		main.getHeadListener().trackPlayer(player);
 		player.teleport(cameraBaseLocation);
@@ -77,12 +77,11 @@ public class GuardMinimapManager implements Listener{
 		return true;
 	}
 	public boolean leaveCamera(Player player) {
-		if(!inCameraPlayers.contains(player)) return false;
 		inCameraPlayers.remove(player);
 		main.getHeadListener().untrackPlayer(player);
 		player.setFlying(false);
 		player.getPlayer().setAllowFlight(false);
-		player.getPlayer().teleport(guardRoomLocation);
+		player.getPlayer().teleport(main.teamguard.getWrapper(player.getUniqueId()).beforeCameraLocation);
 		return true;
 	}
 	@EventHandler
@@ -112,11 +111,5 @@ public class GuardMinimapManager implements Listener{
 				//message de refus en mode "caméra non accessible"
 			}
 		}
-	}
-	public Location getGuardRoomLocation() {
-		return guardRoomLocation;
-	}
-	public void setGuardRoomLocation(Location guardRoomLocation) {
-		this.guardRoomLocation = guardRoomLocation;
 	}
 }

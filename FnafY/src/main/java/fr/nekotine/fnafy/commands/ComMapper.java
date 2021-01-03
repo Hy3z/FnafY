@@ -39,6 +39,7 @@ public class ComMapper{
 	private String[] animString;
 	private String[] doorTypeString;
 	private String[] roomTypeString;
+	private String[] materialString;
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 	}
@@ -91,6 +92,9 @@ public class ComMapper{
 	}
 	private void setRoomTypeArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomType", new StringArgument().overrideSuggestions(roomTypeString));
+	}
+	private void setMaterialArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("material", new StringArgument().overrideSuggestions(materialString));
 	}
 	private void set1Or2Argument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomNumber", new IntegerArgument(1,2));
@@ -180,6 +184,12 @@ public class ComMapper{
 		for(RoomType type : RoomType.values()) {
 			x++;
 			roomTypeString[x] = type.toString();
+		}
+		materialString = new String[Material.values().length];
+		x=-1;
+		for(Material mat : Material.values()) {
+			x++;
+			roomTypeString[x] = mat.toString();
 		}
 		
 		main.getLogger().info("Registering Mapper commands");
@@ -521,6 +531,21 @@ public class ComMapper{
 				sender.sendMessage(ChatColor.DARK_GREEN+"Animation: ["+(String)args[3]+"] enlevée à l'animatronic "+(String)args[2]+" dans la salle ["+(String)args[1]+"]");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map, la salle, l'animatronic ou l'animation n'existent pas (ou l'animation n'est pas présente) !");
+			}
+		}).register();
+		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"room");
+		setAutoCompleteArgument(argument,"setMaterial");
+		setMapFinderArgument(argument);
+		setRoomFinderArgument(argument);
+		setMaterialArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(main.getYamlReader().setRoomMaterial((String)args[0], (String)args[1], Material.valueOf((String)args[2]))) {
+				sender.sendMessage(ChatColor.DARK_GREEN+"Material set!");
+			}else {
+				sender.sendMessage(ChatColor.RED+"Cette map, la salle ou le matérial n'éxistent pas!");
 			}
 		}).register();
 		argument.clear();

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
@@ -582,6 +583,8 @@ public class YamlReader {
 				roomConfig.set(roomName+".defaultGuardCamera", false);
 				roomConfig.set(roomName+".aftonCameraPackage", 0);
 				
+				roomConfig.set(roomName+".roomMaterial", "PAPER");
+				
 				for (Animatronic anim : Animatronic.values()){
 					roomConfig.set(roomName+".animPose."+anim.toString(), new String[0]);
 				}
@@ -597,6 +600,22 @@ public class YamlReader {
 			}
 		}
 		return false;
+	}
+	public boolean setRoomMaterial(String mapName, String roomName, Material m) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			roomConfig.set(roomName+".roomMaterial", m.toString());
+			saveRoomConfig(mapName, roomConfig);
+			return true;
+		}
+		return false;
+	}
+	public Material getRoomMaterial(String mapName, String roomName) {
+		YamlConfiguration roomConfig = getRoomConfig(mapName);
+		if (roomConfig != null) {
+			return Material.valueOf(roomConfig.getString(roomName+".roomMaterial"));
+		}
+		return null;
 	}
 	public boolean canGuardUnlockCamera(String mapName, String roomName) {
 		YamlConfiguration roomConfig = getRoomConfig(mapName);
@@ -793,6 +812,7 @@ public class YamlReader {
 			for(String roomName : getRoomList(main.getMapName())) {
 				RoomType type = getRoomType(main.getMapName(), roomName);
 				Location camLoc = getCameraLocation(main.getMapName(), roomName);
+				Material roomMaterial = getRoomMaterial(main.getMapName(), roomName);
 				boolean canGuardUnlockCamera = canGuardUnlockCamera(main.getMapName(), roomName);
 				boolean canGuardEnterRoom = canGuardEnterRoom(main.getMapName(), roomName);
 				boolean isDefaultGuardCamera = getIfDefaultGuardCamera(main.getMapName(), roomName);
@@ -828,12 +848,13 @@ public class YamlReader {
 					System.out.println("Loaded room: "+roomName);
 					System.out.println("RoomType: "+type);
 					System.out.println("camLoc: "+camLoc);
+					System.out.println("roomMaterial: "+roomMaterial);
 					System.out.println("canGuardUnlockCamera: "+canGuardUnlockCamera);
 					System.out.println("canGuardEnterRoom: "+canGuardEnterRoom);
 					System.out.println("isDefaultGuardCamera: "+isDefaultGuardCamera);
 					System.out.println("aftonCameraPackage: "+aftonCameraPackage);
 					System.out.println("");
-					rooms.put(roomName, new Room(main, roomName, type, camLoc, isDefaultGuardCamera, canGuardUnlockCamera, canGuardEnterRoom, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
+					rooms.put(roomName, new Room(main, roomName, type, camLoc, roomMaterial, isDefaultGuardCamera, canGuardUnlockCamera, canGuardEnterRoom, aftonCameraPackage, inRoomAnimation, aS, aO, gS, gO, inMinimapAnimation));
 				}else {
 					return null;
 				}

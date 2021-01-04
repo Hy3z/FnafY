@@ -40,7 +40,13 @@ public class InGameAnimatronic implements Listener{
 		ASAnimation animation =  main.getAnimManager().getAsanims().get(animations.get((int)Math.random()*animations.size()));
 		Location animLoc = animation.getFrameOrder(0).pose.location;
 		
-		this.animator=new ASAnimator(main, (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND));
+		ArmorStand as = (ArmorStand) animLoc.getWorld().spawnEntity(animLoc, EntityType.ARMOR_STAND);
+		as.getEquipment().setHelmet(main.getYamlReader().getAnimatronicEquipement(main.getMapName(), anim, "helmet"));
+		as.getEquipment().setChestplate(main.getYamlReader().getAnimatronicEquipement(main.getMapName(), anim, "chestplate"));
+		as.getEquipment().setLeggings(main.getYamlReader().getAnimatronicEquipement(main.getMapName(), anim, "leggings"));
+		as.getEquipment().setBoots(main.getYamlReader().getAnimatronicEquipement(main.getMapName(), anim, "boots"));
+		
+		this.animator=new ASAnimator(main, as);
 		animator.setLooping(true);
 		playAnimation(animation);
 		Bukkit.getPluginManager().registerEvents(this, main);

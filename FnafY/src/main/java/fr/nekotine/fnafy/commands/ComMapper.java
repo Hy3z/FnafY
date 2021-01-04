@@ -40,6 +40,7 @@ public class ComMapper{
 	private String[] doorTypeString;
 	private String[] roomTypeString;
 	private String[] materialString;
+	private String[] armorPiece = {"helmet","chestplate","leggings","boots"};
 	public ComMapper(FnafYMain _main) {
 		main=_main;
 	}
@@ -53,6 +54,9 @@ public class ComMapper{
 		if(mapArray.size()>0) {
 			main.setMapName(mapArray.get(0));
 		}
+	}
+	private void setArmorPieceArgument(LinkedHashMap<String, Argument> argument) {
+		argument.put("armorPiece", new StringArgument().overrideSuggestions(armorPiece));
 	}
 	private void setRoomFinderFromDoorArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("roomsFromDoor", new StringArgument().overrideSuggestions((sender, args) -> {
@@ -74,9 +78,9 @@ public class ComMapper{
 			return main.getYamlReader().getRoomAnimation((String)args[3], (String)args[4], Animatronic.valueOf((String)args[5])).toArray(new String[0]);
 		}));
 	}
-	private void setScreamAnimationFinderFromAnimatrnicArgument(LinkedHashMap<String, Argument> argument) {
+	private void setScreamAnimationFinderFromAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("screamFromAnim", new StringArgument().overrideSuggestions((sender, args) -> {
-			return main.getYamlReader().getAnimatronicScreamAnimation((String)args[3], Animatronic.valueOf((String)args[4])).toArray(new String[0]);
+			return main.getYamlReader().getAnimatronicScreamAnimation((String)args[4], Animatronic.valueOf((String)args[5])).toArray(new String[0]);
 		}));
 	}
 	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
@@ -679,6 +683,7 @@ public class ComMapper{
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"animatronic");
 		setAutoCompleteArgument(argument,"scream");
 		setAutoCompleteArgument(argument,"add");
 		setMapFinderArgument(argument);
@@ -694,11 +699,12 @@ public class ComMapper{
 		argument.clear();
 		
 		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"animatronic");
 		setAutoCompleteArgument(argument,"scream");
 		setAutoCompleteArgument(argument,"remove");
 		setMapFinderArgument(argument);
 		setAnimatronicArgument(argument);
-		setScreamAnimationFinderFromAnimatrnicArgument(argument);
+		setScreamAnimationFinderFromAnimatronicArgument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
 			if(main.getYamlReader().removeScreamAnimation((String)args[0], Animatronic.valueOf((String)args[1]), (String)args[2])) {
 				sender.sendMessage(ChatColor.DARK_GREEN+"Scream retiré!");
@@ -708,6 +714,24 @@ public class ComMapper{
 		}).register();
 		argument.clear();
 		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"animatronic");
+		setAutoCompleteArgument(argument,"setArmor");
+		setMapFinderArgument(argument);
+		setAnimatronicArgument(argument);
+		setArmorPieceArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			if(sender instanceof Player) {
+				if(main.getYamlReader().setAnimatronicEquipement((String)args[0], Animatronic.valueOf((String)args[1]), ((Player) sender).getInventory().getItemInMainHand(), (String)args[2])) {
+					sender.sendMessage(ChatColor.DARK_GREEN+"Pièce d'armure ajoutée à "+(String)args[1]+"!");
+				}else {
+					sender.sendMessage(ChatColor.RED+"Cette map, l'animatronic ou la piece d'armure n'existent pas!");
+				}
+			}else {
+				sender.sendMessage(ChatColor.RED+"You need to be a player in order to use this command!");
+			}
+		}).register();
+		argument.clear();
 		main.getLogger().info("Mapper Commands registered");
 	}
 }

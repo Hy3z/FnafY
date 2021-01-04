@@ -15,6 +15,7 @@ import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import fr.nekotine.fnafy.animation.ASAnimOrder;
@@ -942,16 +943,36 @@ public class YamlReader {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
 			for(Animatronic anim : Animatronic.values()) {
-				animatronicConfig.set("baseRoom."+anim.toString(), new String[0]);
-				animatronicConfig.set("screamAnimation."+anim.toString(), new String[0]);
+				animatronicConfig.set(anim.toString()+".baseRoom", new String[0]);
+				animatronicConfig.set(anim.toString()+".screamAnimation", new String[0]);
+				animatronicConfig.set(anim.toString()+".helmet", new String[0]);
+				animatronicConfig.set(anim.toString()+".chestplate", new String[0]);
+				animatronicConfig.set(anim.toString()+".leggings", new String[0]);
+				animatronicConfig.set(anim.toString()+".boots", new String[0]);
 			}
 			saveAnimatronicConfig(mapName, animatronicConfig);
 		}
 	}
+	public ItemStack getAnimatronicEquipement(String mapName, Animatronic anim, String piece) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			return animatronicConfig.getItemStack(anim.toString()+"."+piece);
+		}
+		return null;
+	}
+	public boolean setAnimatronicEquipement(String mapName, Animatronic anim, ItemStack item, String piece) {
+		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
+		if (animatronicConfig != null) {
+			animatronicConfig.set(anim.toString()+"."+piece, item);
+			saveAnimatronicConfig(mapName, animatronicConfig);
+			return true;
+		}
+		return false;
+	}
 	public boolean setAnimatronicBaseRoomName(String mapName, String roomName, Animatronic anim) {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
-			animatronicConfig.set("baseRoom."+anim.toString(), roomName);
+			animatronicConfig.set(anim.toString()+".baseRoom", roomName);
 			saveAnimatronicConfig(mapName, animatronicConfig);
 			return true;
 		}
@@ -960,17 +981,17 @@ public class YamlReader {
 	public String getAnimatronicBaseRoomName(String mapName, Animatronic anim) {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
-			return animatronicConfig.getString("baseRoom."+anim.toString());
+			return animatronicConfig.getString(anim.toString()+".baseRoom");
 		}
 		return null;
 	}
 	public boolean addScreamAnimation(String mapName, Animatronic anim, String animation) {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
-			List<String> str = animatronicConfig.getStringList("screamAnimation."+anim);
+			List<String> str = animatronicConfig.getStringList("screamAnimation"+anim);
 			if(!str.contains(animation)) {
 				str.add(animation);
-				animatronicConfig.set("screamAnimation."+anim.toString(), str);
+				animatronicConfig.set(anim.toString()+".screamAnimation", str);
 				saveAnimatronicConfig(mapName, animatronicConfig);
 			}
 			return true;
@@ -980,10 +1001,10 @@ public class YamlReader {
 	public boolean removeScreamAnimation(String mapName, Animatronic anim, String animation) {
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
-			List<String> str = animatronicConfig.getStringList("screamAnimation."+anim);
+			List<String> str = animatronicConfig.getStringList("screamAnimation"+anim);
 			if(str.contains(animation)) {
 				str.remove(animation);
-				animatronicConfig.set("screamAnimation."+anim.toString(), str);
+				animatronicConfig.set(anim.toString()+".screamAnimation", str);
 				saveAnimatronicConfig(mapName, animatronicConfig);
 			}
 			return true;
@@ -993,7 +1014,7 @@ public class YamlReader {
 	public List<String> getAnimatronicScreamAnimation(String mapName, Animatronic anim){
 		YamlConfiguration animatronicConfig = getAnimatronicConfig(mapName);
 		if (animatronicConfig != null) {
-			return animatronicConfig.getStringList("screamAnimation."+anim.toString());
+			return animatronicConfig.getStringList(anim.toString()+".screamAnimation");
 		}
 		return null;
 	}

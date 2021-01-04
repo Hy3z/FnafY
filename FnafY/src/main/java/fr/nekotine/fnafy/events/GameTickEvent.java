@@ -12,6 +12,6 @@ public class GameTickEvent extends Event{
 		return handlers;
 	}
 	public static HandlerList getHandlerList() {
-		return HANDLERS_LIST;
+		return handlers;
 	}
 }

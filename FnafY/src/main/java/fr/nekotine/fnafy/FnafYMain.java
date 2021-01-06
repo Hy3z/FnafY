@@ -27,6 +27,7 @@ import fr.nekotine.fnafy.events.GameTickEvent;
 import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.minimap.AftonMinimapManager;
 import fr.nekotine.fnafy.minimap.GuardMinimapManager;
+import fr.nekotine.fnafy.task.BaseTask;
 import fr.nekotine.fnafy.team.GuardWrapper;
 import fr.nekotine.fnafy.team.TeamAfton;
 import fr.nekotine.fnafy.team.TeamGuard;
@@ -60,6 +61,7 @@ public class FnafYMain extends JavaPlugin {
 		ConfigurationSerialization.registerClass(Posture.class, "Posture");
 		ConfigurationSerialization.registerClass(ASAnimation.class, "ASAnimation");
 		ConfigurationSerialization.registerClass(ASAnimOrder.class, "ASAnimOrder");
+		BaseTask.registerSerialisables();
 		//
 		yamlReader = new YamlReader(this);
 		teamguard = new TeamGuard();

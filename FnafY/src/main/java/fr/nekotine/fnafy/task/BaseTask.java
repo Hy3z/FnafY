@@ -4,16 +4,21 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
-import fr.nekotine.fnafy.task.tasks.Task_unclogToilet;
+import fr.nekotine.fnafy.task.tasks.Task_blockBreak;
 
 public abstract class BaseTask implements ConfigurationSerializable{
 	
 	public static void registerSerialisables(){
-		ConfigurationSerialization.registerClass(Task_unclogToilet.class, "Task_unclogToilet");
+		ConfigurationSerialization.registerClass(Task_blockBreak.class, "Task_unclogToilet");
 	};
 	
 	private TaskManager taskManager;
 	private boolean isAsked=false;
+	private final String name;
+	
+	public BaseTask(String n) {
+		name=n;
+	}
 	
 	public enum Difficulty{
 		COMMON((byte)1,ChatColor.GREEN),
@@ -63,5 +68,9 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	public abstract void reset();
 	
 	public abstract String getDisplayName();
+
+	public String getName() {
+		return name;
+	}
 	
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import fr.nekotine.fnafy.task.BaseTask;
 
-public class Task_unclogToilet extends BaseTask {
+public class Task_blockBreak extends BaseTask {
 
 	@Override
 	public Difficulty getDifficulty() {
@@ -29,8 +29,9 @@ public class Task_unclogToilet extends BaseTask {
 		return "Unclog the toilets";
 	}
 	
-	public static Task_unclogToilet deserialize(Map<String, Object> args) {
-		return new Task_unclogToilet();
+	public static Task_blockBreak deserialize(Map<String, Object> args) {
+		int nb_block;
+		return new Task_blockBreak();
 	}
 	
 }

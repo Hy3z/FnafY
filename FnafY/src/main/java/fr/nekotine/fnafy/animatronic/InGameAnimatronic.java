@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import fr.nekotine.fnafy.FnafYMain;
 import fr.nekotine.fnafy.animation.ASAnimation;
 import fr.nekotine.fnafy.animation.ASAnimator;
+import fr.nekotine.fnafy.doorRoom.Door;
+import fr.nekotine.fnafy.doorRoom.DoorType;
 import fr.nekotine.fnafy.events.AnimatronicEnterRoomEvent;
 import fr.nekotine.fnafy.events.AnimatronicMoveAtDoorEvent;
 import fr.nekotine.fnafy.events.GameStopEvent;
@@ -26,6 +28,7 @@ public class InGameAnimatronic implements Listener{
 	public String currentRoom;
 	
 	private String movingTo;
+	private Door movingUsingDoor;
 	private int TICKDELAYCROSSROOM = 100;
 	private int currentDelay = 0;
 	private boolean isAtDoor = false;
@@ -58,7 +61,17 @@ public class InGameAnimatronic implements Listener{
 			if(currentDelay==TICKDELAYCROSSROOM) {
 				isAtDoor=false;
 				currentDelay=0;
-				currentRoom=movingTo;
+				if(movingUsingDoor.isClosed) {
+					if(movingUsingDoor.getDoorType()==DoorType.PNEUMATIQUE) {
+						currentRoom=main.getYamlReader().getAnimatronicBaseRoomName(main.getMapName(), anim);
+						System.out.println(anim+" refoulée à la salle "+currentRoom+" par une porte pneumatique fermée");
+					}else {
+						System.out.println(anim+" refoulée à la salle "+currentRoom+" par une porte fermée");
+					}
+				}else {
+					currentRoom=movingTo;
+					System.out.println(anim+" entre dans la salle "+currentRoom);
+				}
 				Bukkit.getPluginManager().callEvent(new AnimatronicEnterRoomEvent(main.doorRoomContainer.getRoom(currentRoom), anim));
 				List<ASAnimation> animations = main.doorRoomContainer.getRoom(currentRoom).getAnimations(anim);
 				playAnimation(animations.get((int)Math.random()*animations.size()));
@@ -93,8 +106,9 @@ public class InGameAnimatronic implements Listener{
 	@EventHandler
 	public void animToDoor(AnimatronicMoveAtDoorEvent e) {
 		isAtDoor=true;
+		movingUsingDoor = e.getDoor();
 		movingTo = e.getGoingTo().getRoomName();
-		List<ASAnimation> animations = e.getDoor().getDoorAnimationsToRoom(e.getGoingTo(), anim);
+		List<ASAnimation> animations = movingUsingDoor.getDoorAnimationsToRoom(e.getGoingTo(), anim);
 		playAnimation(animations.get((int)Math.random()*animations.size()));
 	}
 	

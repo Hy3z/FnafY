@@ -3,13 +3,14 @@ package fr.nekotine.fnafy.task;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.task.tasks.Task_blockBreak;
 
-public abstract class BaseTask implements ConfigurationSerializable{
+public abstract class BaseTask implements ConfigurationSerializable,Listener{
 	
 	public static void registerSerialisables(){
-		ConfigurationSerialization.registerClass(Task_blockBreak.class, "Task_unclogToilet");
+		ConfigurationSerialization.registerClass(Task_blockBreak.class, "Task_blockBreak");
 	};
 	
 	private TaskManager taskManager;
@@ -66,8 +67,6 @@ public abstract class BaseTask implements ConfigurationSerializable{
 	}
 	
 	public abstract void reset();
-	
-	public abstract String getDisplayName();
 
 	public String getName() {
 		return name;

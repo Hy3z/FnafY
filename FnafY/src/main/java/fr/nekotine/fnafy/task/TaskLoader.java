@@ -16,6 +16,7 @@ public class TaskLoader {
 				BaseTask bt = (BaseTask)t;
 				mnger.tasklist.add(bt);
 				bt.setTaskManager(mnger);
+				mnger.main.pmanager.registerEvents(bt, mnger.main);
 			}
 		}
 		return false;

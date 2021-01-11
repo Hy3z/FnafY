@@ -8,6 +8,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -35,13 +36,14 @@ import fr.nekotine.fnafy.utils.BlockSelection;
 import fr.nekotine.fnafy.utils.BlockSelectionPart;
 import fr.nekotine.fnafy.utils.CustomEulerAngle;
 import fr.nekotine.fnafy.utils.Posture;
+import fr.nekotine.fnafy.utils.SerializedBlock;
 
 public class FnafYMain extends JavaPlugin {
 	private YamlReader yamlReader;
 	private ComAnim animManager = new ComAnim(this);
 	private ComMapper mapManager = new ComMapper(this);
 	private ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-	
+	public PluginManager pmanager;
 	private String mapName = "";
 	private PlayerMoveHeadListener headListener;
 	public DoorRoomContainer doorRoomContainer;
@@ -54,6 +56,7 @@ public class FnafYMain extends JavaPlugin {
 	private int scheduler;
 	public void onEnable() {
 		super.onEnable();
+		pmanager=Bukkit.getPluginManager();
 		//Register serializables//
 		ConfigurationSerialization.registerClass(CustomEulerAngle.class, "CustomEulerAngle");
 		ConfigurationSerialization.registerClass(BlockSelectionPart.class, "BlockSelectionPart");
@@ -61,6 +64,7 @@ public class FnafYMain extends JavaPlugin {
 		ConfigurationSerialization.registerClass(Posture.class, "Posture");
 		ConfigurationSerialization.registerClass(ASAnimation.class, "ASAnimation");
 		ConfigurationSerialization.registerClass(ASAnimOrder.class, "ASAnimOrder");
+		ConfigurationSerialization.registerClass(SerializedBlock.class,"SerializedBlock");
 		BaseTask.registerSerialisables();
 		//
 		yamlReader = new YamlReader(this);
@@ -105,17 +109,17 @@ public class FnafYMain extends JavaPlugin {
 	}
 	public boolean startGame() {
 		if (gameRunning) {
-			Bukkit.getPluginManager().callEvent(new GameStopEvent());
+			pmanager.callEvent(new GameStopEvent());
 			gameRunning=false;
 		}
 		if(loadGame()) {
 			GameStartEvent evt = new GameStartEvent();
-			Bukkit.getPluginManager().callEvent(evt);
+			pmanager.callEvent(evt);
 			if (evt.isCancelled()) {
 				return false;
 			}
 			headListener = new PlayerMoveHeadListener();
-			Bukkit.getPluginManager().registerEvents(headListener, this);
+			pmanager.registerEvents(headListener, this);
 			aftonMinimapManager = new AftonMinimapManager(this);
 			guardMinimapManager = new GuardMinimapManager(this);
 			gameRunning=true;
@@ -166,7 +170,7 @@ public class FnafYMain extends JavaPlugin {
 	}
 	@Override
 	public void onDisable() {
-		Bukkit.getPluginManager().callEvent(new GameStopEvent());
+		pmanager.callEvent(new GameStopEvent());
 		animManager.disable();
 		super.onDisable();
 	}
@@ -178,7 +182,7 @@ public class FnafYMain extends JavaPlugin {
 	        @Override
 	        public void run() {
 	        	GameTickEvent e = new GameTickEvent();
-    			Bukkit.getPluginManager().callEvent(e);
+	        	pmanager.callEvent(e);
 	        }
 	    }, 0, 1);
 	}

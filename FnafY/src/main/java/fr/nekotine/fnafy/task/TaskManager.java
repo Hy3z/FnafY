@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import fr.nekotine.fnafy.FnafYMain;
@@ -14,7 +15,7 @@ import fr.nekotine.fnafy.team.TeamGuard;
 
 public class TaskManager implements Listener {
 	
-	private final FnafYMain main;
+	public final FnafYMain main;
 	public final ArrayList<BaseTask> tasklist=new ArrayList<BaseTask>();
 	private boolean commonComplete=false;
 	private boolean epicComplete=false;
@@ -41,6 +42,8 @@ public class TaskManager implements Listener {
 	public TaskManager(FnafYMain mainref) {
 		main=mainref;
 	}
+	
+	
 	
 	private boolean loadTasks() {
 		return TaskLoader.load(main.getYamlReader().getConfig(main.getMapName(), "tasks"),this);
@@ -109,7 +112,7 @@ public class TaskManager implements Listener {
 	private void setupScoreboard() {
 		main.teamguard.resetScoreboardEntries();
 		for (BaseTask task : tasklist) {
-			main.teamguard.taskobjective.getScore(task.getDisplayName())
+			main.teamguard.taskobjective.getScore(task.getName())
 			.setScore(task.isAsked()?task.getDifficulty().getDisplayPower()+4:task.getDifficulty().getDisplayPower());
 		}
 		for (GuardWrapper p : TeamGuard.playerList) {
@@ -188,6 +191,7 @@ public class TaskManager implements Listener {
 	public void onGameStop(GameStopEvent evt) {
 		for (BaseTask t : tasklist) {
 			t.reset();
+			HandlerList.unregisterAll(t);
 		}
 		tasklist.clear();
 	}

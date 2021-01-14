@@ -35,6 +35,16 @@ public class TeamGuard {
 		return false;
 	}
 	
+	public boolean removePlayer(UUID id) {
+		for (GuardWrapper w : playerList) {
+			if (w.playerid.equals(id)) {
+				playerList.remove(w);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public GuardWrapper getWrapper(UUID id) {
 		for (GuardWrapper w : playerList) {
 			if (w.playerid.equals(id)){

@@ -32,6 +32,16 @@ public class TeamAfton {
 		return false;
 	}
 	
+	public boolean removePlayer(UUID id) {
+		for (AftonWrapper w : playerList) {
+			if (w.playerid.equals(id)) {
+				playerList.remove(w);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public AftonWrapper getWrapper(UUID id) {
 		for (AftonWrapper w : playerList) {
 			if (w.playerid.equals(id)){
@@ -54,5 +64,9 @@ public class TeamAfton {
 		case SPRINGTRAP: return springtrap;
 		default: return null;
 		}
+	}
+	
+	public void addPlayer(AftonWrapper aftonWrapper) {
+		playerList.add(aftonWrapper);
 	}
 }

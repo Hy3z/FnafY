@@ -29,7 +29,9 @@ import fr.nekotine.fnafy.events.PlayerMoveHeadListener;
 import fr.nekotine.fnafy.minimap.AftonMinimapManager;
 import fr.nekotine.fnafy.minimap.GuardMinimapManager;
 import fr.nekotine.fnafy.task.BaseTask;
+import fr.nekotine.fnafy.team.AftonWrapper;
 import fr.nekotine.fnafy.team.GuardWrapper;
+import fr.nekotine.fnafy.team.Team;
 import fr.nekotine.fnafy.team.TeamAfton;
 import fr.nekotine.fnafy.team.TeamGuard;
 import fr.nekotine.fnafy.utils.BlockSelection;
@@ -96,6 +98,15 @@ public class FnafYMain extends JavaPlugin {
 	public boolean addPlayer(UUID id) {
 		if (isPlayerInGame(id)) return false;
 		teamguard.addPlayer(new GuardWrapper(id));
+		return true;
+	}
+	public boolean addPlayer(UUID id, Team t) {
+		if (isPlayerInGame(id)) return false;
+		if(t==Team.GUARD) {
+			teamguard.addPlayer(new GuardWrapper(id));
+		}else {
+			teamafton.addPlayer(new AftonWrapper(id));
+		}
 		return true;
 	}
 	public boolean isGameRunning() {

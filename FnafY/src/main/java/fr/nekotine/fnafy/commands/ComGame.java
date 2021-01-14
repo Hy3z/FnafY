@@ -3,10 +3,12 @@ package fr.nekotine.fnafy.commands;
 import java.util.LinkedHashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
+import dev.jorel.commandapi.arguments.PlayerArgument;
 import fr.nekotine.fnafy.FnafYMain;
 
 public final class ComGame {
@@ -37,8 +39,9 @@ public final class ComGame {
 		argument.clear();
 		argument.put("game", new LiteralArgument("game"));
 		argument.put("join", new LiteralArgument("join"));
+		argument.put("player", new PlayerArgument());
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			sender.sendMessage("Current Map: "+ChatColor.GOLD+main.getMapName());
+			main.addPlayer(((Player)args[0]).getUniqueId());
 		}).register();
 		main.getLogger().info("Game Commands registered");
 	}

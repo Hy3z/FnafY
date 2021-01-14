@@ -8,7 +8,9 @@ import fr.nekotine.fnafy.animatronic.Animatronic;
 import fr.nekotine.fnafy.animatronic.InGameAnimatronic;
 
 public class TeamAfton {
-
+	public TeamAfton() {
+		unlockedPackages.add(1);
+	}
 	public static final ArrayList<AftonWrapper> playerList = new ArrayList<AftonWrapper>();
 	private List<Integer> unlockedPackages = new ArrayList<>();
 	private InGameAnimatronic bonnie;

@@ -223,6 +223,14 @@ public class ComMapper{
 			}
 		}).register();
 		argument.clear();
+		
+		setAutoCompleteArgument(argument,"map");
+		setAutoCompleteArgument(argument,"setMap");
+		setMapFinderArgument(argument);
+		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
+			main.setMapName((String)args[0]);
+		}).register();
+		argument.clear();
 		//--------------------------------------------------------------------------------------
 		setAutoCompleteArgument(argument,"map");
 		setAutoCompleteArgument(argument,"door");
@@ -583,7 +591,7 @@ public class ComMapper{
 		setRoomFinderArgument(argument);
 		set1To6Argument(argument);
 		new CommandAPICommand("fnafy").withArguments(argument).executes((sender,args)->{
-			if(main.getYamlReader().setAftonCameraPackage((String)args[0], (String)args[1], (int)args[0])) {
+			if(main.getYamlReader().setAftonCameraPackage((String)args[0], (String)args[1], (int)args[2])) {
 				sender.sendMessage(ChatColor.GREEN+"Camera package set!");
 			}else {
 				sender.sendMessage(ChatColor.RED+"Cette map ou la salle n'éxistent pas, ou le chiffre n'est pas compris entre 1 et 6!");
@@ -635,7 +643,7 @@ public class ComMapper{
 			if(sender instanceof Player) {
 				Block b = ((Player) sender).getTargetBlockExact(10, FluidCollisionMode.NEVER);
 				if(b!=null) {
-					if(main.getYamlReader().setGuardRoomLocation((String)args[0], b.getLocation())) {
+					if(main.getYamlReader().setGuardCameraBlockLocation((String)args[0], b.getLocation())) {
 						sender.sendMessage(ChatColor.DARK_GREEN+"Block d'ouverture de caméra mis à jour!!");
 					}else {
 						sender.sendMessage(ChatColor.RED+"Cette map n'existe pas!");

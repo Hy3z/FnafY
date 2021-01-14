@@ -48,7 +48,7 @@ public final class ComGame {
 		argument.put("join", new LiteralArgument("join"));
 		argument.put("teams", new StringArgument().overrideSuggestions(teams));
 		new CommandAPICommand("fnafy").withArguments(argument).executesPlayer((player,args)->{
-			main.addPlayer(player.getUniqueId(),(Team)args[0]);
+			main.addPlayer(player.getUniqueId(),Team.valueOf((String)args[0]));
 		}).register();
 		argument.clear();
 		
@@ -57,7 +57,7 @@ public final class ComGame {
 		argument.put("players", new PlayerArgument());
 		argument.put("teams", new StringArgument().overrideSuggestions(teams));
 		new CommandAPICommand("fnafy").withArguments(argument).executesPlayer((player,args)->{
-			main.addPlayer(((Player)args[0]).getUniqueId(),(Team)args[1]);
+			main.addPlayer(((Player)args[0]).getUniqueId(),Team.valueOf((String)args[0]));
 		}).register();
 		argument.clear();
 		

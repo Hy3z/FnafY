@@ -193,7 +193,7 @@ public class ComMapper{
 		x=-1;
 		for(Material mat : Material.values()) {
 			x++;
-			roomTypeString[x] = mat.toString();
+			materialString[x] = mat.toString();
 		}
 		
 		main.getLogger().info("Registering Mapper commands");

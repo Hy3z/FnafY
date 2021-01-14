@@ -84,7 +84,7 @@ public class ComMapper{
 		}));
 	}
 	private void setAnimatronicArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("animatronic", new StringArgument().overrideSuggestions(animString));
+		argument.put("animatronicList", new StringArgument().overrideSuggestions(animString));
 	}
 	private void setAnimationArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("animationList", new StringArgument().overrideSuggestions((sender, args) -> {
@@ -104,10 +104,10 @@ public class ComMapper{
 		argument.put("roomNumber", new IntegerArgument(1,2));
 	}
 	private void set1To6Argument(LinkedHashMap<String, Argument> argument) {
-		argument.put("aftonPackageNumber", new IntegerArgument(0,6));
+		argument.put("1To6", new IntegerArgument(0,6));
 	}
 	private void setTrueOrFalseArgument(LinkedHashMap<String, Argument> argument) {
-		argument.put("aftonPackageNumber", new BooleanArgument());
+		argument.put("boolean", new BooleanArgument());
 	}
 	private void setDoorFinderArgument(LinkedHashMap<String, Argument> argument) {
 		argument.put("doorList", new StringArgument().overrideSuggestions((sender, args) -> {
